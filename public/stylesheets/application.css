@@ -1,0 +1,19 @@
+body {
+     width:900px;
+     margin:10px auto;
+     border:1px solid #ddd;
+     font-family:arial,helvetica,times;
+     font-size:13px;
+     padding:10px;
+}
+
+header {
+     font-size:115%;
+     margin:0 0 20px 0;
+     display:block;
+}
+
+.mceEditor {
+     width:70%;
+     height:500px;
+}

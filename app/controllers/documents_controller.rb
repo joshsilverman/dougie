@@ -2,6 +2,9 @@ class DocumentsController < ApplicationController
 
   include DocumentsHelper
   
+  def index
+  end
+  
   def new(name = nil)
     
     name = name ? name : params[:name]
