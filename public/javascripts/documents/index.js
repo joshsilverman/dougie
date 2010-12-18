@@ -22,22 +22,24 @@ var fOutlineHandlers = function() {
         //capture iframe keystroke events
         var iframe = $$('#cke_contents_editor iframe')[0];
         var iDoc = iframe.contentWindow || iframe.contentDocument;
-        iDoc.document.onkeydown = delegateHandler.curry(iDoc);
+        iDoc.document.onkeyup = delegateHandler.curry(iDoc);
 
     }.delay(1, arguments); //@todo this creates race condition - look for callback
 
     var delegateHandler = function(iDoc, event) {
 
-        //get real target - target in event object is false
+        //get real target - target in event object is wrong
         //@todo this is not quite there - sometimes it returns a ul; also, I
         //      couldn't overwrite event.target
+        //@todo target may be be UL or BODY on return key!
+        var range, target;
         if (iDoc.document.selection) {
-            var range = iDoc.document.selection.createRange();
-            var target = range.parentElement();
+            range = iDoc.document.selection.createRange();
+            target = range.parentElement();
         }
         else if (iDoc.window.getSelection) {
-            var range = iDoc.window.getSelection().getRangeAt(0);
-            var target = range.commonAncestorContainer.parentNode;
+            range = iDoc.window.getSelection().getRangeAt(0);
+            target = range.commonAncestorContainer.parentNode;
         }
 
         //invoke proper handlers
