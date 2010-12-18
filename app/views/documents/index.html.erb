@@ -1,0 +1,17 @@
+<% @page_specific_scripts_js = ["ckeditor/ckeditor", "documents/index"] %>
+<% @page_specific_scripts_css = ["documents/index"] %>
+
+<div id="editor_container">
+  <textarea id="editor" name="editor"></textarea>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+
+        CKEDITOR.replace( 'editor',
+                {
+                        fullPage : true
+                });
+
+//]]>
+</script>

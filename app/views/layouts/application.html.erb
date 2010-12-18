@@ -4,15 +4,17 @@
   <title>Dougie</title>
 
   <%= stylesheet_link_tag :all %>
+  <%= stylesheet_link_tag "sample" %>
   <%= javascript_include_tag :defaults %>
   <%= csrf_meta_tag %>
-  <%= include_tiny_mce_if_needed %>
+
+  <% if @page_specific_scripts_js %> <%= javascript_include_tag @page_specific_scripts_js %> <% end %>
+  <% if @page_specific_scripts_css %> <%= stylesheet_link_tag @page_specific_scripts_css %> <% end %>
 
 </head>
 <body>
 
-<header>Project Title</header>
-<%= render "shared/outline" %>
+<header>Doug</header>
 <%= yield %>
 
 </body>
