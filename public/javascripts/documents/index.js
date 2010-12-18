@@ -3,7 +3,7 @@ var fDocument = function() {
     var outline = new fOutline();
     var rightRail = new fRightRail();
 
-    var init = function() {}.apply(arguments);
+    var init = function() {}.apply(this, arguments);
 
     var save = function() {};
 };
@@ -12,7 +12,7 @@ var fOutline = function() {
 
     var outlineHandlers = new fOutlineHandlers();
 
-    var init = function() {}.apply(arguments);
+    var init = function() {}.apply(this, arguments)
 };
 
 var fOutlineHandlers = function() {
@@ -24,7 +24,7 @@ var fOutlineHandlers = function() {
         var iDoc = iframe.contentWindow || iframe.contentDocument;
         iDoc.document.onkeydown = delegateHandler.curry(iDoc);
 
-    }.delay(1, arguments); //@todo this creates race condition
+    }.delay(1, arguments); //@todo this creates race condition - look for callback
 
     var delegateHandler = function(iDoc, event) {
 
@@ -69,18 +69,25 @@ var fOutlineHandlers = function() {
 
 var fRightRail = function() {
 
-    var init = function() {}.apply(arguments);
+    var init = function() {}.apply(this, arguments);
 
     var cards = [];
 
-    var createCard = function() {};
-    
-    var updateCard = function() {};
+    var focus = function() {};
 
-    var activateCard = function() {};
-
-    var deactivateCard = function() {};
 };
 
+fCard = function() {
 
-var doc = new fDocument();
+    var init = function() {}.apply(this, arguments);
+
+    var create = function() {};
+
+    var update = function() {};
+
+    var activate = function() {};
+
+    var deactivate = function() {};
+}
+
+var doc = new fDocument('a', 'b');
