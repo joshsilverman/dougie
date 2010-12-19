@@ -15,7 +15,7 @@ var cDoc = function() {
         }.bind(this));
     }.apply(this, arguments);
 
-    this.save = function() {};
+    this.save = function() {}.bind(this);
 };
 
 var cOutline = function() {
@@ -70,14 +70,14 @@ var cOutlineHandlers = function() {
     this.onTab = function(event, target) {
         if (event.shiftKey) doc.editor.execCommand('outdent');
         else doc.editor.execCommand('indent');
-    };
+    }.bind(this);
 
     this.onReturn = function(event, target) {
 
         //@todo ajust spec - no need to add attributes until node has content
         //      is this necessary
 
-    };
+    }.bind(this);
 
 };
 
@@ -87,7 +87,7 @@ var cRightRail = function() {
 
     this.cards = {};
 
-    this.focus = function() {};
+    this.focus = function() {}.bind(this);
 
 };
 
@@ -95,15 +95,15 @@ var cCard = function() {
 
     this.init = function() {}.apply(this, arguments);
 
-    this.render = function() {};
+    this.render = function() {}.bind(this);
 
-    this.create = function() {};
+    this.create = function() {}.bind(this);
 
-    this.update = function() {};
+    this.update = function() {}.bind(this);
 
-    this.activate = function() {};
+    this.activate = function() {}.bind(this);
 
-    this.deactivate = function() {};
+    this.deactivate = function() {}.bind(this);
 }
 
 var doc = new cDoc();
