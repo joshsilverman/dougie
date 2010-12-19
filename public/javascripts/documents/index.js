@@ -1,66 +1,78 @@
-var fDocument = function() {
+var cDoc = function() {
 
-    var outline = new fOutline();
-    var rightRail = new fRightRail();
+    this.outline;
+    this.rightRail;
+    this.editor;
 
-    var init = function() {}.apply(this, arguments);
+    this.init = function() {
 
-    var save = function() {};
+        document.observe('CKEDITOR:ready', function() {
+
+            this.editor = CKEDITOR.instances.editor;
+            this.outline = new cOutline();
+            this.rightRail = new cRightRail();
+
+        }.bind(this));
+    }.apply(this, arguments);
+
+    this.save = function() {};
 };
 
-var fOutline = function() {
+var cOutline = function() {
 
-    var outlineHandlers = new fOutlineHandlers();
+    this.outlineHandlers = new cOutlineHandlers();
 
-    var init = function() {}.apply(this, arguments)
+    this.init = function() {}.apply(this, arguments)
 };
 
-var fOutlineHandlers = function() {
+var cOutlineHandlers = function() {
 
-    var init = function() {
+    this.iDoc;
+
+    this.init = function() {
 
         //capture iframe keystroke events
         var iframe = $$('#cke_contents_editor iframe')[0];
-        var iDoc = iframe.contentWindow || iframe.contentDocument;
-        iDoc.document.onkeyup = delegateHandler.curry(iDoc);
+        this.iDoc = iframe.contentWindow || iframe.contentDocument;
+        this.iDoc.document.onkeyup = this.delegateHandler;
 
-    }.delay(1, arguments); //@todo this creates race condition - look for callback
+    }.bind(this).delay(.1, arguments); //@todo this creates race condition - look for callback
 
-    var delegateHandler = function(iDoc, event) {
+    this.delegateHandler = function(event) {
 
         //get real target - target in event object is wrong
         //@todo this is not quite there - sometimes it returns a ul; also, I
         //      couldn't overwrite event.target
         //@todo target may be be UL or BODY on return key!
         var range, target;
-        if (iDoc.document.selection) {
-            range = iDoc.document.selection.createRange();
+        if (this.iDoc.document.selection) {
+            range = this.iDoc.document.selection.createRange();
             target = range.parentElement();
         }
-        else if (iDoc.window.getSelection) {
-            range = iDoc.window.getSelection().getRangeAt(0);
+        else if (this.iDoc.window.getSelection) {
+            range = this.iDoc.window.getSelection().getRangeAt(0);
             target = range.commonAncestorContainer.parentNode;
         }
 
         //invoke proper handlers
         switch (event.keyCode) {
             case Event.KEY_TAB:
-                onTab(event, target);
+                this.onTab(event, target);
                 break;
             case Event.KEY_RETURN:
-                onReturn(event, target);
+                this.onReturn(event, target);
                 break;
             default:
                 break;
         }
+    }.bind(this);
+
+    this.onTab = function(event, target) {
+        if (event.shiftKey) doc.editor.execCommand('outdent');
+        else doc.editor.execCommand('indent');
     };
 
-    var onTab = function(event, target) {
-        if (event.shiftKey) CKEDITOR.instances.editor.execCommand('outdent');
-        else CKEDITOR.instances.editor.execCommand('indent');
-    };
-
-    var onReturn = function(event, target) {
+    this.onReturn = function(event, target) {
 
         //@todo ajust spec - no need to add attributes until node has content
         //      is this necessary
@@ -69,27 +81,29 @@ var fOutlineHandlers = function() {
 
 };
 
-var fRightRail = function() {
+var cRightRail = function() {
 
-    var init = function() {}.apply(this, arguments);
+    this.init = function() {}.apply(this, arguments);
 
-    var cards = [];
+    this.cards = {};
 
-    var focus = function() {};
+    this.focus = function() {};
 
 };
 
-fCard = function() {
+var cCard = function() {
 
-    var init = function() {}.apply(this, arguments);
+    this.init = function() {}.apply(this, arguments);
 
-    var create = function() {};
+    this.render = function() {};
 
-    var update = function() {};
+    this.create = function() {};
 
-    var activate = function() {};
+    this.update = function() {};
 
-    var deactivate = function() {};
+    this.activate = function() {};
+
+    this.deactivate = function() {};
 }
 
-var doc = new fDocument('a', 'b');
+var doc = new cDoc();

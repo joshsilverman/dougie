@@ -7,11 +7,9 @@
 
 <script type="text/javascript">
 //<![CDATA[
-
-        CKEDITOR.replace( 'editor',
-                {
-                        fullPage : true
-                });
-
+  CKEDITOR.replace( 'editor', {
+    fullPage : true,
+    on: {instanceReady : function( ev ) {Event.fire(document, 'CKEDITOR:ready');}}
+  });
 //]]>
 </script>
