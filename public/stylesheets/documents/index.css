@@ -1,0 +1,7 @@
+#editor_container {
+    width:600px;
+}
+
+#cke_contents_editor {
+    height:425px !important;
+}

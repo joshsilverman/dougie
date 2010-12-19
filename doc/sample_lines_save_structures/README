@@ -1,0 +1,6 @@
+README
+
+-letters are used for me to keep track of what nodes got sent out before each request
+-changed is a timestamp although the numbers are artificially low for this sample
+-ids and line_ids are the same because this is intended to be run on an empty lines table
+-each dom string has the accompanying post variable at the top in a comment
