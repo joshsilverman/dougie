@@ -10,25 +10,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101220021805) do
+ActiveRecord::Schema.define(:version => 20101215015121) do
 
   create_table "documents", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "lines", :force => true do |t|
-    t.text     "text"
-    t.integer  "document_id"
-    t.integer  "parent_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "mems", :force => true do |t|
-    t.float    "strength"
-    t.integer  "line_id"
+    t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

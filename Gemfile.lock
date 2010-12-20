@@ -33,7 +33,6 @@ GEM
     builder (2.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
-    hpricot (0.8.3)
     i18n (0.5.0)
     kgio (2.0.0)
     libxml-ruby (1.1.4)
@@ -78,7 +77,6 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_tree
-  hpricot
   libxml-ruby
   mysql
   nokogiri

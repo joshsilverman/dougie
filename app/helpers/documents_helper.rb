@@ -25,12 +25,8 @@ module DocumentsHelper
       @lines = []
       @rootline = Line.create(:text => "root")
       
- 
-    
       #collect(@doc,nil)
       #preorder(@doc.children,@rootline)
-      
-      
     end
     
     def to_nokogiri
