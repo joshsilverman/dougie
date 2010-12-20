@@ -22,24 +22,27 @@ var cDoc = Class.create({
 
 var cOutline = Class.create({
 
+    iDoc: null,
     outlineHandlers: null,
 
     initialize: function() {
-        this.outlineHandlers = new cOutlineHandlers();
+        
+        //iframe doc
+        var iframe = $$('#cke_contents_editor iframe')[0];
+        this.iDoc = iframe.contentWindow || iframe.contentDocument;
+
+        this.outlineHandlers = new cOutlineHandlers(this.iDoc);
     }
 });
 
 var cOutlineHandlers = Class.create({
 
-    iDoc: null,
+    iDoc: null, //@todo repeated unfortunately - can't access in outline until initialization complete
 
-    initialize: function() {
-
+    initialize: function(iDoc) {
         //capture iframe keystroke events
-        var iframe = $$('#cke_contents_editor iframe')[0];
-        this.iDoc = iframe.contentWindow || iframe.contentDocument;
+        this.iDoc = iDoc;
         this.iDoc.document.onkeyup = this.delegateHandler.bind(this);
-
     },
 
     delegateHandler: function(event) {
@@ -94,7 +97,10 @@ var cOutlineHandlers = Class.create({
         if (!id) doc.rightRail.createCard(target);
 
         //existing card
-        else doc.rightRail.cards[id].update(target);
+        else {
+            doc.rightRail.cards[id].update(target);
+            doc.rightRail.focus(id);
+        }
     }
 });
 
@@ -107,17 +113,38 @@ var cRightRail = Class.create({
     initialize: function() {},
 
     createCard: function(node) {
+
         this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount)
-        this.focus('card_' + this.cardCount++);
+        this.focus(this.cardCount++);
     },
 
     focus: function(id) {
+
+        //normalize id
+        if (!Object.isNumber(id)) {
+            id = id.replace('card_', '');
+            id = id.replace('node_', '');
+        }
+        var cardId = "card_" + id;
+        var nodeId = "node_" + id;
+
         var rightRail = document.getElementById("right_rail");
 
-        Element.removeClassName(this.inFocus, 'card_focus')
-        this.inFocus = document.getElementById(id);
+        //unfocus previously focused
+        if(this.inFocus && this.inFocus.id != cardId) {
 
-        rightRail.scrollTop = Element.positionedOffset(this.inFocus)[1];
+            var nodeIdFocused = 'node_' + this.inFocus.id.replace('card_', '');
+            Element.removeClassName(this.inFocus, 'card_focus');
+            this.inFocus.innerHTML 
+                = doc.outline.iDoc.document.getElementById(nodeIdFocused).innerHTML;
+        }
+
+        this.inFocus = document.getElementById(cardId);
+        Element.addClassName(this.inFocus, 'card_focus');
+        rightRail.scrollTop = 
+            Element.positionedOffset(this.inFocus)[1];
+//            + $('right_rail').getHeight()
+//            - Element.getHeight(this.inFocus);
     }
 });
 
@@ -127,7 +154,8 @@ var cCard = Class.create({
     front: '',
     back: '',
     active: false,
-    elmnt: null,
+    elmntCard: null,
+    elmntNode: null,
 
     initialize: function(node, cardCount) {
 
@@ -142,7 +170,7 @@ var cCard = Class.create({
         //card in dom
         var cardHtml = '<div id="card_' + this.cardNumber + '" class="card_focus card"></div>';
         $('cards').insert({bottom: cardHtml}); //@todo insert in proper location
-        this.elmnt = document.getElementById("card_" + this.cardNumber);
+        this.elmntCard = document.getElementById("card_" + this.cardNumber);
         this._render();
     },
 
@@ -158,20 +186,14 @@ var cCard = Class.create({
     deactivate: function() {},
 
     _render: function() {
-
         //both sides set
         if (this.back) {
-            var cardFaces = '<div class="card_front">'+this.front+'</div>\
+            this.elmntCard.innerHTML = '<div class="card_front">'+this.front+'</div>\
                 <div class="card_back">'+this.back+'</div>';
         }
 
         //just front
-        else {
-            var cardFaces = '<div class="card_front">'+this.front+'</div>';
-        }
-
-        //set
-        this.elmnt.innerHTML = cardFaces;
+        else this.elmntCard.innerHTML = this.front;
 
     },
 
@@ -192,7 +214,6 @@ var cCard = Class.create({
         //no match
         else this.front = nodeTxt;
     }
-    
 });
 
 var doc = new cDoc();
