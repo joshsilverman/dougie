@@ -57,5 +57,7 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
   
   match "/" => "documents#index"
+  match "/new" => "documents#new"
+  match "/create" => "documents#create"
   
 end
