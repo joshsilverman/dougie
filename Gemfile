@@ -10,6 +10,8 @@ gem 'rails', '3.0.3'
 # Use unicorn as the web server
 #gem 'unicorn'
 gem 'pg'
+gem 'mysql'
+gem 'mysql2'
 
 # Deploy with Capistrano
 # gem 'capistrano'

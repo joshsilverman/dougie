@@ -114,6 +114,9 @@ var cRightRail = Class.create({
 
     createCard: function(node) {
 
+        //check node is valid
+        if (node.tagName.toUpperCase() == 'BODY') return;
+
         this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount)
         this.focus(this.cardCount++);
     },
