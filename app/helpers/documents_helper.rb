@@ -20,74 +20,36 @@ module DocumentsHelper
     def initialize(document = nil,html = nil)
       return nil if html.blank? || document.nil?
       @document = document
-      @html = sanitize(html)
-      @doc = to_nokogiri
-      @lines = []
-      @rootline = Line.create(:text => "root")
+      @html = "<li>%s</li>" % sanitize(html)
+      @doc = Nokogiri::XML(@html)
+      @lines = [{'text' => ''}]
+
+      root = Line.create(:text => "root")
+      preorder_save(@doc.children, root)
       
- 
-    
-      #collect(@doc,nil)
-      #preorder(@doc.children,@rootline)
+      @document.lines = root.children
       
-      
-    end
-    
-    def to_nokogiri
-      Nokogiri::XML(@html)
     end
     
     def sanitize(html = nil)
       return "" if html.blank?
-      html.gsub(/(\\[\w])+/i,"").gsub(/[\s\s]+/," ").gsub(/>\s</,"><").gsub(/<(\/|)ul>|<(\/|)body>|/i,"").gsub(/<p/i,"<li").gsub(/<\/p/,"</li")
+      html.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<(\/|)ul>|<(\/|)body>|/i,"").gsub(/<p/i,"<li").gsub(/<\/p/,"</li").gsub(/<br>/,"")
     end
-    
-    def get_nodes(xpath = nil)
-       root = "//ul" if xpath.nil?
-       @doc.xpath("//ul")
-    end
-    
-    def p_tag(tagName)
-      tagName == "p"
-    end
-    
-    def preorder(node_children,parent)
-      node_children.each do |root_child|
-        parent.children.create(:text => root_child.inner_text)
-        p parent.children.create(:text => root_child.inner_text)
-        preorder(root_child.children,root_child)
-      end
-    end
-    
-    def collect(root,parent) 
+
+    def preorder_save(lines, parent)
       # Preorder method
-      root.children.each do |child|
-        child.children.each do |grand_child|
-          if grand_child.name == "text"
-            @lines << grand_child.text
-            collect(grand_child,@line)
+      lines.children.each do |line|
+        #if line.children
+          if line.children.first
+            @lines << {'text' => line.children.first.content}
+            newParent = parent.children.create(:text => line.children.first.content)
           end
-        end
+          if lines.children.length > 1
+            preorder_save(line, newParent)
+          end
+        #end
       end
-      
     end
-    
   end
    
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

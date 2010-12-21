@@ -1,6 +1,8 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require "rubygems"
+require "xml"
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -42,6 +44,8 @@ module Dougie
     # Autoload modules in lib folder
     config.autoload_paths += %W(#{config.root}/lib)
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
+    
+    config.logger = Logger.new(config.paths.log.first)
     
   end
 end

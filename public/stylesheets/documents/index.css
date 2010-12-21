@@ -1,5 +1,66 @@
 #editor_container {
-    width:600px;
+    width:700px;
+    float:left;
+}
+
+#right_rail {
+    border: 1px solid lightGrey;
+    border-bottom-left-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    -moz-border-radius:5px 5px 5px 5px;
+    padding: 5px;
+
+    margin-left: 10px;
+    width:278px;
+    float:left;
+    height:503px;
+    overflow-y: scroll;
+    display:table-cell;
+    vertical-align:bottom;
+}
+
+.align_bottom, .align_bottom tbody, .align_bottom tr, .align_bottom td {
+    height:100%;
+    margin:0px;
+    padding:0px;
+    border:0px;
+    border-spacing:0px;
+}
+
+.card {
+    border: 1px solid lightGrey;
+    border-bottom-left-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    -moz-border-radius:5px 5px 5px 5px;
+
+    margin-bottom: 5px;
+    width:250px;
+    padding: 5px;
+    bottom:0px;
+    background-color:lightgrey;
+}
+
+.card_active {
+    background-color:greenyellow !important;
+}
+
+.card_focus {
+    margin-bottom: 0px;
+}
+
+.card_front {
+    text-align: center;
+    padding:10px;
+}
+
+.card_back {
+    text-align: center;
+    padding:10px;
+    border-top: dashed grey 1px;
 }
 
 #cke_contents_editor {

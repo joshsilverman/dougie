@@ -1,7 +1,4 @@
 body {
-     width:900px;
-     margin:10px auto;
-     border:1px solid #ddd;
      font-family:arial,helvetica,times;
      font-size:13px;
      padding:10px;
@@ -13,7 +10,7 @@ header {
      display:block;
 }
 
-.mceEditor {
-     width:70%;
-     height:500px;
+.contents {
+     width:1000px;
+     margin:10px auto;
 }

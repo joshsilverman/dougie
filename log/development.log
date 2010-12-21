@@ -18416,3 +18416,680 @@ Started GET "/create" for 127.0.0.1 at Mon Dec 20 00:09:50 -0500 2010
   [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
 Rendered documents/create.html.erb within layouts/application (1.9ms)
 Completed 200 OK in 92ms (Views: 6.4ms | ActiveRecord: 2.7ms)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:35:14 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (41.5ms)[0m  SHOW TABLES
+  [1m[36mSQL (1.2ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.5ms)[0m  INSERT INTO `documents` (`name`, `updated_at`, `created_at`) VALUES ('chris', '2010-12-21 06:35:14', '2010-12-21 06:35:14')
+  [1m[36mSQL (27.8ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('root', NULL, NULL, '2010-12-21 06:35:15', '2010-12-21 06:35:15')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('a This is a test - think', NULL, 103, '2010-12-21 06:35:15', '2010-12-21 06:35:15')[0m
+  [1m[35mSQL (0.6ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('a the letter \'a\' i am using ', NULL, 103, '2010-12-21 06:35:15', '2010-12-21 06:35:15')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('a just to keep track [EDIT]', NULL, 105, '2010-12-21 06:35:15', '2010-12-21 06:35:15')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('a of things that are saved on the first', NULL, 105, '2010-12-21 06:35:15', '2010-12-21 06:35:15')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('a run through', NULL, 105, '2010-12-21 06:35:15', '2010-12-21 06:35:15')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('b includes two augmentation nodes', NULL, 105, '2010-12-21 06:35:15', '2010-12-21 06:35:15')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('a where as items that begin with', NULL, 103, '2010-12-21 06:35:15', '2010-12-21 06:35:15')[0m
+  [1m[35mSQL (0.9ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`text`, `document_id`, `parent_id`, `updated_at`, `created_at`) VALUES ('b will be included on the second request', NULL, 103, '2010-12-21 06:35:15', '2010-12-21 06:35:15')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+Completed   in 388ms
+
+NoMethodError (undefined method `doc' for #<DocumentsHelper::DOM:0x103639c10>):
+  app/controllers/documents_controller.rb:15:in `create'
+
+
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.3ms)
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (4.2ms)
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (11.3ms)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:35:32 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (10.1ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`name`, `created_at`, `updated_at`) VALUES ('chris', '2010-12-21 06:35:32', '2010-12-21 06:35:32')
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'root', '2010-12-21 06:35:32', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'a This is a test - think', '2010-12-21 06:35:32', 112)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'a the letter \'a\' i am using ', '2010-12-21 06:35:32', 112)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'a just to keep track [EDIT]', '2010-12-21 06:35:32', 114)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'a of things that are saved on the first', '2010-12-21 06:35:32', 114)
+  [1m[36mSQL (24.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.3ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'a run through', '2010-12-21 06:35:32', 114)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'b includes two augmentation nodes', '2010-12-21 06:35:32', 114)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'a where as items that begin with', '2010-12-21 06:35:32', 112)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `text`, `created_at`, `parent_id`) VALUES ('2010-12-21 06:35:32', NULL, 'b will be included on the second request', '2010-12-21 06:35:32', 112)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (4.0ms)
+Completed 200 OK in 103ms (Views: 9.1ms | ActiveRecord: 122.3ms)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:36:04 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`updated_at`, `created_at`, `name`) VALUES ('2010-12-21 06:36:04', '2010-12-21 06:36:04', 'chris')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', NULL, 'root', '2010-12-21 06:36:04', NULL)
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', 121, 'a This is a test - think', '2010-12-21 06:36:04', NULL)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', 121, 'a the letter \'a\' i am using ', '2010-12-21 06:36:04', NULL)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', 123, 'a just to keep track [EDIT]', '2010-12-21 06:36:04', NULL)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', 123, 'a of things that are saved on the first', '2010-12-21 06:36:04', NULL)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', 123, 'a run through', '2010-12-21 06:36:04', NULL)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', 123, 'b includes two augmentation nodes', '2010-12-21 06:36:04', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', 121, 'a where as items that begin with', '2010-12-21 06:36:04', NULL)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `text`, `created_at`, `document_id`) VALUES ('2010-12-21 06:36:04', 121, 'b will be included on the second request', '2010-12-21 06:36:04', NULL)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 58ms (Views: 5.9ms | ActiveRecord: 7.9ms)
+  [1m[36mDocument Load (0.3ms)[0m  [1mSELECT `documents`.* FROM `documents`[0m
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.4ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (35.1ms)[0m  DROP TABLE `documents`
+  [1m[36mAREL (1.1ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214173109'[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (20.3ms)[0m  DROP TABLE `mems`
+  [1m[36mAREL (0.5ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162342'[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (1.2ms)[0m  DROP TABLE `lines`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162237'[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (70.8ms)[0m  CREATE TABLE `lines` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `text` text, `document_id` int(11), `parent_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162237')[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (210.3ms)[0m  CREATE TABLE `mems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `strength` float, `line_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162342')[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (113.8ms)[0m  CREATE TABLE `documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214173109')[0m
+  [1m[35mSQL (0.5ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW KEYS FROM `documents`
+  [1m[36mSQL (1.1ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mSQL (0.6ms)[0m  SHOW KEYS FROM `lines`
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW KEYS FROM `mems`
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:36:47 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`created_at`, `updated_at`, `name`) VALUES ('2010-12-21 06:36:47', '2010-12-21 06:36:47', 'chris')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', NULL, '2010-12-21 06:36:47', NULL, 'root')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', 1, '2010-12-21 06:36:47', NULL, 'a This is a test - think')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', 1, '2010-12-21 06:36:47', NULL, 'a the letter \'a\' i am using ')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', 3, '2010-12-21 06:36:47', NULL, 'a just to keep track [EDIT]')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', 3, '2010-12-21 06:36:47', NULL, 'a of things that are saved on the first')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', 3, '2010-12-21 06:36:47', NULL, 'a run through')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', 3, '2010-12-21 06:36:47', NULL, 'b includes two augmentation nodes')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', 1, '2010-12-21 06:36:47', NULL, 'a where as items that begin with')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `created_at`, `document_id`, `text`) VALUES ('2010-12-21 06:36:47', 1, '2010-12-21 06:36:47', NULL, 'b will be included on the second request')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 105ms (Views: 6.2ms | ActiveRecord: 7.5ms)
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents`[0m
+  [1m[35mLine Load (0.4ms)[0m  SELECT `lines`.* FROM `lines`
+  [1m[36mLine Load (0.2ms)[0m  [1mSELECT `lines`.* FROM `lines`[0m
+  [1m[35mLine Load (0.5ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 1)
+  [1m[36mLine Load (0.5ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 2)[0m
+  [1m[35mLine Load (0.5ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 3)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:39:08 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`created_at`, `updated_at`, `name`) VALUES ('2010-12-21 06:39:08', '2010-12-21 06:39:08', 'chris')
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`created_at`, `text`, `parent_id`, `updated_at`, `document_id`) VALUES ('2010-12-21 06:39:08', 'root', NULL, '2010-12-21 06:39:08', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+Completed   in 81ms
+
+NoMethodError (undefined method `save' for #<DocumentsHelper::DocumentParser:0x1039c11d0>):
+  app/helpers/documents_helper.rb:28:in `initialize'
+  app/helpers/documents_helper.rb:11:in `new'
+  app/helpers/documents_helper.rb:11:in `initialize'
+  app/controllers/documents_controller.rb:15:in `new'
+  app/controllers/documents_controller.rb:15:in `create'
+
+
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.8ms)
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (3.5ms)
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (7.6ms)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:39:32 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`name`, `updated_at`, `created_at`) VALUES ('chris', '2010-12-21 06:39:32', '2010-12-21 06:39:32')
+  [1m[36mSQL (2.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (NULL, 'root', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (11, 'a This is a test - think', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (11, 'a the letter \'a\' i am using ', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (13, 'a just to keep track [EDIT]', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (13, 'a of things that are saved on the first', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')
+  [1m[36mSQL (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (13, 'a run through', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (13, 'b includes two augmentation nodes', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (11, 'a where as items that begin with', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`) VALUES (11, 'b will be included on the second request', '2010-12-21 06:39:32', NULL, '2010-12-21 06:39:32')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 65ms (Views: 6.5ms | ActiveRecord: 12.6ms)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:40:46 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`name`, `updated_at`, `created_at`) VALUES ('chris', '2010-12-21 06:40:46', '2010-12-21 06:40:46')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`document_id`, `parent_id`, `updated_at`, `created_at`, `text`) VALUES (NULL, NULL, '2010-12-21 06:40:46', '2010-12-21 06:40:46', 'root')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`document_id`, `parent_id`, `updated_at`, `created_at`, `text`) VALUES (NULL, 20, '2010-12-21 06:40:46', '2010-12-21 06:40:46', 'a This is a test - think')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`document_id`, `parent_id`, `updated_at`, `created_at`, `text`) VALUES (NULL, 20, '2010-12-21 06:40:46', '2010-12-21 06:40:46', 'a the letter \'a\' i am using ')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`document_id`, `parent_id`, `updated_at`, `created_at`, `text`) VALUES (NULL, 20, '2010-12-21 06:40:46', '2010-12-21 06:40:46', 'a where as items that begin with')[0m
+  [1m[35mSQL (28.9ms)[0m  COMMIT
+  [1m[36mSQL (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`document_id`, `parent_id`, `updated_at`, `created_at`, `text`) VALUES (NULL, 20, '2010-12-21 06:40:46', '2010-12-21 06:40:46', 'b will be included on the second request')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (1.9ms)
+Completed 200 OK in 125ms (Views: 6.2ms | ActiveRecord: 34.4ms)
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (1.0ms)[0m  DROP TABLE `documents`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214173109'[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (0.8ms)[0m  DROP TABLE `mems`
+  [1m[36mAREL (0.3ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162342'[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (0.8ms)[0m  DROP TABLE `lines`
+  [1m[36mAREL (0.3ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162237'[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (181.7ms)[0m  CREATE TABLE `lines` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `text` text, `document_id` int(11), `parent_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (1.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162237')[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (253.5ms)[0m  CREATE TABLE `mems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `strength` float, `line_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (1.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162342')[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (130.0ms)[0m  CREATE TABLE `documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214173109')[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.5ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW KEYS FROM `documents`
+  [1m[36mSQL (1.1ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW KEYS FROM `lines`
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW KEYS FROM `mems`
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:41:41 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`created_at`, `updated_at`, `name`) VALUES ('2010-12-21 06:41:42', '2010-12-21 06:41:42', 'chris')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('root', '2010-12-21 06:41:42', NULL, '2010-12-21 06:41:42', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('a This is a test - think', '2010-12-21 06:41:42', 1, '2010-12-21 06:41:42', NULL)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('a the letter \'a\' i am using ', '2010-12-21 06:41:42', 1, '2010-12-21 06:41:42', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('a just to keep track [EDIT]', '2010-12-21 06:41:42', 3, '2010-12-21 06:41:42', NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('a of things that are saved on the first', '2010-12-21 06:41:42', 3, '2010-12-21 06:41:42', NULL)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('a run through', '2010-12-21 06:41:42', 3, '2010-12-21 06:41:42', NULL)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('b includes two augmentation nodes', '2010-12-21 06:41:42', 3, '2010-12-21 06:41:42', NULL)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('a where as items that begin with', '2010-12-21 06:41:42', 1, '2010-12-21 06:41:42', NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`) VALUES ('b will be included on the second request', '2010-12-21 06:41:42', 1, '2010-12-21 06:41:42', NULL)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 109ms (Views: 6.2ms | ActiveRecord: 8.4ms)
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents`[0m
+  [1m[35mLine Load (0.6ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines`[0m
+  [1m[35mLine Load (0.6ms)[0m  SELECT `lines`.* FROM `lines`
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 1)[0m
+  [1m[35mLine Load (0.5ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 2)
+  [1m[36mLine Load (0.5ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 3)[0m
+  [1m[35mLine Load (0.5ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 8)
+  [1m[36mLine Load (0.5ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 9)[0m
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (51.5ms)[0m  DROP TABLE `documents`
+  [1m[36mAREL (0.6ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214173109'[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (0.9ms)[0m  DROP TABLE `mems`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162342'[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (0.8ms)[0m  DROP TABLE `lines`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162237'[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.4ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (79.4ms)[0m  CREATE TABLE `lines` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `text` text, `document_id` int(11), `parent_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.8ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162237')[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (118.0ms)[0m  CREATE TABLE `mems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `strength` float, `line_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162342')[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (117.0ms)[0m  CREATE TABLE `documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.9ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214173109')[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (1.9ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW KEYS FROM `documents`
+  [1m[36mSQL (1.2ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW KEYS FROM `lines`
+  [1m[36mSQL (1.3ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mSQL (0.5ms)[0m  SHOW KEYS FROM `mems`
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:44:00 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.3ms)[0m  BEGIN
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`updated_at`, `name`, `created_at`) VALUES ('2010-12-21 06:44:00', 'chris', '2010-12-21 06:44:00')
+  [1m[36mSQL (0.8ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`parent_id`, `document_id`, `updated_at`, `created_at`, `text`) VALUES (NULL, NULL, '2010-12-21 06:44:00', '2010-12-21 06:44:00', 'root')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `document_id`, `updated_at`, `created_at`, `text`) VALUES (1, NULL, '2010-12-21 06:44:00', '2010-12-21 06:44:00', 'a This is a test - think')[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`parent_id`, `document_id`, `updated_at`, `created_at`, `text`) VALUES (1, NULL, '2010-12-21 06:44:00', '2010-12-21 06:44:00', 'a the letter \'a\' i am using ')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `document_id`, `updated_at`, `created_at`, `text`) VALUES (1, NULL, '2010-12-21 06:44:00', '2010-12-21 06:44:00', 'a where as items that begin with')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`parent_id`, `document_id`, `updated_at`, `created_at`, `text`) VALUES (1, NULL, '2010-12-21 06:44:00', '2010-12-21 06:44:00', 'b will be included on the second request')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 132ms (Views: 6.2ms | ActiveRecord: 6.5ms)
+  [1m[36mLine Load (0.2ms)[0m  [1mSELECT `lines`.* FROM `lines`[0m
+  [1m[35mLine Load (0.5ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 1)
+  [1m[36mLine Load (0.5ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 2)[0m
+  [1m[35mLine Load (0.5ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 3)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:45:18 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`created_at`, `name`, `updated_at`) VALUES ('2010-12-21 06:45:18', 'chris', '2010-12-21 06:45:18')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('root', '2010-12-21 06:45:18', '2010-12-21 06:45:18', NULL, NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('a This is a test - think', '2010-12-21 06:45:18', '2010-12-21 06:45:18', 6, NULL)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('a the letter \'a\' i am using ', '2010-12-21 06:45:18', '2010-12-21 06:45:18', 6, NULL)
+  [1m[36mSQL (22.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.3ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('a just to keep track [EDIT]', '2010-12-21 06:45:18', '2010-12-21 06:45:18', 8, NULL)[0m
+  [1m[35mSQL (0.6ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('a of things that are saved on the first', '2010-12-21 06:45:18', '2010-12-21 06:45:18', 8, NULL)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('a run through', '2010-12-21 06:45:18', '2010-12-21 06:45:18', 8, NULL)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('b includes two augmentation nodes', '2010-12-21 06:45:18', '2010-12-21 06:45:18', 8, NULL)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('a where as items that begin with', '2010-12-21 06:45:18', '2010-12-21 06:45:18', 6, NULL)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('b will be included on the second request', '2010-12-21 06:45:18', '2010-12-21 06:45:18', 6, NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+Completed   in 84ms
+
+ActiveRecord::AssociationTypeMismatch (Line(#2178803740) expected, got Hash(#2148430000)):
+  app/helpers/documents_helper.rb:30:in `initialize'
+  app/helpers/documents_helper.rb:11:in `new'
+  app/helpers/documents_helper.rb:11:in `initialize'
+  app/controllers/documents_controller.rb:15:in `new'
+  app/controllers/documents_controller.rb:15:in `create'
+
+
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.7ms)
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (3.3ms)
+Rendered /Users/christopherharris/.rvm/gems/ruby-1.8.7-p174/gems/actionpack-3.0.3/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (7.3ms)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:45:29 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`created_at`, `updated_at`, `name`) VALUES ('2010-12-21 06:45:29', '2010-12-21 06:45:29', 'chris')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'root', '2010-12-21 06:45:29', '2010-12-21 06:45:29', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'a This is a test - think', '2010-12-21 06:45:29', '2010-12-21 06:45:29', 15)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'a the letter \'a\' i am using ', '2010-12-21 06:45:29', '2010-12-21 06:45:29', 15)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'a just to keep track [EDIT]', '2010-12-21 06:45:29', '2010-12-21 06:45:29', 17)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'a of things that are saved on the first', '2010-12-21 06:45:29', '2010-12-21 06:45:29', 17)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'a run through', '2010-12-21 06:45:29', '2010-12-21 06:45:29', 17)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'b includes two augmentation nodes', '2010-12-21 06:45:29', '2010-12-21 06:45:29', 17)
+  [1m[36mSQL (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'a where as items that begin with', '2010-12-21 06:45:29', '2010-12-21 06:45:29', 15)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`document_id`, `text`, `updated_at`, `created_at`, `parent_id`) VALUES (NULL, 'b will be included on the second request', '2010-12-21 06:45:29', '2010-12-21 06:45:29', 15)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+[{"text"=>""}, {"text"=>"a This is a test - think"}, {"text"=>"a the letter 'a' i am using "}, {"text"=>"a just to keep track [EDIT]"}, {"text"=>"a of things that are saved on the first"}, {"text"=>"a run through"}, {"text"=>"b includes two augmentation nodes"}, {"text"=>"a where as items that begin with"}, {"text"=>"b will be included on the second request"}]
+Rendered documents/create.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 111ms (Views: 6.2ms | ActiveRecord: 38.7ms)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:47:09 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`created_at`, `name`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'chris', '2010-12-21 06:47:09')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'root', NULL, NULL, '2010-12-21 06:47:09')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'a This is a test - think', NULL, 24, '2010-12-21 06:47:09')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.4ms)[0m  INSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'a the letter \'a\' i am using ', NULL, 24, '2010-12-21 06:47:09')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'a just to keep track [EDIT]', NULL, 26, '2010-12-21 06:47:09')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'a of things that are saved on the first', NULL, 26, '2010-12-21 06:47:09')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'a run through', NULL, 26, '2010-12-21 06:47:09')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'b includes two augmentation nodes', NULL, 26, '2010-12-21 06:47:09')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'a where as items that begin with', NULL, 24, '2010-12-21 06:47:09')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`created_at`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-21 06:47:09', 'b will be included on the second request', NULL, 24, '2010-12-21 06:47:09')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 24)
+  [1m[36mLine Load (0.2ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 4)[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.6ms)[0m  [1mUPDATE `lines` SET `created_at` = '2010-12-21 06:47:09', `document_id` = 4, `updated_at` = '2010-12-21 06:47:09' WHERE (`lines`.`id` = 25)[0m
+  [1m[35mAREL (0.4ms)[0m  UPDATE `lines` SET `created_at` = '2010-12-21 06:47:09', `document_id` = 4, `updated_at` = '2010-12-21 06:47:09' WHERE (`lines`.`id` = 26)
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `lines` SET `created_at` = '2010-12-21 06:47:09', `document_id` = 4, `updated_at` = '2010-12-21 06:47:09' WHERE (`lines`.`id` = 31)[0m
+  [1m[35mAREL (0.3ms)[0m  UPDATE `lines` SET `created_at` = '2010-12-21 06:47:09', `document_id` = 4, `updated_at` = '2010-12-21 06:47:09' WHERE (`lines`.`id` = 32)
+  [1m[36mSQL (18.9ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 154ms (Views: 9.5ms | ActiveRecord: 28.2ms)
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.4ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (1.1ms)[0m  DROP TABLE `documents`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214173109'[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (1.0ms)[0m  DROP TABLE `mems`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162342'[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (0.8ms)[0m  DROP TABLE `lines`
+  [1m[36mAREL (26.8ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162237'[0m
+  [1m[35mSQL (0.5ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (75.9ms)[0m  CREATE TABLE `lines` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `text` text, `document_id` int(11), `parent_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162237')[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (147.5ms)[0m  CREATE TABLE `mems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `strength` float, `line_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162342')[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (110.5ms)[0m  CREATE TABLE `documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214173109')[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW KEYS FROM `documents`
+  [1m[36mSQL (1.2ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW KEYS FROM `lines`
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mSQL (0.5ms)[0m  SHOW KEYS FROM `mems`
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 01:47:34 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`name`, `updated_at`, `created_at`) VALUES ('chris', '2010-12-21 06:47:34', '2010-12-21 06:47:34')
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, NULL, '2010-12-21 06:47:34', 'root')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, 1, '2010-12-21 06:47:34', 'a This is a test - think')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, 1, '2010-12-21 06:47:34', 'a the letter \'a\' i am using ')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, 3, '2010-12-21 06:47:34', 'a just to keep track [EDIT]')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, 3, '2010-12-21 06:47:34', 'a of things that are saved on the first')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, 3, '2010-12-21 06:47:34', 'a run through')[0m
+  [1m[35mSQL (0.6ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, 3, '2010-12-21 06:47:34', 'b includes two augmentation nodes')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, 1, '2010-12-21 06:47:34', 'a where as items that begin with')[0m
+  [1m[35mSQL (25.2ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`updated_at`, `document_id`, `parent_id`, `created_at`, `text`) VALUES ('2010-12-21 06:47:34', NULL, 1, '2010-12-21 06:47:34', 'b will be included on the second request')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.parent_id = 1)
+  [1m[36mLine Load (0.2ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `lines` SET `updated_at` = '2010-12-21 06:47:34', `document_id` = 1, `created_at` = '2010-12-21 06:47:34' WHERE (`lines`.`id` = 2)[0m
+  [1m[35mAREL (0.3ms)[0m  UPDATE `lines` SET `updated_at` = '2010-12-21 06:47:34', `document_id` = 1, `created_at` = '2010-12-21 06:47:34' WHERE (`lines`.`id` = 3)
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `lines` SET `updated_at` = '2010-12-21 06:47:34', `document_id` = 1, `created_at` = '2010-12-21 06:47:34' WHERE (`lines`.`id` = 8)[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `lines` SET `updated_at` = '2010-12-21 06:47:34', `document_id` = 1, `created_at` = '2010-12-21 06:47:34' WHERE (`lines`.`id` = 9)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+Rendered documents/create.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 102ms (Views: 6.4ms | ActiveRecord: 34.3ms)
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents`[0m
+  [1m[35mDocument Load (0.5ms)[0m  SELECT `documents`.* FROM `documents`
+  [1m[36mDocument Load (0.5ms)[0m  [1mSELECT `documents`.* FROM `documents`[0m
+  [1m[35mLine Load (0.4ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)

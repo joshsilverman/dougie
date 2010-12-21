@@ -6,6 +6,7 @@ var cDoc = Class.create({
 
     initialize: function() {
 
+        //wait for ckeditor to load
         document.observe('CKEDITOR:ready', function() {
             this.editor = CKEDITOR.instances.editor;
             this.rightRail = new cRightRail();
@@ -66,11 +67,13 @@ var cOutlineHandlers = Class.create({
                 this.onReturn(event, target);
                 break;
             default:
-                break;
+                this.onLetter(event, target);
         }
     },
 
     onTab: function(event, target) {
+
+        //handle indentation
         if (event.shiftKey) doc.editor.execCommand('outdent');
         else doc.editor.execCommand('indent');
     },
@@ -80,32 +83,116 @@ var cOutlineHandlers = Class.create({
         //@todo ajust spec - no need to add attributes until node has content
         //      is this necessary
 
-    }
+    },
 
+    onLetter: function(event, target) {
+
+        //get core attributes
+        var id = Element.readAttribute(target, 'id') || null;
+
+        //new card
+        if (!id) doc.rightRail.createCard(target);
+
+        //existing card
+        else doc.rightRail.cards[id].update(target);
+    }
 });
 
 var cRightRail = Class.create({
 
+    cardCount: 0,
+    cards: {},
+    inFocus: null,
+
     initialize: function() {},
 
-    cards: {},
+    createCard: function(node) {
+        this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount)
+        this.focus('card_' + this.cardCount++);
+    },
 
-    focus: function() {}
+    focus: function(id) {
+        var rightRail = document.getElementById("right_rail");
+
+        Element.removeClassName(this.inFocus, 'card_focus')
+        this.inFocus = document.getElementById(id);
+
+        rightRail.scrollTop = Element.positionedOffset(this.inFocus)[1];
+    }
 });
 
 var cCard = Class.create({
 
-    initialize: function() {},
+    cardNumber: null,
+    front: '',
+    back: '',
+    active: false,
+    elmnt: null,
 
-    render: function() {},
+    initialize: function(node, cardCount) {
 
-    create: function() {},
+        //set dom node attributes
+        this.cardNumber = cardCount;
+        Element.writeAttribute(node, {'id': 'node_' + this.cardNumber,
+                                      'changed': new Date().getTime()});
 
-    update: function() {},
+        //parsing
+        this._parse(node);
+
+        //card in dom
+        var cardHtml = '<div id="card_' + this.cardNumber + '" class="card_focus card"></div>';
+        $('cards').insert({bottom: cardHtml}); //@todo insert in proper location
+        this.elmnt = document.getElementById("card_" + this.cardNumber);
+        this._render();
+    },
+
+    update: function(node) {
+        
+        this._parse(node);
+        this._render();
+        
+    },
 
     activate: function() {},
 
-    deactivate: function() {}
+    deactivate: function() {},
+
+    _render: function() {
+
+        //both sides set
+        if (this.back) {
+            var cardFaces = '<div class="card_front">'+this.front+'</div>\
+                <div class="card_back">'+this.back+'</div>';
+        }
+
+        //just front
+        else {
+            var cardFaces = '<div class="card_front">'+this.front+'</div>';
+        }
+
+        //set
+        this.elmnt.innerHTML = cardFaces;
+
+    },
+
+    _parse: function(node) {
+
+        var nodeTxt = node.innerHTML;
+
+        //definition
+        var defParts = nodeTxt.match(/(^[^-]+) - ([\s\S]+)$/);
+        if (defParts) {
+            this.front = defParts[1];
+            this.back = defParts[2];
+        }
+
+        //fill in the blank
+        else if (false) {}
+
+        //no match
+        else this.front = nodeTxt;
+    }
+    
 });
 
 var doc = new cDoc();
