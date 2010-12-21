@@ -6,11 +6,11 @@ class Line < ActiveRecord::Base
   belongs_to :document
   
   # add a mem to each line when created
-  before_create :configure_mem
+  before_create :configure_default_mem
 
    private
 
-     def configure_mem
+     def configure_default_mem
        self.mems << Mem.create(:strength => 0.5)
      end
   

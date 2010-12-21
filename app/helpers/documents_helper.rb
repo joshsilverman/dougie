@@ -2,19 +2,13 @@ include ApplicationHelper
 
 module DocumentsHelper
   
-  def set_property(value,name)
-    prop = value ? value : params[name]
-    prop = nil if prop.blank?
-    prop
-  end
-  
   class DOM
     
     attr_reader :name, :html
 
-    def initialize(name = nil,html = nil)
-      @document = Document.create(:name => name, :html => html)
-      @doc = DocumentParser.new(@document,html)
+    def initialize(document = nil,html = nil)
+      return if document.blank? || html.blank?
+      @doc = DocumentParser.new(document,html)
     end
 
   end
@@ -24,6 +18,7 @@ module DocumentsHelper
     attr_reader :html, :doc
     
     def initialize(document = nil,html = nil)
+      
       return nil if html.blank? || document.nil?
       
       @document = document
@@ -53,7 +48,7 @@ module DocumentsHelper
         #if line.children
           if line.children.first
             @lines << {'text' => line.children.first.content}
-            newParent = parent.children.create(:text => line.children.first.content)
+            newParent = parent.children.create(:text => line.children.first.content, :line_number => line["id"])
           end
           if lines.children.length > 1
             preorder_save(line, newParent)

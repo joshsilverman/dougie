@@ -9,10 +9,10 @@ gem 'rails', '3.0.3'
 
 # Use unicorn as the web server
 #gem 'pg'
+
 gem 'unicorn'
 gem 'mysql'
 gem 'nokogiri'
-#gem 'hpricot'
 gem 'acts_as_tree'
 gem 'libxml-ruby'
 
@@ -25,7 +25,6 @@ gem 'libxml-ruby'
 
 # Bundle the extra gems:
 # gem 'bj'
-# gem 'nokogiri'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 

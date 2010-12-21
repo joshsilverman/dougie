@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20101220021805) do
 
   create_table "lines", :force => true do |t|
     t.text     "text"
+    t.integer  "line_number"
     t.integer  "document_id"
     t.integer  "parent_id"
     t.datetime "created_at"
