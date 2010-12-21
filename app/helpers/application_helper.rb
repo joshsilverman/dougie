@@ -1,7 +1,12 @@
 module ApplicationHelper
 
   def p(obj = "")
-    Rails.logger.info obj
+
+    puts 'test'
+
+    Rails.logger.info ''
+    Rails.logger.info obj#.to_yaml
+    Rails.logger.info ''
   end
   
 end

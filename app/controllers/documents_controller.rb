@@ -12,7 +12,7 @@ class DocumentsController < ApplicationController
     html = html ? html : params[:html]
     html = nil if html.blank?
         
-    DOM.new(html)
+    @doc = DOM.new(html).doc.doc.to_s
       
   end
   
