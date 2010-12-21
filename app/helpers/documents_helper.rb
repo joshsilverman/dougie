@@ -22,7 +22,7 @@ module DocumentsHelper
       @document = document
       @html = "<li>%s</li>" % sanitize(html)
       @doc = Nokogiri::XML(@html)
-      @lines = [{'parent_id' => 1}]
+      @lines = [{'text' => ''}]
 
       root = Line.create(:text => "root")
       save(@doc.children, root)
