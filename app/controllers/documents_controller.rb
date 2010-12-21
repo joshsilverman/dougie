@@ -43,7 +43,7 @@ class DocumentsController < ApplicationController
   end
   
   
-  def delete(name = nil)
+  def destroy(name = nil)
     
     name = name ? name : params[:name]
     return nil if name.blank? 

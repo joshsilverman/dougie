@@ -25482,3 +25482,10 @@ Started GET "/create" for 127.0.0.1 at Tue Dec 21 04:02:53 -0500 2010
   [1m[35mDocument Load (0.3ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`name` = 'chris') LIMIT 1
 Rendered documents/create.html.erb within layouts/application (3.0ms)
 Completed 200 OK in 24ms (Views: 10.7ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/create" for 127.0.0.1 at Tue Dec 21 04:19:59 -0500 2010
+  Processing by DocumentsController#create as HTML
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`name` = 'chris') LIMIT 1[0m
+Rendered documents/create.html.erb within layouts/application (2.2ms)
+Completed 200 OK in 22ms (Views: 7.7ms | ActiveRecord: 0.2ms)
