@@ -10,7 +10,8 @@ class DocumentsController < ApplicationController
   # If exists, use this document, otherwise set document html and construct Line objects
   def create(name = nil,html = nil)
 
-    @doc = params[:html]
+    @html = params[:html]
+    @name = params[:name]
     return
 
     # TEST DATA

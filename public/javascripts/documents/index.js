@@ -37,7 +37,8 @@ var cOutline = Class.create({
 
         new Ajax.Request('/create', {
             method: 'post',
-            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].outerHTML},
+            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].outerHTML,
+                         'name': $('document_name').value},
             onSuccess: function(transport) {
                 $('save_return').update(transport.responseText);
             }
