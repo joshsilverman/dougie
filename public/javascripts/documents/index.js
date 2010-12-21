@@ -96,10 +96,13 @@ var cOutlineHandlers = Class.create({
         if (!id) doc.rightRail.createCard(target);
 
         //existing card
-        else {
+        else if (doc.rightRail.cards[id]) {
             doc.rightRail.cards[id].update(target);
             doc.rightRail.focus(id);
         }
+
+        //error
+        else console.log('error: node has id but no card exists')
     }
 });
 
@@ -131,6 +134,12 @@ var cRightRail = Class.create({
         var cardId = "card_" + id;
         var nodeId = "node_" + id;
 
+        //check card exists
+        if (!$(cardId)) {
+            console.log("error: can't focus on non-existent card");
+            return;
+        }
+
         var rightRail = document.getElementById("right_rail");
 
         //unfocus previously focused
@@ -142,7 +151,7 @@ var cRightRail = Class.create({
                   .innerHTML.match(/^([^<]*)<?/)[1];
         }
 
-        this.inFocus = document.getElementById(cardId);
+        this.inFocus = $(cardId);
         Element.addClassName(this.inFocus, 'card_focus');
         rightRail.scrollTop = 
             Element.positionedOffset(this.inFocus)[1];
@@ -159,6 +168,7 @@ var cCard = Class.create({
     active: false,
     elmntCard: null,
     elmntNode: null,
+    updating: false,
 
     initialize: function(node, cardCount) {
 
@@ -180,8 +190,12 @@ var cCard = Class.create({
     },
 
     update: function(node) {
+        this.updating = true;
+
         this._parse(node);
         this._render();
+
+        this.updating = false;
     },
 
     activate: function() {},
@@ -204,6 +218,14 @@ var cCard = Class.create({
 
         //insert first
         if (!cardIdPrev) $('cards').insert({bottom: cardHtml});
+
+        //previous node but no previous card
+        else if (cardIdPrev && !$(cardIdPrev)) {
+            console.log('error: no previous card but there should be!');
+            if (this.updating) console.log ('...while updating')
+            //$('cards').insert({bottom: cardHtml});
+        }
+
         //insert later
         else $(cardIdPrev).insert({after: cardHtml});
     },
@@ -216,7 +238,14 @@ var cCard = Class.create({
         }
 
         //just front
-        else this.elmntCard.innerHTML = '<div class="card_front">'+this.front+'</div>';
+        else if (this.elmntCard)
+            this.elmntCard.innerHTML = '<div class="card_front">'+this.front+'</div>';
+
+        //no card to update
+        else {
+            console.log('error: cannot render - no card in dom to update')
+            if (this.updating) console.log ('...while updating')
+        }
 
     },
 
