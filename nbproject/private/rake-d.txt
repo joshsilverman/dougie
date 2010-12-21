@@ -83,7 +83,6 @@ test\:units=
 time\:zones\:all=Displays all time zones, also available: time:zones:us, time:zones:local -- filter with OFFSET parameter, e.g., OFFSET=-6
 time\:zones\:local=
 time\:zones\:us=
-tiny_mce\:install=Install or update the TinyMCE sources
 tmp\:cache\:clear=
 tmp\:clear=Clear session, cache, and socket files from tmp/ (narrow w/ tmp:sessions:clear, tmp:cache:clear, tmp:sockets:clear)
 tmp\:create=Creates tmp directories for sessions, cache, sockets, and pids
