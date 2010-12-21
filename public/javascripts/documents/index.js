@@ -34,14 +34,12 @@ var cOutline = Class.create({
     },
 
     save: function() {
-        
-        alert('save');
 
-        Ajax.Request.request('/create', {
+        new Ajax.Request('/create', {
             method: 'post',
-            parameters: iDoc.document.serialize(true),
+            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].outerHTML},
             onSuccess: function(transport) {
-
+                $('save_return').update(transport.responseText);
             }
         });
     }
