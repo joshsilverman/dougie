@@ -166,27 +166,47 @@ var cCard = Class.create({
         this.cardNumber = cardCount;
         Element.writeAttribute(node, {'id': 'node_' + this.cardNumber,
                                       'changed': new Date().getTime()});
+        Element.addClassName(node, 'outline_node');
+
 
         //parsing
         this._parse(node);
 
         //card in dom
         var cardHtml = '<div id="card_' + this.cardNumber + '" class="card_focus card"></div>';
-        $('cards').insert({bottom: cardHtml}); //@todo insert in proper location
+        this._insert(cardHtml);
         this.elmntCard = document.getElementById("card_" + this.cardNumber);
         this._render();
     },
 
     update: function(node) {
-        
         this._parse(node);
         this._render();
-        
     },
 
     activate: function() {},
 
     deactivate: function() {},
+
+    _insert: function(cardHtml) {
+        //identify previous node in outline
+        var nodeId = 'node_' + this.cardNumber;
+        var outlineNode = doc.outline.iDoc.document.getElementById(nodeId);
+        var outlineNodes = doc.outline.iDoc.document.getElementsByClassName('outline_node');
+        var outlineNodePrev, nodeIdPrev, cardIdPrev;
+        for (var i = outlineNodes.length - 1; i >= 0; i--) {
+            if (outlineNodes[i].id == nodeId && i != 0) {
+                outlineNodePrev = outlineNodes[i-1];
+                nodeIdPrev = outlineNodePrev.id;
+                cardIdPrev = "card_" + nodeIdPrev.replace('node_', '');
+            }
+        }
+
+        //insert first
+        if (!cardIdPrev) $('cards').insert({bottom: cardHtml});
+        //insert later
+        else $(cardIdPrev).insert({after: cardHtml});
+    },
 
     _render: function() {
         //both sides set
@@ -196,7 +216,7 @@ var cCard = Class.create({
         }
 
         //just front
-        else this.elmntCard.innerHTML = this.front;
+        else this.elmntCard.innerHTML = '<div class="card_front">'+this.front+'</div>';
 
     },
 
