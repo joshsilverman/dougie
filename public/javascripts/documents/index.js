@@ -85,7 +85,6 @@ var cOutlineHandlers = Class.create({
 
         //@todo ajust spec - no need to add attributes until node has content
         //      is this necessary
-
     },
 
     onLetter: function(event, target) {
@@ -136,11 +135,11 @@ var cRightRail = Class.create({
 
         //unfocus previously focused
         if(this.inFocus && this.inFocus.id != cardId) {
-
             var nodeIdFocused = 'node_' + this.inFocus.id.replace('card_', '');
             Element.removeClassName(this.inFocus, 'card_focus');
-//            this.inFocus.innerHTML
-//                = doc.outline.iDoc.document.getElementById(nodeIdFocused).innerHTML;
+            this.inFocus.innerHTML
+                = doc.outline.iDoc.document.getElementById(nodeIdFocused)
+                  .innerHTML.match(/^([^<]*)<?/)[1];
         }
 
         this.inFocus = document.getElementById(cardId);
