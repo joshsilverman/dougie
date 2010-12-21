@@ -115,7 +115,8 @@ var cRightRail = Class.create({
     createCard: function(node) {
 
         //check node is valid
-        if (node.tagName.toUpperCase() == 'BODY') return;
+        if (   node.tagName.toUpperCase() != 'LI'
+            && node.tagName.toUpperCase() != 'P') return;
 
         this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount)
         this.focus(this.cardCount++);
@@ -138,8 +139,8 @@ var cRightRail = Class.create({
 
             var nodeIdFocused = 'node_' + this.inFocus.id.replace('card_', '');
             Element.removeClassName(this.inFocus, 'card_focus');
-            this.inFocus.innerHTML 
-                = doc.outline.iDoc.document.getElementById(nodeIdFocused).innerHTML;
+//            this.inFocus.innerHTML
+//                = doc.outline.iDoc.document.getElementById(nodeIdFocused).innerHTML;
         }
 
         this.inFocus = document.getElementById(cardId);
@@ -222,7 +223,8 @@ var cCard = Class.create({
 
     _parse: function(node) {
 
-        var nodeTxt = node.innerHTML;
+        var nodeTxt = node.innerHTML.match(/^([^<]*)<?/)[1];
+        console.log(nodeTxt);
 
         //definition
         var defParts = nodeTxt.match(/(^[^-]+) - ([\s\S]+)$/);
