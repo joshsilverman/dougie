@@ -8,10 +8,12 @@ gem 'rails', '3.0.3'
 #gem 'sqlite3-ruby', :require => 'sqlite3'
 
 # Use unicorn as the web server
-#gem 'unicorn'
 gem 'pg'
+gem 'unicorn'
 gem 'mysql'
-gem 'mysql2'
+gem 'nokogiri'
+gem 'acts_as_tree'
+gem 'libxml-ruby'
 
 # Deploy with Capistrano
 # gem 'capistrano'
@@ -22,7 +24,6 @@ gem 'mysql2'
 
 # Bundle the extra gems:
 # gem 'bj'
-# gem 'nokogiri'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 
