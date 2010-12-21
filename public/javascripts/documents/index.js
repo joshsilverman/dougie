@@ -194,7 +194,7 @@ var cCard = Class.create({
         this._parse(node);
 
         //card in dom
-        var cardHtml = '<div id="card_' + this.cardNumber + '" class="card_focus card"></div>';
+        var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card_focus card"></div>';
         this._insert(cardHtml);
         this.elmntCard = document.getElementById("card_" + this.cardNumber);
         this._render();

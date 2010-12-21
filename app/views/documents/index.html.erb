@@ -1,16 +1,16 @@
 <% @page_specific_scripts_js = ["ckeditor/ckeditor", "documents/index"] %>
 <% @page_specific_scripts_css = ["documents/index"] %>
 
-<div style="text-align: right;margin-bottom: 8px;">
-  <span style="float:left">Name: <input id="document_name"></input></span>
-  <button id="save_button">Save</button>
+<div class="rounded_border doc_options">
+  <span>Name: <input id="document_name"></input></span>
+  <button id="save_button"  style="float:right">Save</button>
 </div>
 
 <div id="editor_container">
   <textarea id="editor" name="editor">&lt;p&gt;&lt;/p&gt;</textarea>
 </div>
 
-<div id="right_rail">
+<div id="right_rail" class="rounded_border">
   <table class="align_bottom" valign="bottom"><tr><td id="cards" valign="bottom">
     <!--<div class="card card_active">truncated test</div>-->
     <!--<div class="card_focus card">
