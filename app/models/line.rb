@@ -13,7 +13,20 @@ class Line < ActiveRecord::Base
     lines.children.each do |line|
       #if line.children
         if line.children.first
-          #@lines << {'text' => line.children.first.content}
+          newParent = parent.children.create(:text => line.children.first.content, :line_number => line["line_id"])
+        end
+        if lines.children.length > 1
+          self.preorder_save(line, newParent)
+        end
+      #end
+    end
+  end
+  
+  def self.preorder_update(lines, parent)
+    # Preorder method
+    lines.children.each do |line|
+      #if line.children
+        if line.children.first
           newParent = parent.children.create(:text => line.children.first.content, :line_number => line["line_id"])
         end
         if lines.children.length > 1

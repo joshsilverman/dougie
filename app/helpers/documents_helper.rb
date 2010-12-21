@@ -3,6 +3,11 @@ include LinesHelper
 
 module DocumentsHelper
   
+  def to_nokogiri(html = nil)
+    return nil if html.blank?
+    Nokogiri::XML(html)
+  end
+  
   class DOM
     
     attr_reader :name, :html
@@ -24,22 +29,14 @@ module DocumentsHelper
       
       @document = document
       @html = "<li>#{sanitize(html)}</li>"
-      @doc = to_nokogiri
+      @doc = DocumentsHelper::to_nokogiri(@html)
       @lines = [{'text' => ''}]
 
       root = Line.create(:text => "root")
-      
-      p @doc.children
-      p root
-      
       Line.preorder_save(@doc.children, root)
       
       @document.lines = root.children
       
-    end
-    
-    def to_nokogiri
-      Nokogiri::XML(@html)
     end
     
     def sanitize(html = nil)
