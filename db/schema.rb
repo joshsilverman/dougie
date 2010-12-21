@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(:version => 20101220021805) do
 
   create_table "documents", :force => true do |t|
     t.string   "name"
+    t.string   "html"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

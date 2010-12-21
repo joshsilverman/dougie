@@ -2,12 +2,18 @@ include ApplicationHelper
 
 module DocumentsHelper
   
+  def set_property(value,name)
+    prop = value ? value : params[name]
+    prop = nil if prop.blank?
+    prop
+  end
+  
   class DOM
     
-    attr_reader :html
+    attr_reader :name, :html
 
-    def initialize(html = nil)
-      @document = Document.create(:name => "chris")
+    def initialize(name = nil,html = nil)
+      @document = Document.create(:name => name, :html => html)
       @doc = DocumentParser.new(@document,html)
     end
 
@@ -19,9 +25,10 @@ module DocumentsHelper
     
     def initialize(document = nil,html = nil)
       return nil if html.blank? || document.nil?
+      
       @document = document
-      @html = "<li>%s</li>" % sanitize(html)
-      @doc = Nokogiri::XML(@html)
+      @html = "<li>#{sanitize(html)}</li>"
+      @doc = to_nokogiri
       @lines = [{'text' => ''}]
 
       root = Line.create(:text => "root")
@@ -29,6 +36,10 @@ module DocumentsHelper
       
       @document.lines = root.children
       
+    end
+    
+    def to_nokogiri
+      Nokogiri::XML(@html)
     end
     
     def sanitize(html = nil)
