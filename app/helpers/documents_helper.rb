@@ -2,44 +2,32 @@ include ApplicationHelper
 
 module DocumentsHelper
   
-  class DOM
-    
-    attr_reader :name, :html
-
-    def initialize(document = nil,html = nil)
-      return if document.blank? || html.blank?
-      @doc = DocumentParser.new(document,html)
-    end
-
+  def sanitize(html = nil)
+    return "" if html.blank?
+    html.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<(\/|)ul>|<(\/|)body>|/i,"").gsub(/<p/i,"<li").gsub(/<\/p/,"</li").gsub(/<br>/,"")
   end
   
   class DocumentParser
     
-    attr_reader :html, :doc
+    attr_reader :html, :lines
     
-    def initialize(document = nil,html = nil)
+    def initialize(html = nil)
       
-      return nil if html.blank? || document.nil?
+      return nil if html.blank?
       
-      @document = document
       @html = "<li>#{sanitize(html)}</li>"
-      @doc = to_nokogiri
+      @nokogiri_dom = to_nokogiri
       @lines = [{'text' => ''}]
 
       root = Line.create(:text => "root")
-      preorder_save(@doc.children, root)
+      preorder_save(@nokogiri_dom.children, root)
       
-      @document.lines = root.children
+      @lines = root.children
       
     end
     
     def to_nokogiri
       Nokogiri::XML(@html)
-    end
-    
-    def sanitize(html = nil)
-      return "" if html.blank?
-      html.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<(\/|)ul>|<(\/|)body>|/i,"").gsub(/<p/i,"<li").gsub(/<\/p/,"</li").gsub(/<br>/,"")
     end
 
     def preorder_save(lines, parent)
@@ -48,7 +36,7 @@ module DocumentsHelper
         #if line.children
           if line.children.first
             @lines << {'text' => line.children.first.content}
-            newParent = parent.children.create(:text => line.children.first.content, :line_number => line["id"])
+            newParent = parent.children.create(:text => line.children.first.content)
           end
           if lines.children.length > 1
             preorder_save(line, newParent)
