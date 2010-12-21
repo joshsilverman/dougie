@@ -1,4 +1,5 @@
 include ApplicationHelper
+include LinesHelper
 
 module DocumentsHelper
   
@@ -27,7 +28,11 @@ module DocumentsHelper
       @lines = [{'text' => ''}]
 
       root = Line.create(:text => "root")
-      preorder_save(@doc.children, root)
+      
+      p @doc.children
+      p root
+      
+      Line.preorder_save(@doc.children, root)
       
       @document.lines = root.children
       
@@ -42,20 +47,6 @@ module DocumentsHelper
       html.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<(\/|)ul>|<(\/|)body>|/i,"").gsub(/<p/i,"<li").gsub(/<\/p/,"</li").gsub(/<br>/,"")
     end
 
-    def preorder_save(lines, parent)
-      # Preorder method
-      lines.children.each do |line|
-        #if line.children
-          if line.children.first
-            @lines << {'text' => line.children.first.content}
-            newParent = parent.children.create(:text => line.children.first.content, :line_number => line["id"])
-          end
-          if lines.children.length > 1
-            preorder_save(line, newParent)
-          end
-        #end
-      end
-    end
   end
    
 end
