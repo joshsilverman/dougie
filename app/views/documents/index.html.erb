@@ -1,6 +1,10 @@
 <% @page_specific_scripts_js = ["ckeditor/ckeditor", "documents/index"] %>
 <% @page_specific_scripts_css = ["documents/index"] %>
 
+<div style="text-align: right;margin-bottom: 8px;">
+  <button id="save_button">Save</button>
+</div>
+
 <div id="editor_container">
   <textarea id="editor" name="editor">&lt;p&gt;&lt;/p&gt;</textarea>
 </div>
@@ -14,7 +18,6 @@
     </div>-->
   </td></tr></table>
 </div>
-
 
 <script type="text/javascript">
 //<![CDATA[

@@ -13,11 +13,8 @@ var cDoc = Class.create({
 
             //@todo this creates race condition - look for callback - ugglie!!!
             (function () {this.outline = new cOutline();}.bind(this)).delay(.1);
-
         }.bind(this));
-    },
-
-    save: function() {}
+    }
 });
 
 var cOutline = Class.create({
@@ -32,6 +29,21 @@ var cOutline = Class.create({
         this.iDoc = iframe.contentWindow || iframe.contentDocument;
 
         this.outlineHandlers = new cOutlineHandlers(this.iDoc);
+
+        $('save_button').observe('click', this.save.bind(this));
+    },
+
+    save: function() {
+        
+        alert('save');
+
+        Ajax.Request.request('/create', {
+            method: 'post',
+            parameters: iDoc.document.serialize(true),
+            onSuccess: function(transport) {
+
+            }
+        });
     }
 });
 
@@ -213,6 +225,7 @@ var cCard = Class.create({
                 outlineNodePrev = outlineNodes[i-1];
                 nodeIdPrev = outlineNodePrev.id;
                 cardIdPrev = "card_" + nodeIdPrev.replace('node_', '');
+                break;
             }
         }
 
@@ -221,9 +234,18 @@ var cCard = Class.create({
 
         //previous node but no previous card
         else if (cardIdPrev && !$(cardIdPrev)) {
-            console.log('error: no previous card but there should be!');
-            if (this.updating) console.log ('...while updating')
-            //$('cards').insert({bottom: cardHtml});
+
+            //@todo create previous card if does not exist
+            console.log('error: no previous card but there should be! creating...');
+            if (this.updating) console.log ('...while updating');
+
+            //create previous card
+            console.log(outlineNodePrev);
+            //doc.rightRail.createCard(outlineNodePrev);
+            console.log('previous card created');
+
+            //temp
+            $('cards').insert({bottom: cardHtml});
         }
 
         //insert later
@@ -252,7 +274,6 @@ var cCard = Class.create({
     _parse: function(node) {
 
         var nodeTxt = node.innerHTML.match(/^([^<]*)<?/)[1];
-        console.log(nodeTxt);
 
         //definition
         var defParts = nodeTxt.match(/(^[^-]+) - ([\s\S]+)$/);
