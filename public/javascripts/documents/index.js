@@ -3,11 +3,13 @@ var cDoc = Class.create({
     outline: null,
     rightRail: null,
     editor: null,
+    utilities: null,
 
     initialize: function() {
 
         //wait for ckeditor to load
         document.observe('CKEDITOR:ready', function() {
+            this.utilities = new cUtilities();
             this.editor = CKEDITOR.instances.editor;
             this.rightRail = new cRightRail();
 
@@ -56,15 +58,10 @@ var cOutline = Class.create({
 
         //vars
         var card = checkbox.up('.card');
-        console.log(card);
-        var cardId = card.getAttribute('id');
-        console.log(cardId);
-        var nodeId = 'node_' + cardId.replace('card_', '');
+        var nodeId = doc.utilities.toNodeId(card);
         var node = this.iDoc.document.getElementById(nodeId);
 
         //activate/dactivate card
-        console.log(nodeId);
-        console.log(node);
         if (checkbox.checked) {
             node.setAttribute('active', true);
             doc.rightRail.cards[nodeId].activate();
@@ -73,7 +70,17 @@ var cOutline = Class.create({
             node.setAttribute('active', false);
             doc.rightRail.cards[nodeId].deactivate();
         }
+
+//        //focus on activated outline node
+//        this.focus(nodeId);
     }
+
+//    focus: function(nodeId) {
+//
+//        console.log(nodeId);
+//        var node = doc.outline.iDoc.document.getElementById(nodeId);
+//        node.focus();
+//    }
 });
 
 var cOutlineHandlers = Class.create({
@@ -83,7 +90,7 @@ var cOutlineHandlers = Class.create({
     initialize: function(iDoc) {
         //capture iframe keystroke events
         this.iDoc = iDoc;
-        this.iDoc.document.onkeyup = this.delegateHandler.bind(this);
+        this.iDoc.document.onkeydown = this.delegateHandler.bind(this);
     },
 
     delegateHandler: function(event) {
@@ -110,6 +117,10 @@ var cOutlineHandlers = Class.create({
             case Event.KEY_RETURN:
                 this.onReturn(event, target);
                 break;
+            case Event.KEY_UP: break;
+            case Event.KEY_DOWN: break;
+            case Event.KEY_LEFT: break;
+            case Event.KEY_RIGHT: break;
             default:
                 this.onLetter(event, target);
         }
@@ -168,13 +179,8 @@ var cRightRail = Class.create({
     focus: function(id) {
 
         //normalize id
-        if (!Object.isNumber(id)) {
-            id = id.replace('card_', '');
-            id = id.replace('node_', '');
-        }
-        var cardId = "card_" + id;
-        var nodeId = "node_" + id;
-        var nodeIdPrev = (id > 0) ? "node_" + (id - 1) : false;
+        var cardId = doc.utilities.toCardId(id);
+        var nodeId = doc.utilities.toNodeId(id);
 
         //check card exists
         if (!$(cardId)) {
@@ -188,7 +194,7 @@ var cRightRail = Class.create({
         if(this.inFocus && this.inFocus.id != cardId) {
             var nodeIdFocused = 'node_' + this.inFocus.id.replace('card_', '');
             Element.removeClassName(this.inFocus, 'card_focus');
-            if (nodeIdPrev) this.cards[nodeIdPrev].render(true);
+            this.cards[doc.utilities.toNodeId(this.inFocus)].render(true);
         }
 
         this.inFocus = $(cardId);
@@ -263,7 +269,7 @@ var cCard = Class.create({
         else checkbox = '<input type="checkbox" class="card_activation" />';
 
         //truncated txt
-        if (truncate) {
+        if (truncate && !this.active) {
             this.elmntCard.innerHTML
                 = checkbox + this.nodeTxt;
         }
@@ -322,7 +328,7 @@ var cCard = Class.create({
         }
 
         //insert first
-        if (!cardIdPrev) $('cards').insert({bottom: cardHtml});
+        if (!cardIdPrev) $('cards').insert({top: cardHtml});
 
         //previous node but no previous card
         else if (cardIdPrev && !$(cardIdPrev)) {
@@ -368,6 +374,35 @@ var cCard = Class.create({
             this.front = this.nodeTxt;
             this.back = '';
         }
+    }
+});
+
+var cUtilities = Class.create({
+
+    toNodeId: function(mixed) {
+        var id = this._getId(mixed);
+        if (id) return 'node_' + id;
+    },
+
+    toCardId: function(mixed) {
+        var id = this._getId(mixed);
+        if (id) return 'card_' + id;
+    },
+
+    _getId: function(mixed) {
+
+        var id;
+
+        //node or card
+        if (Object.isElement(mixed)) id = mixed.id.replace('node_', '').replace('card_', '');
+
+        //id
+        else if (Object.isNumber(mixed)) id = mixed;
+
+        //nodeId or cardId
+        else if (Object.isString(mixed)) var id = mixed.replace('node_', '').replace('card_', '');
+
+        return id;
     }
 });
 
