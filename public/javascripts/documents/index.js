@@ -30,7 +30,14 @@ var cOutline = Class.create({
 
         this.outlineHandlers = new cOutlineHandlers(this.iDoc);
 
+        //click observers
+        ////save button
         $('save_button').observe('click', this.save.bind(this));
+        ////activate card
+        document.observe('click', function(event) {
+           if(event.target.hasClassName('card_activation')) this.activateNode(event.target);
+        }.bind(this));
+
     },
 
     save: function() {
@@ -43,6 +50,26 @@ var cOutline = Class.create({
                 $('save_return').update(transport.responseText);
             }
         });
+    },
+
+    activateNode: function(checkbox) {
+
+        //vars
+        var card = checkbox.up();
+        var cardId = card.id;
+        var nodeId = 'node_' + cardId.replace('card_', '');
+        var node = this.iDoc.document.getElementById(nodeId);
+
+        //activate/dactivate card
+        console.log(node);
+        if (checkbox.checked) {
+            node.setAttribute('active', true);
+            doc.rightRail.cards[nodeId].activate();
+        }
+        else {
+            node.setAttribute('active', false);
+            doc.rightRail.cards[nodeId].deactivate();
+        }
     }
 });
 
@@ -144,6 +171,7 @@ var cRightRail = Class.create({
         }
         var cardId = "card_" + id;
         var nodeId = "node_" + id;
+        var nodeIdPrev = (id > 0) ? "node_" + (id - 1) : false;
 
         //check card exists
         if (!$(cardId)) {
@@ -157,9 +185,7 @@ var cRightRail = Class.create({
         if(this.inFocus && this.inFocus.id != cardId) {
             var nodeIdFocused = 'node_' + this.inFocus.id.replace('card_', '');
             Element.removeClassName(this.inFocus, 'card_focus');
-            this.inFocus.innerHTML
-                = doc.outline.iDoc.document.getElementById(nodeIdFocused)
-                  .innerHTML.match(/^([^<]*)<?/)[1];
+            if (nodeIdPrev) this.cards[nodeIdPrev].render(true);
         }
 
         this.inFocus = $(cardId);
@@ -174,12 +200,17 @@ var cRightRail = Class.create({
 var cCard = Class.create({
 
     cardNumber: null,
+
     front: '',
     back: '',
+    nodeTxt: '',
+
     active: false,
     elmntCard: null,
     elmntNode: null,
     updating: false,
+
+    autoActivate: false,
 
     initialize: function(node, cardCount) {
 
@@ -189,29 +220,70 @@ var cCard = Class.create({
                                       'changed': new Date().getTime()});
         Element.addClassName(node, 'outline_node');
 
-
         //parsing
+        node.setAttribute('active', false);
         this._parse(node);
 
         //card in dom
         var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card_focus card"></div>';
         this._insert(cardHtml);
-        this.elmntCard = document.getElementById("card_" + this.cardNumber);
-        this._render();
+        this.elmntCard = $("card_" + this.cardNumber);
+        this.render();
     },
 
     update: function(node) {
+        this.elmnt = $(node);
         this.updating = true;
 
-        this._parse(node);
-        this._render();
+        this._parse(this.elmnt);
+        this.render();
 
         this.updating = false;
     },
 
-    activate: function() {},
+    activate: function() {$('card_' + this.cardNumber).addClassName('card_active');},
 
-    deactivate: function() {},
+    deactivate: function() {$('card_' + this.cardNumber).removeClassName('card_active');},
+
+    render: function(truncate) {
+
+        //checkbox
+        var checkbox;
+        if (this.active == "true") checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
+        else checkbox = '<input type="checkbox" class="card_activation" />';
+
+        //truncated txt
+        if (truncate)
+            this.elmntCard.innerHTML
+                = checkbox + this.nodeTxt;
+
+        //both sides set
+        else if (this.back) {
+            this.elmntCard.innerHTML = '<div class="card_front">'
+                    + checkbox + this.front + '</div>\
+                <div class="card_back">'+this.back+'</div>';
+
+            //autoActivate - node + card - a little messily placed
+            if (this.autoActivate) {
+                this.activate();
+                this.autoActivate = false;
+                this.elmntCard.down('input').checked = true;
+                doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
+            }
+        }
+
+        //just front
+        else if (this.elmntCard)
+            this.elmntCard.innerHTML = '<div class="card_front">'
+                + checkbox + this.front + '</div>';
+
+        //no card to update
+        else {
+            console.log('error: cannot render - no card in dom to update')
+            if (this.updating) console.log ('...while updating')
+        }
+
+    },
 
     _insert: function(cardHtml) {
         //identify previous node in outline
@@ -251,32 +323,18 @@ var cCard = Class.create({
         else $(cardIdPrev).insert({after: cardHtml});
     },
 
-    _render: function() {
-        //both sides set
-        if (this.back) {
-            this.elmntCard.innerHTML = '<div class="card_front">'+this.front+'</div>\
-                <div class="card_back">'+this.back+'</div>';
-        }
-
-        //just front
-        else if (this.elmntCard)
-            this.elmntCard.innerHTML = '<div class="card_front">'+this.front+'</div>';
-
-        //no card to update
-        else {
-            console.log('error: cannot render - no card in dom to update')
-            if (this.updating) console.log ('...while updating')
-        }
-
-    },
-
     _parse: function(node) {
 
-        var nodeTxt = node.innerHTML.match(/^([^<]*)<?/)[1];
+        this.nodeTxt = node.innerHTML.match(/^([^<]*)<?/)[1];
+        this.active = node.getAttribute('active');
 
         //definition
-        var defParts = nodeTxt.match(/(^[^-]+) - ([\s\S]+)$/);
+        var defParts = this.nodeTxt.match(/(^[^-]+) - ([\s\S]+)$/);
         if (defParts) {
+
+            //set autoActivate member if this is the first time text has been parsable
+            if (!this.back) this.autoActivate = true;
+
             this.front = defParts[1];
             this.back = defParts[2];
         }
@@ -285,7 +343,10 @@ var cCard = Class.create({
         else if (false) {}
 
         //no match
-        else this.front = nodeTxt;
+        else {
+            this.front = this.nodeTxt;
+            this.back = '';
+        }
     }
 });
 
