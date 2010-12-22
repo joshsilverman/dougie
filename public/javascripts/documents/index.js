@@ -55,12 +55,15 @@ var cOutline = Class.create({
     activateNode: function(checkbox) {
 
         //vars
-        var card = checkbox.up();
-        var cardId = card.id;
+        var card = checkbox.up('.card');
+        console.log(card);
+        var cardId = card.getAttribute('id');
+        console.log(cardId);
         var nodeId = 'node_' + cardId.replace('card_', '');
         var node = this.iDoc.document.getElementById(nodeId);
 
         //activate/dactivate card
+        console.log(nodeId);
         console.log(node);
         if (checkbox.checked) {
             node.setAttribute('active', true);
@@ -242,21 +245,28 @@ var cCard = Class.create({
         this.updating = false;
     },
 
-    activate: function() {$('card_' + this.cardNumber).addClassName('card_active');},
+    activate: function() {
+        this.active = true;
+        $('card_' + this.cardNumber).addClassName('card_active');
+    },
 
-    deactivate: function() {$('card_' + this.cardNumber).removeClassName('card_active');},
+    deactivate: function() {
+        this.active = false;
+        $('card_' + this.cardNumber).removeClassName('card_active');
+    },
 
     render: function(truncate) {
 
         //checkbox
         var checkbox;
-        if (this.active == "true") checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
+        if (this.active == true) checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
         else checkbox = '<input type="checkbox" class="card_activation" />';
 
         //truncated txt
-        if (truncate)
+        if (truncate) {
             this.elmntCard.innerHTML
                 = checkbox + this.nodeTxt;
+        }
 
         //both sides set
         else if (this.back) {
@@ -337,14 +347,14 @@ var cCard = Class.create({
     _parse: function(node) {
 
         this.nodeTxt = node.innerHTML.match(/^([^<]*)<?/)[1];
-        this.active = node.getAttribute('active');
+        this.active = node.getAttribute('active') == "true";
 
         //definition
         var defParts = this.nodeTxt.match(/(^[^-]+) - ([\s\S]+)$/);
         if (defParts) {
 
             //set autoActivate member if this is the first time text has been parsable
-            if (!this.back) this.autoActivate = true;
+            if (!this.back && !this.active) this.autoActivate = true;
 
             this.front = defParts[1];
             this.back = defParts[2];
