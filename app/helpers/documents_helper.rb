@@ -1,11 +1,6 @@
 include ApplicationHelper
 
 module DocumentsHelper
-  
-  def to_nokogiri(html = nil)
-    return nil if html.blank?
-    Nokogiri::XML(html)
-  end
 
   class DocumentParser
     
@@ -18,7 +13,6 @@ module DocumentsHelper
       @document = document
       @html = "<li>#{sanitize(html)}</li>"
       @doc = to_nokogiri(@html)
-
       @root = Line.create(:text => "root")
       
     end

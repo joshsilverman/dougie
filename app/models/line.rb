@@ -70,7 +70,6 @@ class Line < ActiveRecord::Base
               
               # replace existing line text with incoming line text
               # updated_at time is automatically set by rails
-              
               e_line.update_attribute(:text,line.text)
               
             end
