@@ -211,6 +211,7 @@ var cCard = Class.create({
     updating: false,
 
     autoActivate: false,
+    autoActivated: true,    //if auto activated and later format becomes unnacceptable - autoDeactivate
 
     initialize: function(node, cardCount) {
 
@@ -263,19 +264,29 @@ var cCard = Class.create({
                     + checkbox + this.front + '</div>\
                 <div class="card_back">'+this.back+'</div>';
 
-            //autoActivate - node + card - a little messily placed
+            //autoActivate
             if (this.autoActivate) {
+                this.autoActivated = true;
                 this.activate();
                 this.autoActivate = false;
-                this.elmntCard.down('input').checked = true;
+                this.elmntCard.down('input').checked = 'yes';
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
             }
         }
 
         //just front
-        else if (this.elmntCard)
+        else if (this.elmntCard) {
             this.elmntCard.innerHTML = '<div class="card_front">'
                 + checkbox + this.front + '</div>';
+
+            //autoDeactivate
+            if (this.autoActivated) {
+                this.autoActivated = false;
+                this.deactivate();
+                this.elmntCard.down('input').checked = '';
+                doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', false);
+            }
+        }
 
         //no card to update
         else {
