@@ -33524,3 +33524,107 @@ Started GET "/update" for 127.0.0.1 at Wed Dec 22 00:05:00 -0500 2010
   [1m[35mSQL (0.0ms)[0m  COMMIT
 Rendered documents/update.html.erb within layouts/application (2.5ms)
 Completed 200 OK in 73ms (Views: 8.0ms | ActiveRecord: 4.1ms)
+
+
+Started GET "/update" for 127.0.0.1 at Wed Dec 22 00:18:54 -0500 2010
+  Processing by DocumentsController#update as HTML
+  [1m[36mDocument Load (0.4ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`name` = 'chris') LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.5ms)[0m  [1mUPDATE `documents` SET `html` = '<body><p changed=\"5892370459872304857029387450\" id=\"1\" line_id=\"1\" active=\"true\">a This is a mutha fucking test - think<br></p><ul><li changed=\"2\" id=\"2\" line_id=\"2\" active=\"true\">a the letter \'a\' i am using <ul> <li changed=\"2\" id=\"3\" line_id=\"3\" active=\"true\">a just to keep track [EDIT]</li> <li changed=\"3\" id=\"4\" line_id=\"4\" active=\"false\">a of things that are saved on the first</li> <li changed=\"1\" id=\"5\" line_id=\"5\" active=\"false\" delete=\'true\' style=\"display:none\">a run through</li> <li changed=\"2\" id=\"7\" line_id=\"7\" active=\"false\">b includes two augmentation nodes</li> <li changed=\"3\" id=\"9\" line_id=\"\" active=\"true\">c a little more augmentation</li> </ul> </li><li changed=\"1\" id=\"6\" line_id=\"6\" active=\"true\">a where as items that begin with</li></ul> <p changed=\"2\" id=\"8\" line_id=\"8\" active=\"true\">b will be included on the second request<br></p><ul><li changed=\"3\" id=\"10\" line_id=\"\" active=\"false\">c augmentation! <ul> <li changed=\"3\" id=\"11\" line_id=\"\" active=\"false\">c yeah</li> <li changed=\"3\" id=\"12\" line_id=\"\" active=\"true\">c augment me</li> <li changed=\"3\" id=\"13\" line_id=\"\" active=\"false\">c yea heck yeah augmentation</li> </ul> </li></ul></body>', `updated_at` = '2010-12-22 05:18:54' WHERE (`documents`.`id` = 1)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.9ms)[0m  describe `mems`
+  [1m[36mAREL (16.8ms)[0m  [1mINSERT INTO `mems` (`updated_at`, `line_id`, `strength`, `created_at`, `status`) VALUES ('2010-12-22 05:18:54', NULL, 0.5, '2010-12-22 05:18:54', NULL)[0m
+  [1m[35mSQL (1.2ms)[0m  describe `lines`
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `created_at`, `document_id`, `line_number`, `updated_at`, `text`) VALUES (NULL, '2010-12-22 05:18:54', NULL, NULL, '2010-12-22 05:18:54', 'root')[0m
+  [1m[35mAREL (0.4ms)[0m  UPDATE `mems` SET `updated_at` = '2010-12-22 05:18:54', `line_id` = 17 WHERE (`mems`.`id` = 17)
+  [1m[36mSQL (7.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.4ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.1ms)[0m  COMMIT
+Rendered documents/update.html.erb within layouts/application (49.1ms)
+Completed 200 OK in 187ms (Views: 53.9ms | ActiveRecord: 29.4ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:19:00 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 7ms (Views: 6.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:21:15 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 7ms (Views: 7.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:21:26 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 8ms (Views: 7.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:21:55 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.8ms)
+Completed 200 OK in 9ms (Views: 8.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:22:19 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 7ms (Views: 6.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:22:25 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 7ms (Views: 6.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:22:53 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (4.3ms)
+Completed 200 OK in 10ms (Views: 10.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:24:12 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 7ms (Views: 6.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:24:39 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.6ms)
+Completed 200 OK in 8ms (Views: 7.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:24:48 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 7ms (Views: 6.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:26:35 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 7ms (Views: 6.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:26:50 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 7ms (Views: 6.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:27:02 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.7ms)
+Completed 200 OK in 8ms (Views: 7.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Dec 22 00:27:49 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 7ms (Views: 6.6ms | ActiveRecord: 0.0ms)
