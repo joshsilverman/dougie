@@ -2,7 +2,7 @@
 <% @page_specific_scripts_css = ["documents/index"] %>
 
 <div id="editor_container">
-  <textarea id="editor" name="editor"></textarea>
+  <textarea id="editor" name="editor">&lt;p&gt;&lt;/p&gt;</textarea>
 </div>
 
 <div id="right_rail">
@@ -19,6 +19,7 @@
 <script type="text/javascript">
 //<![CDATA[
   CKEDITOR.replace( 'editor', {
+    startupFocus : true,
     fullPage : true,
     on: {instanceReady : function( ev ) {Event.fire(document, 'CKEDITOR:ready');}}
   });
