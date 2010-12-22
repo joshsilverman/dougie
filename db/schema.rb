@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20101220021805) do
 
   create_table "mems", :force => true do |t|
     t.float    "strength"
+    t.boolean  "status"
     t.integer  "line_id"
     t.datetime "created_at"
     t.datetime "updated_at"
