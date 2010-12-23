@@ -49,16 +49,18 @@
     bottom:0px;
     background-color:#E0DFE3;
     color:#9d9d9d;
+    position: relative;
 }
 
 .card_active {
-    background-color:greenyellow !important;
+    background-color:#D2FF78 !important;
     color:black !important;
 }
 
 .card_focus {
-    background-color:lightyellow !important;
+    border: 2px dashed darkgrey;
     color:black !important;
+    width:248px;
 }
 
 .card_front {
@@ -69,7 +71,17 @@
 .card_back {
     text-align: center;
     padding:10px;
-    border-top: dashed grey 1px;
+    border-top: #C2C2C2 2px solid;
+}
+
+.card_active .card_back {
+    border-top: #B2F233 2px solid;
+}
+
+.card input {
+    position:absolute;
+    right:0px;
+    margin-top:-1px;
 }
 
 #cke_contents_editor {
