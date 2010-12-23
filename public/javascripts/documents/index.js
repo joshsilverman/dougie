@@ -31,18 +31,39 @@ var cOutline = Class.create({
         this.outlineHandlers = new cOutlineHandlers(this.iDoc);
 
         $('save_button').observe('click', this.save.bind(this));
+        
+        Event.observe("create_button","click",function(e){
+           this.create(e);  
+        }.bind(this));
+    },
+    
+    create: function(e){
+         new Ajax.Request('/create', {
+              method: 'post',
+              parameters: {  'name': "docx"
+              },
+              onSuccess: function(transport) {
+                   var json = transport.responseJSON;
+                   var doc_id = json["document"]["id"]
+                   if(doc_id){
+                        $("document_name").value = doc_id;
+                   }
+              }
+         });
     },
 
     save: function() {
-
-        new Ajax.Request('/create', {
-            method: 'post',
-            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].outerHTML,
-                         'name': $('document_name').value},
-            onSuccess: function(transport) {
-                $('save_return').update(transport.responseText);
-            }
-        });
+        
+         new Ajax.Request('/update', {
+               method: 'post',
+               parameters: {  'html': "<li>"+this.iDoc.document.getElementsByTagName('body')[0].innerHTML+"</li>",
+                              'id': $('document_name').value
+               },
+               onSuccess: function(transport) {
+                        
+                        $('save_return').update(transport.responseText);
+               }
+          });
     }
 });
 
@@ -119,7 +140,7 @@ var cOutlineHandlers = Class.create({
 
 var cRightRail = Class.create({
 
-    cardCount: 0,
+    cardCount: 2,
     cards: {},
     inFocus: null,
 
@@ -186,9 +207,9 @@ var cCard = Class.create({
         //set dom node attributes
         this.cardNumber = cardCount;
         Element.writeAttribute(node, {'id': 'node_' + this.cardNumber,
+                                      'line_id':'',
                                       'changed': new Date().getTime()});
         Element.addClassName(node, 'outline_node');
-
 
         //parsing
         this._parse(node);
