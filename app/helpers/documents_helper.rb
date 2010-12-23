@@ -19,7 +19,7 @@ module DocumentsHelper
       @html = "<li>#{sanitize(html)}</li>"
       @doc = to_nokogiri(@html)
 
-      @root = Line.create(:text => "root")
+      @root = Line.create(:text => "root", :document_id => @document.id)
       
     end
     
