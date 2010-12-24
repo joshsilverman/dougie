@@ -90,7 +90,7 @@ var cOutlineHandlers = Class.create({
     initialize: function(iDoc) {
         //capture iframe keystroke events
         this.iDoc = iDoc;
-        this.iDoc.document.onkeydown = this.delegateHandler.bind(this);
+        this.iDoc.document.onkeyup = this.delegateHandler.bind(this);
     },
 
     delegateHandler: function(event) {
@@ -117,10 +117,10 @@ var cOutlineHandlers = Class.create({
             case Event.KEY_RETURN:
                 this.onReturn(event, target);
                 break;
-            case Event.KEY_UP: break;
-            case Event.KEY_DOWN: break;
-            case Event.KEY_LEFT: break;
-            case Event.KEY_RIGHT: break;
+            case Event.KEY_UP:break;
+            case Event.KEY_DOWN:break;
+            case Event.KEY_LEFT:break;
+            case Event.KEY_RIGHT:break;
             default:
                 this.onLetter(event, target);
         }
@@ -140,6 +140,8 @@ var cOutlineHandlers = Class.create({
     },
 
     onLetter: function(event, target) {
+
+        console.log(target);
 
         //get core attributes
         var id = Element.readAttribute(target, 'id') || null;
@@ -181,6 +183,9 @@ var cRightRail = Class.create({
         //normalize id
         var cardId = doc.utilities.toCardId(id);
         var nodeId = doc.utilities.toNodeId(id);
+
+        console.log(id);
+        console.log(cardId);
 
         //check card exists
         if (!$(cardId)) {
@@ -385,12 +390,12 @@ var cUtilities = Class.create({
 
     toNodeId: function(mixed) {
         var id = this._getId(mixed);
-        if (id) return 'node_' + id;
+        if (id || id == 0) return 'node_' + id;
     },
 
     toCardId: function(mixed) {
         var id = this._getId(mixed);
-        if (id) return 'card_' + id;
+        if (id || id == 0) return 'card_' + id;
     },
 
     _getId: function(mixed) {
