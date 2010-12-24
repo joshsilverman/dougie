@@ -23,15 +23,11 @@ class DocumentsController < ApplicationController
   end
   
   def read(name = nil)
-    
-    name = params[:name] || name
-    @doc = Document.where("name = ?",name)
-    
   end
   
   
   def update
-    
+
     #params
     name = params[:name] || name
     html = params[:html] || html

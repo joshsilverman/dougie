@@ -4,7 +4,7 @@ module DocumentsHelper
 
   class DocumentParser
     
-    attr_reader :html, :doc
+    attr_reader :html, :lines
     
     def initialize(html = nil)
       
