@@ -254,11 +254,15 @@ var cCard = Class.create({
     activate: function() {
         this.active = true;
         $('card_' + this.cardNumber).addClassName('card_active');
+        this.render();
     },
 
     deactivate: function() {
         this.active = false;
         $('card_' + this.cardNumber).removeClassName('card_active');
+
+        var truncate = !this.inFocus || this.inFocus.id != 'card_' + this.cardNumber
+        this.render(truncate);
     },
 
     render: function(truncate) {
@@ -283,8 +287,8 @@ var cCard = Class.create({
             //autoActivate
             if (this.autoActivate) {
                 this.autoActivated = true;
-                this.activate();
                 this.autoActivate = false;
+                this.activate();
                 this.elmntCard.down('input').checked = 'yes';
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
             }
