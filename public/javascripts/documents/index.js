@@ -91,38 +91,60 @@ var cOutlineHandlers = Class.create({
         //capture iframe keystroke events
         this.iDoc = iDoc;
         this.iDoc.document.onkeyup = this.delegateHandler.bind(this);
+        this.iDoc.document.onkeydown = this.delegateHandler.bind(this);
     },
 
     delegateHandler: function(event) {
 
-        //get real target - target in event object is wrong
+        /* get real target - target in event object is wrong */
+
         //@todo this is not quite there - sometimes it returns a ul; also, I
         //      couldn't overwrite event.target
         //@todo target may be be UL or BODY on return key!
         var range, target;
+        //trident?
         if (this.iDoc.document.selection) {
             range = this.iDoc.document.selection.createRange();
             target = range.parentElement();
         }
+        //gecko, webkit, others?
         else if (this.iDoc.window.getSelection) {
             range = this.iDoc.window.getSelection().getRangeAt(0);
-            target = range.commonAncestorContainer.parentNode;
+            var rangeParent = range.commonAncestorContainer;
+            var rangeGrandParent = range.commonAncestorContainer.parentNode;
+
+            //common select valid target
+            if (rangeParent.tagName == 'LI' || rangeParent.tagName == 'P')
+                target = rangeParent
+            else target = rangeGrandParent
         }
 
-        //invoke proper handlers
-        switch (event.keyCode) {
-            case Event.KEY_TAB:
-                this.onTab(event, target);
-                break;
-            case Event.KEY_RETURN:
-                this.onReturn(event, target);
-                break;
-            case Event.KEY_UP:break;
-            case Event.KEY_DOWN:break;
-            case Event.KEY_LEFT:break;
-            case Event.KEY_RIGHT:break;
-            default:
-                this.onLetter(event, target);
+        /* invoke proper handlers */
+
+        //keydown events
+        if (event.type == "keydown") {
+            switch (event.keyCode) {
+                case Event.KEY_TAB:
+                    this.onTab(event, target);
+                    break;
+                default:break;
+            }
+        }
+
+        //keyup events
+        else {
+            switch (event.keyCode) {
+                case Event.KEY_TAB:break;
+                case Event.KEY_RETURN:
+                    this.onReturn(event, target);
+                    break;
+                case Event.KEY_UP:break;
+                case Event.KEY_DOWN:break;
+                case Event.KEY_LEFT:break;
+                case Event.KEY_RIGHT:break;
+                default:
+                    this.onLetter(event, target);
+            }
         }
     },
 
@@ -141,13 +163,15 @@ var cOutlineHandlers = Class.create({
 
     onLetter: function(event, target) {
 
-        console.log(target);
-
         //get core attributes
         var id = Element.readAttribute(target, 'id') || null;
 
+        //invalid target
+        if (target.tagName == 'BODY')
+            console.log('error: invalid target tag type (BODY)');
+
         //new card
-        if (!id) doc.rightRail.createCard(target);
+        else if (!id) doc.rightRail.createCard(target);
 
         //existing card
         else if (doc.rightRail.cards[id]) {
@@ -184,9 +208,6 @@ var cRightRail = Class.create({
         var cardId = doc.utilities.toCardId(id);
         var nodeId = doc.utilities.toNodeId(id);
 
-        console.log(id);
-        console.log(cardId);
-
         //check card exists
         if (!$(cardId)) {
             console.log("error: can't focus on non-existent card");
@@ -195,19 +216,33 @@ var cRightRail = Class.create({
 
         var rightRail = document.getElementById("right_rail");
 
+        //check if already in focus
+        if(this.inFocus && this.inFocus.id == cardId) return
+
         //unfocus previously focused
-        if(this.inFocus && this.inFocus.id != cardId) {
+        else if(this.inFocus && this.inFocus.id != cardId) {
             var nodeIdFocused = 'node_' + this.inFocus.id.replace('card_', '');
             Element.removeClassName(this.inFocus, 'card_focus');
             this.cards[doc.utilities.toNodeId(this.inFocus)].render(true);
         }
 
+        //focus
         this.inFocus = $(cardId);
+        console.log(cardId);
+//        console.log('right rail offset from top of doc');
+//        console.log(Element.positionedOffset(rightRail)[1]);
+        
+        console.log('card offset top');
+        console.log(this.inFocus.offsetTop);
+
+        console.log('height');
+        console.log(this.inFocus.getHeight());
+
         Element.addClassName(this.inFocus, 'card_focus');
-        rightRail.scrollTop = 
-            Element.positionedOffset(this.inFocus)[1];
-//            + $('right_rail').getHeight()
-//            - Element.getHeight(this.inFocus);
+        rightRail.scrollTop = this.inFocus.offsetTop
+            - this.inFocus.getHeight()
+            - $('right_rail').getHeight()/2
+            - 10;
     }
 });
 
@@ -247,6 +282,7 @@ var cCard = Class.create({
     },
 
     update: function(node) {
+
         this.elmnt = $(node);
         this.updating = true;
 
