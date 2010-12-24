@@ -9,27 +9,18 @@ class DocumentsController < ApplicationController
   # Look for existing documents (by name for now)
   # If exists, use this document, otherwise set document html and construct Line objects
   def create(name = nil,html = nil)
-    
-    # TEST DATA
-    name = 'chris'
-    html = '<body><p changed="1" id="1" line_id="1" active="true">a This is a test - think<br></p><ul><li changed="1" id="2" line_id="2" active="true">a the letter \'a\' i am using <ul> <li changed="2" id="3" line_id="3" active="true">a just to keep track [EDIT]</li> <li changed="1" id="4" line_id="4" active="false">a of things that are saved on the first</li> <li changed="1" id="5" line_id="5" active="false" delete=\'true\' style="display:none">a run through</li> <li changed="2" id="7" line_id="7" active="false">b includes two augmentation nodes</li> <li changed="3" id="9" line_id="" active="true">c a little more augmentation</li> </ul> </li><li changed="1" id="6" line_id="6" active="true">a where as items that begin with</li></ul> <p changed="2" id="8" line_id="8" active="true">b will be included on the second request<br></p><ul><li changed="3" id="10" line_id="" active="false">c augmentation! <ul> <li changed="3" id="11" line_id="" active="false">c yeah</li> <li changed="3" id="12" line_id="" active="true">c augment me</li> <li changed="3" id="13" line_id="" active="false">c yea heck yeah augmentation</li> </ul> </li></ul></body>'
-    
-    name = params[:name] || name
-    html = params[:html] || html
-    
+
+    #params
+    name = params[:name]
+    html = params[:html]
     return if name.blank? || html.blank?
-    
-    @document = Document.find_or_create_by_name(name)
-    
-    if @document.html.blank?
-      @document.update_attribute(:html,html)
-      dp = DocumentParser.new(@document,html)
-      Line.preorder_save(dp.doc.children, dp.root, @document.id)
-      @document.lines = dp.root.children
-    end
-      
+
+    #save
+    document = Document.find_or_create_by_name(name)
+    root = Line.create(:document_id => document.id)
+    parser = DocumentsHelper::DocumentParser.new(html)
+    Line.preorder_save(parser.doc.children, root, document.id)
   end
-  
   
   def read(name = nil)
     
@@ -41,23 +32,21 @@ class DocumentsController < ApplicationController
   
   def update
     
-    # TEST DATA
-    name = 'chris'
-    html = '<body><p changed="5892370459872304857029387450" id="1" line_id="2" active="true">a This is a mutha fucking test - think<br></p><ul><li changed="2" id="2" line_id="3" active="true">a the letter \'a\' i am using <ul> <li changed="2" id="3" line_id="4" active="true">a just to keep track [EDIT]</li> <li changed="3" id="4" line_id="5" active="false">a of things that are saved on the first</li> <li changed="1" id="5" line_id="6" active="false" delete=\'true\' style="display:none">a run through</li> <li changed="2" id="7" line_id="7" active="false">b includes two augmentation nodes</li> <li changed="3" id="9" line_id="8" active="true">c a little more augmentation</li> </ul> </li><li changed="1" id="6" line_id="9" active="true">a where as items that begin with</li></ul> <p changed="2" id="8" line_id="10" active="true">b will be included on the second request<br></p><ul><li changed="3" id="10" line_id="11" active="false">c augmentation! <ul> <li changed="3" id="11" line_id="12" active="false">c yeah</li> <li changed="3" id="12" line_id="13" active="true">c augment me</li> <li changed="3" id="13" line_id="14" active="false">c yea heck yeah augmentation</li><li id="15" line_id="">augmented element 1</li><li id="16" line_id="">augmented element 2</li><li id="17" line_id="">augmented element 3</li></ul> </li></ul></body>'
-    
+    #params
     name = params[:name] || name
     html = params[:html] || html
-    @document = Document.find_by_name(name)
-    
-    return nil if name.blank? || html.blank? || @document.blank?
-    
-    @document.update_attribute(:html,html)
-    
-    existing_lines = @document.lines
-    dp = DocumentParser.new(@document,html)
-    Line.update_line(dp.doc.children,existing_lines)
-    Line.preorder_augment(dp.doc.children, dp.root, existing_lines, @document.id)
-    
+    document = Document.find_by_name(name)
+    return nil if name.blank? || html.blank? || document.blank?
+
+    #get existing
+    existing_lines = document.lines
+    root = Line.find_by_document_id(document.id)
+
+    #update and augment
+    document.update_attribute(:html,html)
+    parser = DocumentParser.new(html)
+    Line.update_line(parser.doc.children,existing_lines)
+    Line.preorder_augment(parser.doc.children, root, existing_lines, document.id)
   end
   
   
