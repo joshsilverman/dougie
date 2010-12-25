@@ -10805,3 +10805,40 @@ Started POST "/update" for 127.0.0.1 at Thu Dec 23 02:12:55 -0500 2010
 Completed 200 OK in 89ms (Views: 4.5ms | ActiveRecord: 7.9ms)
   [1m[36mDocument Load (0.5ms)[0m  [1mSELECT `documents`.* FROM `documents`[0m
   [1m[35mLine Load (0.5ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 3)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 02:56:40 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (41.4ms)
+Completed 200 OK in 161ms (Views: 113.5ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 02:56:45 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (42.6ms)[0m  SHOW TABLES
+  [1m[36mSQL (1.2ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `documents` (`created_at`, `html`, `updated_at`, `name`) VALUES ('2010-12-25 07:56:45', NULL, '2010-12-25 07:56:45', '1293263805')
+  [1m[36mSQL (24.6ms)[0m  [1mCOMMIT[0m
+Completed 200 OK in 574ms (Views: 59.9ms | ActiveRecord: 68.8ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 02:56:47 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"4", "html"=>nil}
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `documents` (`updated_at`, `created_at`, `html`, `name`) VALUES ('2010-12-25 07:56:47', '2010-12-25 07:56:47', NULL, '1293263807')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+Completed 200 OK in 23ms (Views: 6.4ms | ActiveRecord: 1.6ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 02:57:08 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"4", "html"=>nil}
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`name`, `updated_at`, `html`, `created_at`) VALUES ('1293263828', '2010-12-25 07:57:08', NULL, '2010-12-25 07:57:08')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+Completed 200 OK in 18ms (Views: 5.3ms | ActiveRecord: 1.4ms)

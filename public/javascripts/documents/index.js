@@ -42,7 +42,7 @@ var cOutline = Class.create({
     },
     
     create: function(e){
-         new Ajax.Request('/create', {
+         new Ajax.Request('/update', {
               method: 'post',
               parameters: {  'name': "docx"
               },
