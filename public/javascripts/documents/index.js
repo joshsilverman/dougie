@@ -228,16 +228,6 @@ var cRightRail = Class.create({
 
         //focus
         this.inFocus = $(cardId);
-        console.log(cardId);
-//        console.log('right rail offset from top of doc');
-//        console.log(Element.positionedOffset(rightRail)[1]);
-        
-        console.log('card offset top');
-        console.log(this.inFocus.offsetTop);
-
-        console.log('height');
-        console.log(this.inFocus.getHeight());
-
         Element.addClassName(this.inFocus, 'card_focus');
         rightRail.scrollTop = this.inFocus.offsetTop
             - this.inFocus.getHeight()
