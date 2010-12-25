@@ -70,17 +70,7 @@ var cOutline = Class.create({
             node.setAttribute('active', false);
             doc.rightRail.cards[nodeId].deactivate();
         }
-
-//        //focus on activated outline node
-//        this.focus(nodeId);
     }
-
-//    focus: function(nodeId) {
-//
-//        console.log(nodeId);
-//        var node = doc.outline.iDoc.document.getElementById(nodeId);
-//        node.focus();
-//    }
 });
 
 var cOutlineHandlers = Class.create({
@@ -188,7 +178,7 @@ var cRightRail = Class.create({
     initialize: function() {
         
         /* render listener */
-        $('sync_button').observe('click', this.sync.bind());
+        $('sync_button').observe('click', this.sync.bind(this));
     },
 
     createCard: function(node) {
@@ -205,7 +195,6 @@ var cRightRail = Class.create({
 
         //normalize id
         var cardId = doc.utilities.toCardId(id);
-        var nodeId = doc.utilities.toNodeId(id);
 
         //check card exists
         if (!$(cardId)) {
@@ -220,7 +209,6 @@ var cRightRail = Class.create({
 
         //unfocus previously focused
         else if(this.inFocus && this.inFocus.id != cardId) {
-            var nodeIdFocused = 'node_' + this.inFocus.id.replace('card_', '');
             Element.removeClassName(this.inFocus, 'card_focus');
             this.cards[doc.utilities.toNodeId(this.inFocus)].render(true);
         }
@@ -237,14 +225,29 @@ var cRightRail = Class.create({
     /* render right rail - should not be called unless dones so explicitly by
      * user or the rail cards are no longer in sync with the  */
     sync: function() {
+        
+        //collect all potential nodes - li/p with text
+        var nodes = Element.select(doc.outline.iDoc.document, 'li, p')
+            .findAll(function (node) {return node.innerHTML});
 
-        var rightRailHTML
-        var nodes = Element.select(doc.outline.iDoc.document, 'li, p');
-
+        //either create or refresh all nodes
         nodes.each(function(node) {
             if (!node.id) 
                 this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount);
-        });
+            else {
+
+                //truncate boolean true unless node being updated is in focus
+                var truncate =
+                       !this.inFocus
+                    || doc.utilities.toNodeId(this.inFocus.id) != node.id;
+
+                //update
+                this.cards[node.id].update(node, truncate);
+            }
+        }.bind(this));
+
+        //temp - update sync button count
+
     }
 });
 
@@ -283,14 +286,10 @@ var cCard = Class.create({
         this.render();
     },
 
-    update: function(node) {
-
-        this.elmnt = $(node);
+    update: function(node, truncate) {
         this.updating = true;
-
-        this._parse(this.elmnt);
-        this.render();
-
+        this._parse($(node));
+        this.render(truncate);
         this.updating = false;
     },
 
