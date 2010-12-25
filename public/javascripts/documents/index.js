@@ -34,15 +34,17 @@ var cOutline = Class.create({
 
         //click observers
         ////save button
-        $('save_button').observe('click', this.save.bind(this));
+        Event.observe($("save_button"),"click",function(e){
+             this.save(e);
+        }.bind(this));
         
-        Event.observe("create_button","click",function(e){
+        Event.observe($("create_button"),"click",function(e){
            this.create(e);  
         }.bind(this));
     },
     
     create: function(e){
-         new Ajax.Request('/update', {
+         new Ajax.Request('/create', {
               method: 'post',
               parameters: {  'name': "docx"
               },
@@ -56,7 +58,7 @@ var cOutline = Class.create({
          });
     },
 
-    save: function() {
+    save: function(e) { 
         
          new Ajax.Request('/update', {
                method: 'post',
@@ -74,18 +76,6 @@ var cOutline = Class.create({
            if(event.target.hasClassName('card_activation')) this.activateNode(event.target);
         }.bind(this));
 
-    },
-
-    save: function() {
-
-        new Ajax.Request('/create', {
-            method: 'post',
-            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].outerHTML,
-                         'name': $('document_name').value},
-            onSuccess: function(transport) {
-                $('save_return').update(transport.responseText);
-            }
-        });
     },
 
     activateNode: function(checkbox) {

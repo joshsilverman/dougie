@@ -11,7 +11,11 @@ class Line < ActiveRecord::Base
     
     hsh = {}
     document.lines.each do |line|
-      hsh[line.domid] = line.id
+      
+      unless line.domid.blank?
+        hsh[line.domid] = line.id
+      end
+    
     end
     hsh
     

@@ -42,7 +42,6 @@ class DocumentsController < ApplicationController
       @document.update_attribute(:html,html)
       dp = DocumentParser.new(html)
       Line.preorder_save(dp.doc.children, dp.root, @document.id)
-      hsh = Line.id_hash(@document)
 
     else
     
@@ -54,6 +53,7 @@ class DocumentsController < ApplicationController
       
     end
     
+    hsh = Line.id_hash(@document)
     render :json => hsh
     
   end
