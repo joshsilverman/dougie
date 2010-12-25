@@ -127,6 +127,7 @@ var cOutlineHandlers = Class.create({
                 case Event.KEY_TAB:
                     this.onTab(event, target);
                     break;
+                case Event.KEY_RETURN:break;
                 default:break;
             }
         }
@@ -134,10 +135,10 @@ var cOutlineHandlers = Class.create({
         //keyup events
         else {
             switch (event.keyCode) {
+                //down event caught
                 case Event.KEY_TAB:break;
-                case Event.KEY_RETURN:
-                    this.onReturn(event, target);
-                    break;
+                case Event.KEY_RETURN:break;
+
                 case Event.KEY_UP:break;
                 case Event.KEY_DOWN:break;
                 case Event.KEY_LEFT:break;
@@ -155,20 +156,14 @@ var cOutlineHandlers = Class.create({
         else doc.editor.execCommand('indent');
     },
 
-    onReturn: function(event, target) {
-
-        //@todo ajust spec - no need to add attributes until node has content
-        //      is this necessary
-    },
-
     onLetter: function(event, target) {
 
         //get core attributes
         var id = Element.readAttribute(target, 'id') || null;
 
         //invalid target
-        if (target.tagName == 'BODY')
-            console.log('error: invalid target tag type (BODY)');
+        if (target.tagName != 'P' && target.tagName != 'LI')
+            console.log('error: invalid target tag type');
 
         //new card
         else if (!id) doc.rightRail.createCard(target);
@@ -190,7 +185,11 @@ var cRightRail = Class.create({
     cards: {},
     inFocus: null,
 
-    initialize: function() {},
+    initialize: function() {
+        
+        /* render listener */
+        $('sync_button').observe('click', this.sync.bind());
+    },
 
     createCard: function(node) {
 
@@ -233,6 +232,19 @@ var cRightRail = Class.create({
             - this.inFocus.getHeight()
             - $('right_rail').getHeight()/2
             - 10;
+    },
+
+    /* render right rail - should not be called unless dones so explicitly by
+     * user or the rail cards are no longer in sync with the  */
+    sync: function() {
+
+        var rightRailHTML
+        var nodes = Element.select(doc.outline.iDoc.document, 'li, p');
+
+        nodes.each(function(node) {
+            if (!node.id) 
+                this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount);
+        });
     }
 });
 
@@ -265,7 +277,7 @@ var cCard = Class.create({
         this._parse(node);
 
         //card in dom
-        var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card_focus card"></div>';
+        var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card"></div>';
         this._insert(cardHtml);
         this.elmntCard = $("card_" + this.cardNumber);
         this.render();
@@ -348,10 +360,15 @@ var cCard = Class.create({
     },
 
     _insert: function(cardHtml) {
-        //identify previous node in outline
+
+        /* identify previous node in outline */
+
+        //collect nodes which have cards
         var nodeId = 'node_' + this.cardNumber;
-        var outlineNode = doc.outline.iDoc.document.getElementById(nodeId);
-        var outlineNodes = doc.outline.iDoc.document.getElementsByClassName('outline_node');
+        var outlineNodes = $A(doc.outline.iDoc.document.getElementsByClassName('outline_node'))
+            .findAll(function(node) {return node.id});
+
+        //itererate backwards to find previous node; set id vars
         var outlineNodePrev, nodeIdPrev, cardIdPrev;
         for (var i = outlineNodes.length - 1; i >= 0; i--) {
             if (outlineNodes[i].id == nodeId && i != 0) {
