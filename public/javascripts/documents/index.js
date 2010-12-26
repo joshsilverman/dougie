@@ -45,31 +45,30 @@ var cOutline = Class.create({
     
     create: function(e){
          new Ajax.Request('/create', {
-              method: 'post',
-              parameters: {  'name': "docx"
-              },
-              onSuccess: function(transport) {
-                   var json = transport.responseJSON;
-                   var doc_id = json["document"]["id"]
-                   if(doc_id){
-                        $("document_name").value = doc_id;
-                   }
-              }
+            method: 'post',
+            parameters: {'name': "docx"},
+            onSuccess: function(transport) {
+                var json = transport.responseJSON;
+                var docId = json["document"]["id"]
+                if(docId) $("document_name").value = docId;
+                console.log(json);
+            }
          });
     },
 
     save: function(e) { 
         
-         new Ajax.Request('/update', {
-               method: 'post',
-               parameters: {  'html': "<li>"+this.iDoc.document.getElementsByTagName('body')[0].innerHTML+"</li>",
-                              'id': $('document_name').value
-               },
-               onSuccess: function(transport) {
-                        
-                        $('save_return').update(transport.responseText);
-               }
-          });
+        new Ajax.Request('/update', {
+            method: 'post',
+            parameters: {'html': "<li>"+this.iDoc.document.getElementsByTagName('body')[0].innerHTML+"</li>",
+                         'id': $('document_name').value
+            },
+            onSuccess: function(transport) {
+                $('save_return').update(transport.responseText);
+                var json = transport.responseJSON;
+                console.log(json);
+            }
+        });
 
         ////activate card
         document.observe('click', function(event) {
@@ -142,10 +141,10 @@ var cOutlineHandlers = Class.create({
             case Event.KEY_RETURN:
                 this.onReturn(event, target);
                 break;
-            case Event.KEY_UP: break;
-            case Event.KEY_DOWN: break;
-            case Event.KEY_LEFT: break;
-            case Event.KEY_RIGHT: break;
+            case Event.KEY_UP:break;
+            case Event.KEY_DOWN:break;
+            case Event.KEY_LEFT:break;
+            case Event.KEY_RIGHT:break;
             default:
                 this.onLetter(event, target);
         }
