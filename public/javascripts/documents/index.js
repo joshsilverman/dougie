@@ -50,7 +50,7 @@ var cOutline = Class.create({
               },
               onSuccess: function(transport) {
                    var json = transport.responseJSON;
-                   var doc_id = json["document"]["id"]
+                   var doc_id = json["document"]["id"];
                    if(doc_id){
                         $("document_name").value = doc_id;
                    }
@@ -66,8 +66,34 @@ var cOutline = Class.create({
                               'id': $('document_name').value
                },
                onSuccess: function(transport) {
-                        
+                    
+                         console.log(transport);
+                         
+                         var nodes = transport.responseJSON;
+                         var arr = [];
+                         var ifr_eles = document.getElementsByTagName("iframe")[0].contentDocument.getElementsByTagName("*");
+                         var ele = null;
+                         for(var i = 0, max = ifr_eles.length; i < max; i += 1){
+                              ele = ifr_eles[i];
+                              if(ele.className.match(/(^|\s)outline_node(\s|$)/)){
+                                   arr.push(ele);
+                              }
+                         }
+                         
+                         
+                         for(var i = 0, max_arr = arr.length; i < max_arr; i += 1){
+                              for(var key in nodes){
+                                   if(arr[i].id == key && arr[i].getAttribute("line_id") == ""){
+                                        console.log(arr[i]);
+                                        arr[i].setAttribute("line_id",nodes[key]);
+                                   }
+                              }
+                         }
+                                                  
                         $('save_return').update(transport.responseText);
+                        
+                        
+                        
                }
           });
 

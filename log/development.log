@@ -11566,3 +11566,1108 @@ Started POST "/update" for 127.0.0.1 at Sat Dec 25 03:09:22 -0500 2010
   [1m[35mSQL (0.3ms)[0m  COMMIT
   [1m[36mLine Load (0.2ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 30)[0m
 Completed 200 OK in 42ms (Views: 4.2ms | ActiveRecord: 2.6ms)
+  [1m[36mSQL (0.4ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.5ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (1.4ms)[0m  DROP TABLE `documents`
+  [1m[36mAREL (1.0ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214173109'[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (1.5ms)[0m  DROP TABLE `mems`
+  [1m[36mAREL (19.3ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162342'[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (32.8ms)[0m  DROP TABLE `lines`
+  [1m[36mAREL (0.8ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162237'[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.8ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (17.7ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (95.7ms)[0m  CREATE TABLE `lines` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `text` text, `domid` varchar(255), `document_id` int(11), `parent_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162237')[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (160.3ms)[0m  CREATE TABLE `mems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `strength` float, `status` tinyint(1), `line_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.8ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162342')[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (108.9ms)[0m  CREATE TABLE `documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `html` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214173109')[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW KEYS FROM `documents`
+  [1m[36mSQL (1.2ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW KEYS FROM `lines`
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW KEYS FROM `mems`
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 03:15:12 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (3.2ms)
+Completed 200 OK in 38ms (Views: 37.8ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 03:15:18 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[35mSQL (0.8ms)[0m  BEGIN
+  [1m[36mSQL (51.9ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (26.6ms)[0m  INSERT INTO `documents` (`name`, `html`, `updated_at`, `created_at`) VALUES ('1293264918', NULL, '2010-12-25 08:15:18', '2010-12-25 08:15:18')
+  [1m[36mSQL (1.1ms)[0m  [1mCOMMIT[0m
+Completed 200 OK in 252ms (Views: 7.7ms | ActiveRecord: 80.4ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 03:15:20 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293264915567\" line_id=\"\" id=\"node_2\"><br>chris</p></li>", "id"=>"1"}
+  [1m[35mDocument Load (0.5ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 1) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 08:15:20', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293264915567\" line_id=\"\" id=\"node_2\"><br>chris</p></li>' WHERE (`documents`.`id` = 1)
+  [1m[36mSQL (22.8ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (38.1ms)[0m  BEGIN
+  [1m[36mSQL (24.7ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (40.5ms)[0m  INSERT INTO `lines` (`document_id`, `parent_id`, `text`, `domid`, `updated_at`, `created_at`) VALUES (NULL, NULL, 'root', NULL, '2010-12-25 08:15:20', '2010-12-25 08:15:20')
+  [1m[36mSQL (1.7ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.4ms)[0m  [1mINSERT INTO `lines` (`document_id`, `parent_id`, `text`, `domid`, `updated_at`, `created_at`) VALUES (1, 1, 'chris', NULL, '2010-12-25 08:15:20', '2010-12-25 08:15:20')[0m
+  [1m[35mSQL (38.1ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (3.4ms)[0m  describe `mems`
+  [1m[36mAREL (2.8ms)[0m  [1mINSERT INTO `mems` (`updated_at`, `strength`, `created_at`, `status`, `line_id`) VALUES ('2010-12-25 08:15:20', 0.5, '2010-12-25 08:15:20', 1, 2)[0m
+  [1m[35mSQL (22.2ms)[0m  COMMIT
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)[0m
+Completed 200 OK in 399ms (Views: 5.6ms | ActiveRecord: 196.1ms)
+  [1m[36mDocument Load (0.3ms)[0m  [1mSELECT `documents`.* FROM `documents` LIMIT 1[0m
+  [1m[35mDocument Load (0.5ms)[0m  SELECT `documents`.* FROM `documents` LIMIT 1
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)[0m
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 03:16:02 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293264915567\" line_id=\"\" id=\"node_2\"><br>chris</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293264959959\" line_id=\"\">harris<br></p></li>", "id"=>"1"}
+  [1m[35mDocument Load (0.4ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 1) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293264915567\" line_id=\"\" id=\"node_2\"><br>chris</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293264959959\" line_id=\"\">harris<br></p></li>', `updated_at` = '2010-12-25 08:16:02' WHERE (`documents`.`id` = 1)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (30.7ms)[0m  BEGIN
+  [1m[36mSQL (1.4ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (1.0ms)[0m  INSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`, `domid`) VALUES (NULL, 'root', '2010-12-25 08:16:02', NULL, '2010-12-25 08:16:02', NULL)
+  [1m[36mSQL (18.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.5ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)
+Completed 200 OK in 275ms (Views: 29.7ms | ActiveRecord: 53.5ms)
+  [1m[35mDocument Load (0.5ms)[0m  SELECT `documents`.* FROM `documents` LIMIT 1
+  [1m[36mLine Load (0.6ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)[0m
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:06:24 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (4.8ms)
+Completed 200 OK in 46ms (Views: 45.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:09:50 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.9ms)
+Completed 200 OK in 8ms (Views: 7.2ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:09:59 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307793097\" line_id=\"\" id=\"node_2\"><br>chris</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307793865\" line_id=\"\">asdas<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293307793865\" line_id=\"\"><br></p></li>", "id"=>"<Click the Create Button>"}
+  [1m[36mDocument Load (0.4ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 0) LIMIT 1[0m
+Rendered documents/update.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 147ms (Views: 55.9ms | ActiveRecord: 0.4ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:10:24 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.7ms)
+Completed 200 OK in 8ms (Views: 7.8ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:10:30 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307827745\" line_id=\"\" id=\"node_2\"><br>chris</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307828609\" line_id=\"\">harris<br></p></li>", "id"=>"<Click the Create Button>"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 0) LIMIT 1
+Rendered documents/update.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 19ms (Views: 9.2ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:10:50 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.8ms)
+Completed 200 OK in 8ms (Views: 7.6ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 15:10:52 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `documents`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `documents` (`updated_at`, `created_at`, `name`, `html`) VALUES ('2010-12-25 20:10:52', '2010-12-25 20:10:52', '1293307852', NULL)[0m
+  [1m[35mSQL (36.2ms)[0m  COMMIT
+Completed 200 OK in 58ms (Views: 8.1ms | ActiveRecord: 37.4ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:10:57 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307854481\" line_id=\"\" id=\"node_2\">chris<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307855529\" line_id=\"\">harris<br></p></li>", "id"=>"2"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 2) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:10:57', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293307854481\" line_id=\"\" id=\"node_2\">chris<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307855529\" line_id=\"\">harris<br></p></li>' WHERE (`documents`.`id` = 2)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `document_id`, `updated_at`, `created_at`, `domid`, `parent_id`) VALUES ('root', NULL, '2010-12-25 20:10:57', '2010-12-25 20:10:57', NULL, NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`text`, `document_id`, `updated_at`, `created_at`, `domid`, `parent_id`) VALUES ('chris', 2, '2010-12-25 20:10:58', '2010-12-25 20:10:58', NULL, 4)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`created_at`, `updated_at`, `status`, `strength`, `line_id`) VALUES ('2010-12-25 20:10:58', '2010-12-25 20:10:58', 1, 0.5, 5)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `document_id`, `updated_at`, `created_at`, `domid`, `parent_id`) VALUES ('chris', 2, '2010-12-25 20:10:58', '2010-12-25 20:10:58', 'node_2', 5)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`created_at`, `updated_at`, `status`, `strength`, `line_id`) VALUES ('2010-12-25 20:10:58', '2010-12-25 20:10:58', 1, 0.5, 6)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`text`, `document_id`, `updated_at`, `created_at`, `domid`, `parent_id`) VALUES ('harris', 2, '2010-12-25 20:10:58', '2010-12-25 20:10:58', 'node_3', 5)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`created_at`, `updated_at`, `status`, `strength`, `line_id`) VALUES ('2010-12-25 20:10:58', '2010-12-25 20:10:58', 1, 0.5, 7)
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 2)
+Completed 200 OK in 123ms (Views: 4.2ms | ActiveRecord: 8.6ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:11:51 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 7ms (Views: 6.4ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 15:11:54 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (3.0ms)[0m  describe `documents`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `documents` (`html`, `name`, `created_at`, `updated_at`) VALUES (NULL, '1293307914', '2010-12-25 20:11:54', '2010-12-25 20:11:54')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+Completed 200 OK in 37ms (Views: 5.7ms | ActiveRecord: 3.9ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:11:58 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307915873\" line_id=\"\" id=\"node_2\">asd<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307916257\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293307916497\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293307916657\" line_id=\"\">da<br></p></li>", "id"=>"3"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 3) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:11:58', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293307915873\" line_id=\"\" id=\"node_2\">asd<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307916257\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293307916497\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293307916657\" line_id=\"\">da<br></p></li>' WHERE (`documents`.`id` = 3)[0m
+  [1m[35mSQL (41.8ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `text`, `domid`, `parent_id`, `created_at`, `document_id`) VALUES ('2010-12-25 20:11:58', 'root', NULL, NULL, '2010-12-25 20:11:58', NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`updated_at`, `text`, `domid`, `parent_id`, `created_at`, `document_id`) VALUES ('2010-12-25 20:11:58', 'asd', NULL, 8, '2010-12-25 20:11:58', 3)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`strength`, `status`, `created_at`, `updated_at`, `line_id`) VALUES (0.5, 1, '2010-12-25 20:11:58', '2010-12-25 20:11:58', 9)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `text`, `domid`, `parent_id`, `created_at`, `document_id`) VALUES ('2010-12-25 20:11:58', 'asd', 'node_2', 9, '2010-12-25 20:11:58', 3)[0m
+  [1m[35mSQL (0.6ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `mems` (`strength`, `status`, `created_at`, `updated_at`, `line_id`) VALUES (0.5, 1, '2010-12-25 20:11:58', '2010-12-25 20:11:58', 10)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `text`, `domid`, `parent_id`, `created_at`, `document_id`) VALUES ('2010-12-25 20:11:58', 'asd', 'node_3', 9, '2010-12-25 20:11:58', 3)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `mems` (`strength`, `status`, `created_at`, `updated_at`, `line_id`) VALUES (0.5, 1, '2010-12-25 20:11:58', '2010-12-25 20:11:58', 11)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `text`, `domid`, `parent_id`, `created_at`, `document_id`) VALUES ('2010-12-25 20:11:58', 'as', 'node_4', 9, '2010-12-25 20:11:58', 3)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `mems` (`strength`, `status`, `created_at`, `updated_at`, `line_id`) VALUES (0.5, 1, '2010-12-25 20:11:58', '2010-12-25 20:11:58', 12)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `text`, `domid`, `parent_id`, `created_at`, `document_id`) VALUES ('2010-12-25 20:11:58', 'da', 'node_5', 9, '2010-12-25 20:11:58', 3)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`strength`, `status`, `created_at`, `updated_at`, `line_id`) VALUES (0.5, 1, '2010-12-25 20:11:58', '2010-12-25 20:11:58', 13)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 3)
+Completed 200 OK in 171ms (Views: 4.1ms | ActiveRecord: 51.2ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:12:05 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307915873\" line_id=\"\" id=\"node_2\">asd<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307916257\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293307916497\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293307916657\" line_id=\"\">da<br></p></li>", "id"=>"3"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 3) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:12:05', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293307915873\" line_id=\"\" id=\"node_2\">asd<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307916257\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293307916497\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293307916657\" line_id=\"\">da<br></p></li>' WHERE (`documents`.`id` = 3)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `document_id`, `parent_id`, `domid`, `updated_at`, `created_at`) VALUES ('root', NULL, NULL, NULL, '2010-12-25 20:12:05', '2010-12-25 20:12:05')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 3)[0m
+Completed 200 OK in 45ms (Views: 4.5ms | ActiveRecord: 2.9ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:12:23 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 8ms (Views: 8.1ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:12:28 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307945705\" line_id=\"\" id=\"node_2\"><br>fasdfa</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307946329\" line_id=\"\">asdf<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293307946609\" line_id=\"\">as<br></p></li>", "id"=>"3"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 3) LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:12:28', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293307945705\" line_id=\"\" id=\"node_2\"><br>fasdfa</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307946329\" line_id=\"\">asdf<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293307946609\" line_id=\"\">as<br></p></li>' WHERE (`documents`.`id` = 3)
+  [1m[36mSQL (0.7ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `created_at`, `text`, `parent_id`, `domid`, `document_id`) VALUES ('2010-12-25 20:12:28', '2010-12-25 20:12:28', 'root', NULL, NULL, NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 3)
+Completed 200 OK in 46ms (Views: 4.4ms | ActiveRecord: 3.4ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:12:33 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 8ms (Views: 8.0ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 15:12:34 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `documents`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `documents` (`html`, `name`, `updated_at`, `created_at`) VALUES (NULL, '1293307954', '2010-12-25 20:12:34', '2010-12-25 20:12:34')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+Completed 200 OK in 20ms (Views: 5.0ms | ActiveRecord: 1.5ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:12:38 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307955673\" line_id=\"\" id=\"node_2\">asdasd<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307956753\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293307956995\" line_id=\"\">as<br></p></li>", "id"=>"4"}
+  [1m[36mDocument Load (0.3ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 4) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293307955673\" line_id=\"\" id=\"node_2\">asdasd<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293307956753\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293307956995\" line_id=\"\">as<br></p></li>', `updated_at` = '2010-12-25 20:12:38' WHERE (`documents`.`id` = 4)[0m
+  [1m[35mSQL (2.4ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `lines`
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`created_at`, `text`, `parent_id`, `document_id`, `updated_at`, `domid`) VALUES ('2010-12-25 20:12:38', 'root', NULL, NULL, '2010-12-25 20:12:38', NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`created_at`, `text`, `parent_id`, `document_id`, `updated_at`, `domid`) VALUES ('2010-12-25 20:12:38', 'asdasd', 16, 4, '2010-12-25 20:12:38', NULL)
+  [1m[36mSQL (0.7ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`status`, `strength`, `line_id`, `updated_at`, `created_at`) VALUES (1, 0.5, 17, '2010-12-25 20:12:38', '2010-12-25 20:12:38')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`created_at`, `text`, `parent_id`, `document_id`, `updated_at`, `domid`) VALUES ('2010-12-25 20:12:38', 'asdasd', 17, 4, '2010-12-25 20:12:38', 'node_2')[0m
+  [1m[35mSQL (0.7ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`status`, `strength`, `line_id`, `updated_at`, `created_at`) VALUES (1, 0.5, 18, '2010-12-25 20:12:38', '2010-12-25 20:12:38')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`created_at`, `text`, `parent_id`, `document_id`, `updated_at`, `domid`) VALUES ('2010-12-25 20:12:38', 'asd', 17, 4, '2010-12-25 20:12:38', 'node_3')[0m
+  [1m[35mSQL (12.9ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `mems` (`status`, `strength`, `line_id`, `updated_at`, `created_at`) VALUES (1, 0.5, 19, '2010-12-25 20:12:38', '2010-12-25 20:12:38')
+  [1m[36mSQL (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`created_at`, `text`, `parent_id`, `document_id`, `updated_at`, `domid`) VALUES ('2010-12-25 20:12:38', 'as', 17, 4, '2010-12-25 20:12:38', 'node_4')[0m
+  [1m[35mSQL (0.7ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `mems` (`status`, `strength`, `line_id`, `updated_at`, `created_at`) VALUES (1, 0.5, 20, '2010-12-25 20:12:38', '2010-12-25 20:12:38')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 4)
+Completed 200 OK in 102ms (Views: 4.2ms | ActiveRecord: 26.1ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:12:50 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (56.0ms)
+Completed 200 OK in 61ms (Views: 60.7ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 15:12:52 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `documents`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `documents` (`created_at`, `html`, `name`, `updated_at`) VALUES ('2010-12-25 20:12:52', NULL, '1293307972', '2010-12-25 20:12:52')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+Completed 200 OK in 22ms (Views: 4.9ms | ActiveRecord: 1.5ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:12:53 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307972713\" line_id=\"\" id=\"node_2\">asdfa<br></p></li>", "id"=>"5"}
+  [1m[36mDocument Load (0.3ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 5) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:12:54', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293307972713\" line_id=\"\" id=\"node_2\">asdfa<br></p></li>' WHERE (`documents`.`id` = 5)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`domid`, `document_id`, `parent_id`, `text`, `created_at`, `updated_at`) VALUES (NULL, NULL, NULL, 'root', '2010-12-25 20:12:54', '2010-12-25 20:12:54')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`domid`, `document_id`, `parent_id`, `text`, `created_at`, `updated_at`) VALUES (NULL, 5, 21, 'asdfa', '2010-12-25 20:12:54', '2010-12-25 20:12:54')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`status`, `line_id`, `strength`, `created_at`, `updated_at`) VALUES (1, 22, 0.5, '2010-12-25 20:12:54', '2010-12-25 20:12:54')
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.4ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 5)
+Completed 200 OK in 150ms (Views: 4.0ms | ActiveRecord: 4.5ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:13:08 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293307972713\" line_id=\"\" id=\"node_2\">asdfa<br></p></li>", "id"=>"5"}
+  [1m[36mDocument Load (0.6ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 5) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (1.4ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`created_at`, `domid`, `text`, `document_id`, `parent_id`, `updated_at`) VALUES ('2010-12-25 20:13:09', NULL, 'root', NULL, NULL, '2010-12-25 20:13:09')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.4ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 5)
+Completed 200 OK in 287ms (Views: 4.9ms | ActiveRecord: 3.5ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:13:10 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 7ms (Views: 6.7ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:13:12 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p><br></p></li>", "id"=>"5"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 5) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:13:12', `html` = '<li><p><br></p></li>' WHERE (`documents`.`id` = 5)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`document_id`, `text`, `updated_at`, `parent_id`, `created_at`, `domid`) VALUES (NULL, 'root', '2010-12-25 20:13:12', NULL, '2010-12-25 20:13:12', NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.2ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 5)[0m
+Completed 200 OK in 40ms (Views: 4.0ms | ActiveRecord: 2.6ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:13:49 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 7ms (Views: 6.6ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:13:52 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308031129\" line_id=\"\" id=\"node_2\">asd<br></p></li>", "id"=>"5"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 5) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:13:52', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308031129\" line_id=\"\" id=\"node_2\">asd<br></p></li>' WHERE (`documents`.`id` = 5)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`text`, `updated_at`, `document_id`, `created_at`, `domid`, `parent_id`) VALUES ('root', '2010-12-25 20:13:52', NULL, '2010-12-25 20:13:52', NULL, NULL)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.2ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 5)
+Completed 200 OK in 85ms (Views: 4.0ms | ActiveRecord: 3.1ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:14:08 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 8ms (Views: 7.3ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:14:12 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308051193\" line_id=\"\" id=\"node_2\"><br>dfasd</p></li>", "id"=>"5"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 5) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308051193\" line_id=\"\" id=\"node_2\"><br>dfasd</p></li>', `updated_at` = '2010-12-25 20:14:12' WHERE (`documents`.`id` = 5)[0m
+  [1m[35mSQL (0.7ms)[0m  COMMIT
+  [1m[36mSQL (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (1.0ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`document_id`, `domid`, `created_at`, `updated_at`, `parent_id`, `text`) VALUES (NULL, NULL, '2010-12-25 20:14:12', '2010-12-25 20:14:12', NULL, 'root')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 5)[0m
+Completed 200 OK in 86ms (Views: 4.1ms | ActiveRecord: 3.4ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:14:31 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.7ms)
+Completed 200 OK in 8ms (Views: 7.4ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:14:33 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308072819\" line_id=\"\" id=\"node_2\"><br>asda</p></li>", "id"=>"5"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 5) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.4ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:14:33', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308072819\" line_id=\"\" id=\"node_2\"><br>asda</p></li>' WHERE (`documents`.`id` = 5)
+  [1m[36mSQL (1.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`parent_id`, `updated_at`, `domid`, `document_id`, `created_at`, `text`) VALUES (NULL, '2010-12-25 20:14:33', NULL, NULL, '2010-12-25 20:14:33', 'root')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 5)
+Completed 200 OK in 44ms (Views: 4.2ms | ActiveRecord: 4.4ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:14:42 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 7ms (Views: 7.0ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 15:14:44 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `documents`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `documents` (`updated_at`, `created_at`, `html`, `name`) VALUES ('2010-12-25 20:14:44', '2010-12-25 20:14:44', NULL, '1293308084')[0m
+  [1m[35mSQL (0.6ms)[0m  COMMIT
+Completed 200 OK in 20ms (Views: 5.1ms | ActiveRecord: 1.6ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:14:46 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308085001\" line_id=\"\" id=\"node_2\">asda<br></p></li>", "id"=>"6"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 6) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308085001\" line_id=\"\" id=\"node_2\">asda<br></p></li>', `updated_at` = '2010-12-25 20:14:46' WHERE (`documents`.`id` = 6)[0m
+  [1m[35mSQL (39.8ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `lines`
+  [1m[36mAREL (0.3ms)[0m  [1mINSERT INTO `lines` (`document_id`, `updated_at`, `parent_id`, `text`, `created_at`, `domid`) VALUES (NULL, '2010-12-25 20:14:46', NULL, 'root', '2010-12-25 20:14:46', NULL)[0m
+  [1m[35mSQL (0.2ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`document_id`, `updated_at`, `parent_id`, `text`, `created_at`, `domid`) VALUES (6, '2010-12-25 20:14:46', 28, 'asda', '2010-12-25 20:14:46', NULL)
+  [1m[36mSQL (0.7ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `mems` (`strength`, `created_at`, `status`, `line_id`, `updated_at`) VALUES (0.5, '2010-12-25 20:14:46', 1, 29, '2010-12-25 20:14:46')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 6)
+Completed 200 OK in 153ms (Views: 4.2ms | ActiveRecord: 44.7ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:15:07 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (3.0ms)
+Completed 200 OK in 9ms (Views: 8.6ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:15:12 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308110137\" line_id=\"\" id=\"node_2\"><br>sdfa</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308110417\" line_id=\"\">sd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308110553\" line_id=\"\">fas<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308110713\" line_id=\"\">df<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293308110849\" line_id=\"\">as<br></p><p id=\"node_7\" active=\"false\" class=\"outline_node\" changed=\"1293308110985\" line_id=\"\">dfa<br></p></li>", "id"=>"6"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 6) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mUPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308110137\" line_id=\"\" id=\"node_2\"><br>sdfa</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308110417\" line_id=\"\">sd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308110553\" line_id=\"\">fas<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308110713\" line_id=\"\">df<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293308110849\" line_id=\"\">as<br></p><p id=\"node_7\" active=\"false\" class=\"outline_node\" changed=\"1293308110985\" line_id=\"\">dfa<br></p></li>', `updated_at` = '2010-12-25 20:15:12' WHERE (`documents`.`id` = 6)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`created_at`, `domid`, `parent_id`, `updated_at`, `text`, `document_id`) VALUES ('2010-12-25 20:15:12', NULL, NULL, '2010-12-25 20:15:12', 'root', NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 6)[0m
+Completed 200 OK in 43ms (Views: 4.4ms | ActiveRecord: 2.6ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:20:54 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 7ms (Views: 6.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:21:02 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.9ms)
+Completed 200 OK in 9ms (Views: 8.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:21:07 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 7ms (Views: 6.6ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:21:12 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308469113\" line_id=\"\" id=\"node_2\"><br>asdfasdf</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308469872\" line_id=\"\">asdf<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308470128\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308470248\" line_id=\"\">df<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293308470392\" line_id=\"\">asd<br></p></li>", "id"=>"6"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 6) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.4ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:21:12', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308469113\" line_id=\"\" id=\"node_2\"><br>asdfasdf</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308469872\" line_id=\"\">asdf<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308470128\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308470248\" line_id=\"\">df<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293308470392\" line_id=\"\">asd<br></p></li>' WHERE (`documents`.`id` = 6)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `created_at`, `updated_at`, `parent_id`, `domid`, `document_id`) VALUES ('root', '2010-12-25 20:21:12', '2010-12-25 20:21:12', NULL, NULL, NULL)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.2ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 6)
+Completed 200 OK in 42ms (Views: 4.3ms | ActiveRecord: 2.8ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:21:43 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 9ms (Views: 8.3ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:21:47 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308504913\" line_id=\"\" id=\"node_2\">sadf<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308505329\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308505576\" line_id=\"\">fa<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308505705\" line_id=\"\">sdf<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308505705\" line_id=\"\">a<br></p></li>", "id"=>"6"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 6) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mUPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308504913\" line_id=\"\" id=\"node_2\">sadf<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308505329\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308505576\" line_id=\"\">fa<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308505705\" line_id=\"\">sdf<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308505705\" line_id=\"\">a<br></p></li>', `updated_at` = '2010-12-25 20:21:47' WHERE (`documents`.`id` = 6)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `parent_id`, `updated_at`, `domid`, `document_id`, `created_at`) VALUES ('root', NULL, '2010-12-25 20:21:47', NULL, NULL, '2010-12-25 20:21:47')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.2ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 6)[0m
+Completed 200 OK in 86ms (Views: 4.1ms | ActiveRecord: 2.6ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:21:58 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 7ms (Views: 6.2ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 15:22:03 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `documents` (`updated_at`, `created_at`, `html`, `name`) VALUES ('2010-12-25 20:22:03', '2010-12-25 20:22:03', NULL, '1293308523')
+  [1m[36mSQL (41.2ms)[0m  [1mCOMMIT[0m
+Completed 200 OK in 64ms (Views: 8.3ms | ActiveRecord: 42.3ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:22:04 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p><br>a</p><p active=\"false\" class=\"outline_node\" changed=\"1293308520425\" line_id=\"\" id=\"node_2\">asdf<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308520704\" line_id=\"\">as<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308520833\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308520833\" line_id=\"\">a<br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:22:04', `html` = '<li><p><br>a</p><p active=\"false\" class=\"outline_node\" changed=\"1293308520425\" line_id=\"\" id=\"node_2\">asdf<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308520704\" line_id=\"\">as<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308520833\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308520833\" line_id=\"\">a<br></p></li>' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `created_at`, `document_id`, `text`, `parent_id`) VALUES ('2010-12-25 20:22:04', NULL, '2010-12-25 20:22:04', NULL, 'root', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `domid`, `created_at`, `document_id`, `text`, `parent_id`) VALUES ('2010-12-25 20:22:04', NULL, '2010-12-25 20:22:04', 7, 'a', 33)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `mems`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `mems` (`updated_at`, `strength`, `created_at`, `status`, `line_id`) VALUES ('2010-12-25 20:22:04', 0.5, '2010-12-25 20:22:04', 1, 34)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `created_at`, `document_id`, `text`, `parent_id`) VALUES ('2010-12-25 20:22:04', NULL, '2010-12-25 20:22:04', 7, 'a', 34)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `mems` (`updated_at`, `strength`, `created_at`, `status`, `line_id`) VALUES ('2010-12-25 20:22:04', 0.5, '2010-12-25 20:22:04', 1, 35)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `created_at`, `document_id`, `text`, `parent_id`) VALUES ('2010-12-25 20:22:04', 'node_2', '2010-12-25 20:22:04', 7, 'asdf', 34)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `mems` (`updated_at`, `strength`, `created_at`, `status`, `line_id`) VALUES ('2010-12-25 20:22:04', 0.5, '2010-12-25 20:22:04', 1, 36)[0m
+  [1m[35mSQL (0.2ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `created_at`, `document_id`, `text`, `parent_id`) VALUES ('2010-12-25 20:22:04', 'node_3', '2010-12-25 20:22:04', 7, 'as', 34)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `mems` (`updated_at`, `strength`, `created_at`, `status`, `line_id`) VALUES ('2010-12-25 20:22:04', 0.5, '2010-12-25 20:22:04', 1, 37)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `created_at`, `document_id`, `text`, `parent_id`) VALUES ('2010-12-25 20:22:04', 'node_4', '2010-12-25 20:22:04', 7, 'df', 34)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `mems` (`updated_at`, `strength`, `created_at`, `status`, `line_id`) VALUES ('2010-12-25 20:22:04', 0.5, '2010-12-25 20:22:04', 1, 38)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `created_at`, `document_id`, `text`, `parent_id`) VALUES ('2010-12-25 20:22:04', NULL, '2010-12-25 20:22:04', 7, 'a', 34)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `mems` (`updated_at`, `strength`, `created_at`, `status`, `line_id`) VALUES ('2010-12-25 20:22:04', 0.5, '2010-12-25 20:22:04', 1, 39)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 87ms (Views: 4.3ms | ActiveRecord: 10.9ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:22:21 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 7ms (Views: 6.8ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:22:26 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308542849\" line_id=\"\" id=\"node_2\"><br>asdf</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308543370\" line_id=\"\">asdf<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308543370\" line_id=\"\">a<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308543785\" line_id=\"\">sdfa<br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308542849\" line_id=\"\" id=\"node_2\"><br>asdf</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308543370\" line_id=\"\">asdf<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308543370\" line_id=\"\">a<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308543785\" line_id=\"\">sdfa<br></p></li>', `updated_at` = '2010-12-25 20:22:26' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`parent_id`, `text`, `updated_at`, `document_id`, `created_at`, `domid`) VALUES (NULL, 'root', '2010-12-25 20:22:26', NULL, '2010-12-25 20:22:26', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 46ms (Views: 4.3ms | ActiveRecord: 2.9ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:22:44 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.7ms)
+Completed 200 OK in 8ms (Views: 7.8ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:22:49 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308566024\" line_id=\"\" id=\"node_2\">as<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308566184\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308566321\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308566489\" line_id=\"\">df<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293308566600\" line_id=\"\">as<br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.4ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.4ms)[0m  [1mUPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308566024\" line_id=\"\" id=\"node_2\">as<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308566184\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308566321\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308566489\" line_id=\"\">df<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293308566600\" line_id=\"\">as<br></p></li>', `updated_at` = '2010-12-25 20:22:49' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`document_id`, `created_at`, `updated_at`, `domid`, `parent_id`, `text`) VALUES (NULL, '2010-12-25 20:22:49', '2010-12-25 20:22:49', NULL, NULL, 'root')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 92ms (Views: 4.2ms | ActiveRecord: 3.0ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:23:02 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.9ms)
+Completed 200 OK in 8ms (Views: 7.5ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:23:05 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308583472\" line_id=\"\" id=\"node_2\"><br>asdfas</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308583944\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308584073\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308584216\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308584216\" line_id=\"\">a<br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:23:05', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308583472\" line_id=\"\" id=\"node_2\"><br>asdfas</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308583944\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308584073\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308584216\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308584216\" line_id=\"\">a<br></p></li>' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (34.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `parent_id`, `updated_at`, `domid`, `created_at`, `document_id`) VALUES ('root', NULL, '2010-12-25 20:23:05', NULL, '2010-12-25 20:23:05', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.4ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 128ms (Views: 4.8ms | ActiveRecord: 36.6ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:25:22 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.8ms)
+Completed 200 OK in 8ms (Views: 7.8ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:25:27 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308724497\" line_id=\"\" id=\"node_2\"><br>dfa</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308724713\" line_id=\"\">sdf<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308724713\" line_id=\"\">a<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308724952\" line_id=\"\">sdf<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308725128\" line_id=\"\">as<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308725128\" line_id=\"\"><br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:25:27', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308724497\" line_id=\"\" id=\"node_2\"><br>dfa</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308724713\" line_id=\"\">sdf<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308724713\" line_id=\"\">a<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308724952\" line_id=\"\">sdf<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308725128\" line_id=\"\">as<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293308725128\" line_id=\"\"><br></p></li>' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (1.2ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`domid`, `text`, `created_at`, `document_id`, `parent_id`, `updated_at`) VALUES (NULL, 'root', '2010-12-25 20:25:27', NULL, NULL, '2010-12-25 20:25:27')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 47ms (Views: 4.3ms | ActiveRecord: 3.1ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:25:52 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 8ms (Views: 7.2ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:26:03 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293308754513\" line_id=\"\" id=\"node_2\">asfas<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308754985\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308755152\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308755297\" line_id=\"\">df<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293308755433\" line_id=\"\">as<br></p><p id=\"node_7\" active=\"false\" class=\"outline_node\" changed=\"1293308755576\" line_id=\"\">dfas<br></p><p id=\"node_8\" active=\"true\" class=\"outline_node\" changed=\"1293308755880\" line_id=\"\">df - asdfa<br></p><p active=\"true\" class=\"outline_node\" changed=\"1293308755880\" line_id=\"\"><br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293308754513\" line_id=\"\" id=\"node_2\">asfas<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293308754985\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293308755152\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293308755297\" line_id=\"\">df<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293308755433\" line_id=\"\">as<br></p><p id=\"node_7\" active=\"false\" class=\"outline_node\" changed=\"1293308755576\" line_id=\"\">dfas<br></p><p id=\"node_8\" active=\"true\" class=\"outline_node\" changed=\"1293308755880\" line_id=\"\">df - asdfa<br></p><p active=\"true\" class=\"outline_node\" changed=\"1293308755880\" line_id=\"\"><br></p></li>', `updated_at` = '2010-12-25 20:26:03' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`domid`, `document_id`, `created_at`, `text`, `parent_id`, `updated_at`) VALUES (NULL, NULL, '2010-12-25 20:26:03', 'root', NULL, '2010-12-25 20:26:03')
+  [1m[36mSQL (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 51ms (Views: 4.4ms | ActiveRecord: 2.7ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:31:38 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.6ms)
+Completed 200 OK in 58ms (Views: 7.2ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:31:42 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309100526\" line_id=\"\" id=\"node_2\"><br>asd</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309100762\" line_id=\"\">af<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309100894\" line_id=\"\">sdf<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309100894\" line_id=\"\"><br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:31:42', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309100526\" line_id=\"\" id=\"node_2\"><br>asd</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309100762\" line_id=\"\">af<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309100894\" line_id=\"\">sdf<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309100894\" line_id=\"\"><br></p></li>' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`document_id`, `domid`, `created_at`, `parent_id`, `updated_at`, `text`) VALUES (NULL, NULL, '2010-12-25 20:31:42', NULL, '2010-12-25 20:31:42', 'root')[0m
+  [1m[35mSQL (0.2ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 48ms (Views: 4.4ms | ActiveRecord: 2.6ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:34:16 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 8ms (Views: 8.0ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:34:21 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309258882\" line_id=\"\" id=\"node_2\"><br>asd</p><p active=\"false\" class=\"outline_node\" changed=\"1293309258882\" line_id=\"\">f<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309259226\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309259466\" line_id=\"\">fa<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309259570\" line_id=\"\">sd<br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:34:21', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309258882\" line_id=\"\" id=\"node_2\"><br>asd</p><p active=\"false\" class=\"outline_node\" changed=\"1293309258882\" line_id=\"\">f<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309259226\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309259466\" line_id=\"\">fa<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309259570\" line_id=\"\">sd<br></p></li>' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (37.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`text`, `created_at`, `parent_id`, `updated_at`, `document_id`, `domid`) VALUES ('root', '2010-12-25 20:34:21', NULL, '2010-12-25 20:34:21', NULL, NULL)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 88ms (Views: 4.3ms | ActiveRecord: 40.1ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:35:09 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.7ms)
+Completed 200 OK in 8ms (Views: 7.4ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:35:14 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309312021\" line_id=\"\" id=\"node_2\"><br>asdf</p><p active=\"false\" class=\"outline_node\" changed=\"1293309312021\" line_id=\"\">a<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309312348\" line_id=\"\">sdfa<br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.3ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:35:14', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309312021\" line_id=\"\" id=\"node_2\"><br>asdf</p><p active=\"false\" class=\"outline_node\" changed=\"1293309312021\" line_id=\"\">a<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309312348\" line_id=\"\">sdfa<br></p></li>' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `domid`, `document_id`, `parent_id`, `text`, `created_at`) VALUES ('2010-12-25 20:35:14', NULL, NULL, NULL, 'root', '2010-12-25 20:35:14')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 113ms (Views: 4.4ms | ActiveRecord: 2.9ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:35:21 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.7ms)
+Completed 200 OK in 8ms (Views: 7.7ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:35:25 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309323068\" line_id=\"\" id=\"node_2\"><br>asdfas</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309323484\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309323484\" line_id=\"\">a<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309323484\" line_id=\"\">s<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309323788\" line_id=\"\">dfa<br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:35:25', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309323068\" line_id=\"\" id=\"node_2\"><br>asdfas</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309323484\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309323484\" line_id=\"\">a<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309323484\" line_id=\"\">s<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309323788\" line_id=\"\">dfa<br></p></li>' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`updated_at`, `parent_id`, `domid`, `document_id`, `text`, `created_at`) VALUES ('2010-12-25 20:35:25', NULL, NULL, NULL, 'root', '2010-12-25 20:35:25')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.2ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 97ms (Views: 4.3ms | ActiveRecord: 2.9ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:35:42 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 8ms (Views: 7.9ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:35:45 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309343716\" line_id=\"\" id=\"node_2\"><br>asdf</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309344044\" line_id=\"\">asd<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309344044\" line_id=\"\">f<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309344340\" line_id=\"\">asdf<br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:35:45', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309343716\" line_id=\"\" id=\"node_2\"><br>asdf</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309344044\" line_id=\"\">asd<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309344044\" line_id=\"\">f<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309344340\" line_id=\"\">asdf<br></p></li>' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`created_at`, `domid`, `document_id`, `parent_id`, `text`, `updated_at`) VALUES ('2010-12-25 20:35:45', NULL, NULL, NULL, 'root', '2010-12-25 20:35:45')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 91ms (Views: 4.2ms | ActiveRecord: 2.6ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:36:06 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (3.1ms)
+Completed 200 OK in 9ms (Views: 8.1ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:36:10 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309368109\" line_id=\"\" id=\"node_2\"><br>asd</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309368356\" line_id=\"\">fa<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309368508\" line_id=\"\">sd<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309368676\" line_id=\"\">fas<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309368676\" line_id=\"\">d<br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:36:10', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309368109\" line_id=\"\" id=\"node_2\"><br>asd</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309368356\" line_id=\"\">fa<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309368508\" line_id=\"\">sd<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309368676\" line_id=\"\">fas<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309368676\" line_id=\"\">d<br></p></li>' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `created_at`, `parent_id`, `text`, `document_id`) VALUES ('2010-12-25 20:36:10', NULL, '2010-12-25 20:36:10', NULL, 'root', NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 56ms (Views: 5.3ms | ActiveRecord: 2.5ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:36:22 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 7ms (Views: 6.8ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:36:26 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309384615\" line_id=\"\" id=\"node_2\"><br>adsfas</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309384980\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309385108\" line_id=\"\">asdfa<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309385108\" line_id=\"\">s<br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:36:26', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309384615\" line_id=\"\" id=\"node_2\"><br>adsfas</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309384980\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309385108\" line_id=\"\">asdfa<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309385108\" line_id=\"\">s<br></p></li>' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (36.9ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `created_at`, `document_id`, `parent_id`, `domid`, `text`) VALUES ('2010-12-25 20:36:26', '2010-12-25 20:36:26', NULL, NULL, NULL, 'root')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 86ms (Views: 4.5ms | ActiveRecord: 39.2ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:36:46 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 8ms (Views: 8.1ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:36:50 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309408204\" line_id=\"\" id=\"node_2\"><br>asdfa</p><p active=\"false\" class=\"outline_node\" changed=\"1293309408204\" line_id=\"\">s<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309408644\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309408644\" line_id=\"\">a<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309408901\" line_id=\"\">sda<br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.4ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.5ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:36:50', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309408204\" line_id=\"\" id=\"node_2\"><br>asdfa</p><p active=\"false\" class=\"outline_node\" changed=\"1293309408204\" line_id=\"\">s<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309408644\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309408644\" line_id=\"\">a<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309408901\" line_id=\"\">sda<br></p></li>' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `document_id`, `created_at`, `updated_at`, `parent_id`, `domid`) VALUES ('root', NULL, '2010-12-25 20:36:50', '2010-12-25 20:36:50', NULL, NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 86ms (Views: 4.4ms | ActiveRecord: 3.4ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:37:17 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.6ms)
+Completed 200 OK in 8ms (Views: 8.0ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:37:21 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309439500\" line_id=\"\" id=\"node_2\"><br>sd</p><p active=\"false\" class=\"outline_node\" changed=\"1293309439500\" line_id=\"\">f<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309439724\" line_id=\"\">asd<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309439724\" line_id=\"\">f<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309439989\" line_id=\"\">as<br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.3ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309439500\" line_id=\"\" id=\"node_2\"><br>sd</p><p active=\"false\" class=\"outline_node\" changed=\"1293309439500\" line_id=\"\">f<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309439724\" line_id=\"\">asd<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309439724\" line_id=\"\">f<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309439989\" line_id=\"\">as<br></p></li>', `updated_at` = '2010-12-25 20:37:21' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (1.1ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `text`, `created_at`, `updated_at`, `document_id`, `domid`) VALUES (NULL, 'root', '2010-12-25 20:37:21', '2010-12-25 20:37:21', NULL, NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 76ms (Views: 4.4ms | ActiveRecord: 3.3ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:37:37 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 8ms (Views: 7.2ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:37:41 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309458788\" line_id=\"\" id=\"node_2\"><br>sfda</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309459093\" line_id=\"\">sd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309459228\" line_id=\"\">fa<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309459388\" line_id=\"\">sdfa<br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  UPDATE `documents` SET `updated_at` = '2010-12-25 20:37:41', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309458788\" line_id=\"\" id=\"node_2\"><br>sfda</p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309459093\" line_id=\"\">sd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309459228\" line_id=\"\">fa<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309459388\" line_id=\"\">sdfa<br></p></li>' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`text`, `domid`, `updated_at`, `created_at`, `parent_id`, `document_id`) VALUES ('root', NULL, '2010-12-25 20:37:41', '2010-12-25 20:37:41', NULL, NULL)
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.3ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 87ms (Views: 4.3ms | ActiveRecord: 2.8ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:37:53 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.5ms)
+Completed 200 OK in 8ms (Views: 7.5ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:37:56 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309474692\" line_id=\"\" id=\"node_2\"><br>asd</p><p active=\"false\" class=\"outline_node\" changed=\"1293309474692\" line_id=\"\">f<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309474964\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309475204\" line_id=\"\">fa<br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mUPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309474692\" line_id=\"\" id=\"node_2\"><br>asd</p><p active=\"false\" class=\"outline_node\" changed=\"1293309474692\" line_id=\"\">f<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309474964\" line_id=\"\">asd<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309475204\" line_id=\"\">fa<br></p></li>', `updated_at` = '2010-12-25 20:37:56' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`parent_id`, `domid`, `text`, `created_at`, `document_id`, `updated_at`) VALUES (NULL, NULL, 'root', '2010-12-25 20:37:56', NULL, '2010-12-25 20:37:56')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+Completed 200 OK in 91ms (Views: 4.3ms | ActiveRecord: 2.6ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:38:20 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (3.7ms)
+Completed 200 OK in 8ms (Views: 7.9ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:38:24 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309501620\" line_id=\"\" id=\"node_2\">asdf<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309501972\" line_id=\"\">as<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309502116\" line_id=\"\">df<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309502284\" line_id=\"\">as<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293309502404\" line_id=\"\">df<br></p><p id=\"node_7\" active=\"false\" class=\"outline_node\" changed=\"1293309502556\" line_id=\"\">as<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309502556\" line_id=\"\"><br></p></li>", "id"=>"7"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309501620\" line_id=\"\" id=\"node_2\">asdf<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309501972\" line_id=\"\">as<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309502116\" line_id=\"\">df<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309502284\" line_id=\"\">as<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293309502404\" line_id=\"\">df<br></p><p id=\"node_7\" active=\"false\" class=\"outline_node\" changed=\"1293309502556\" line_id=\"\">as<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309502556\" line_id=\"\"><br></p></li>', `updated_at` = '2010-12-25 20:38:24' WHERE (`documents`.`id` = 7)
+  [1m[36mSQL (34.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`created_at`, `domid`, `document_id`, `parent_id`, `text`, `updated_at`) VALUES ('2010-12-25 20:38:24', NULL, NULL, NULL, 'root', '2010-12-25 20:38:24')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mLine Load (0.4ms)[0m  SELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)
+Completed 200 OK in 133ms (Views: 4.4ms | ActiveRecord: 36.8ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:38:36 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309501620\" line_id=\"36\" id=\"node_2\">asdf<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309501972\" line_id=\"37\">as<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309502116\" line_id=\"38\">df<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309502284\" line_id=\"\">as<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293309502404\" line_id=\"\">df<br></p><p id=\"node_7\" active=\"false\" class=\"outline_node\" changed=\"1293309502556\" line_id=\"\">as<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309502556\" line_id=\"\"><br></p></li>", "id"=>"7"}
+  [1m[36mDocument Load (0.2ms)[0m  [1mSELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 7) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.3ms)[0m  [1mUPDATE `documents` SET `updated_at` = '2010-12-25 20:38:36', `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309501620\" line_id=\"36\" id=\"node_2\">asdf<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309501972\" line_id=\"37\">as<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309502116\" line_id=\"38\">df<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309502284\" line_id=\"\">as<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293309502404\" line_id=\"\">df<br></p><p id=\"node_7\" active=\"false\" class=\"outline_node\" changed=\"1293309502556\" line_id=\"\">as<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309502556\" line_id=\"\"><br></p></li>' WHERE (`documents`.`id` = 7)[0m
+  [1m[35mSQL (0.6ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  describe `lines`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`text`, `created_at`, `domid`, `document_id`, `updated_at`, `parent_id`) VALUES ('root', '2010-12-25 20:38:36', NULL, NULL, '2010-12-25 20:38:36', NULL)[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 7)[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.1ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.1ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.1ms)[0m  [1mCOMMIT[0m
+Completed 200 OK in 53ms (Views: 4.8ms | ActiveRecord: 3.5ms)
+
+
+Started GET "/" for 127.0.0.1 at Sat Dec 25 15:38:43 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 8ms (Views: 7.2ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/create" for 127.0.0.1 at Sat Dec 25 15:38:45 -0500 2010
+  Processing by DocumentsController#create as JS
+  Parameters: {"name"=>"docx"}
+  [1m[35mSQL (34.4ms)[0m  BEGIN
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mAREL (2.1ms)[0m  INSERT INTO `documents` (`html`, `updated_at`, `name`, `created_at`) VALUES (NULL, '2010-12-25 20:38:46', '1293309526', '2010-12-25 20:38:46')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+Completed 200 OK in 60ms (Views: 6.1ms | ActiveRecord: 37.9ms)
+
+
+Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:38:49 -0500 2010
+  Processing by DocumentsController#update as JS
+  Parameters: {"html"=>"<li><p active=\"false\" class=\"outline_node\" changed=\"1293309527396\" line_id=\"\" id=\"node_2\">as<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309527492\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309527676\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309527836\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309527836\" line_id=\"\">a<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293309528036\" line_id=\"\">sda<br></p></li>", "id"=>"8"}
+  [1m[35mDocument Load (0.2ms)[0m  SELECT `documents`.* FROM `documents` WHERE (`documents`.`id` = 8) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.2ms)[0m  UPDATE `documents` SET `html` = '<li><p active=\"false\" class=\"outline_node\" changed=\"1293309527396\" line_id=\"\" id=\"node_2\">as<br></p><p id=\"node_3\" active=\"false\" class=\"outline_node\" changed=\"1293309527492\" line_id=\"\">df<br></p><p id=\"node_4\" active=\"false\" class=\"outline_node\" changed=\"1293309527676\" line_id=\"\">as<br></p><p id=\"node_5\" active=\"false\" class=\"outline_node\" changed=\"1293309527836\" line_id=\"\">df<br></p><p active=\"false\" class=\"outline_node\" changed=\"1293309527836\" line_id=\"\">a<br></p><p id=\"node_6\" active=\"false\" class=\"outline_node\" changed=\"1293309528036\" line_id=\"\">sda<br></p></li>', `updated_at` = '2010-12-25 20:38:49' WHERE (`documents`.`id` = 8)
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mAREL (0.2ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `parent_id`, `document_id`, `created_at`, `text`) VALUES ('2010-12-25 20:38:49', NULL, NULL, NULL, '2010-12-25 20:38:49', 'root')
+  [1m[36mSQL (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `lines` (`updated_at`, `domid`, `parent_id`, `document_id`, `created_at`, `text`) VALUES ('2010-12-25 20:38:49', NULL, 58, 8, '2010-12-25 20:38:49', 'as')[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  describe `mems`
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `mems` (`line_id`, `created_at`, `status`, `strength`, `updated_at`) VALUES (59, '2010-12-25 20:38:49', 1, 0.5, '2010-12-25 20:38:49')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.3ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `parent_id`, `document_id`, `created_at`, `text`) VALUES ('2010-12-25 20:38:49', 'node_2', 59, 8, '2010-12-25 20:38:49', 'as')
+  [1m[36mSQL (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `mems` (`line_id`, `created_at`, `status`, `strength`, `updated_at`) VALUES (60, '2010-12-25 20:38:49', 1, 0.5, '2010-12-25 20:38:49')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `parent_id`, `document_id`, `created_at`, `text`) VALUES ('2010-12-25 20:38:49', 'node_3', 59, 8, '2010-12-25 20:38:49', 'df')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `mems` (`line_id`, `created_at`, `status`, `strength`, `updated_at`) VALUES (61, '2010-12-25 20:38:49', 1, 0.5, '2010-12-25 20:38:49')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `parent_id`, `document_id`, `created_at`, `text`) VALUES ('2010-12-25 20:38:49', 'node_4', 59, 8, '2010-12-25 20:38:49', 'as')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `mems` (`line_id`, `created_at`, `status`, `strength`, `updated_at`) VALUES (62, '2010-12-25 20:38:49', 1, 0.5, '2010-12-25 20:38:49')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `parent_id`, `document_id`, `created_at`, `text`) VALUES ('2010-12-25 20:38:49', 'node_5', 59, 8, '2010-12-25 20:38:49', 'df')
+  [1m[36mSQL (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mAREL (0.2ms)[0m  [1mINSERT INTO `mems` (`line_id`, `created_at`, `status`, `strength`, `updated_at`) VALUES (63, '2010-12-25 20:38:49', 1, 0.5, '2010-12-25 20:38:49')[0m
+  [1m[35mSQL (0.5ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `parent_id`, `document_id`, `created_at`, `text`) VALUES ('2010-12-25 20:38:49', NULL, 59, 8, '2010-12-25 20:38:49', 'a')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `mems` (`line_id`, `created_at`, `status`, `strength`, `updated_at`) VALUES (64, '2010-12-25 20:38:49', 1, 0.5, '2010-12-25 20:38:49')[0m
+  [1m[35mSQL (0.4ms)[0m  COMMIT
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mAREL (0.1ms)[0m  INSERT INTO `lines` (`updated_at`, `domid`, `parent_id`, `document_id`, `created_at`, `text`) VALUES ('2010-12-25 20:38:49', 'node_6', 59, 8, '2010-12-25 20:38:49', 'sda')
+  [1m[36mSQL (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN
+  [1m[36mAREL (0.1ms)[0m  [1mINSERT INTO `mems` (`line_id`, `created_at`, `status`, `strength`, `updated_at`) VALUES (65, '2010-12-25 20:38:49', 1, 0.5, '2010-12-25 20:38:49')[0m
+  [1m[35mSQL (0.3ms)[0m  COMMIT
+  [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 8)[0m
+Completed 200 OK in 93ms (Views: 4.5ms | ActiveRecord: 12.8ms)
