@@ -60,13 +60,16 @@ var cOutline = Class.create({
         
         new Ajax.Request('/update', {
             method: 'post',
-            parameters: {'html': "<li>"+this.iDoc.document.getElementsByTagName('body')[0].innerHTML+"</li>",
+            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
                          'id': $('document_name').value
             },
             onSuccess: function(transport) {
                 $('save_return').update(transport.responseText);
-                var json = transport.responseJSON;
-                console.log(json);
+                var lineIds = transport.responseText.evalJSON();
+                this.updateIds(lineIds);
+            }.bind(this),
+            onComplete: function(transport) {
+                $('save_return').update(transport.responseText);
             }
         });
 
@@ -93,6 +96,17 @@ var cOutline = Class.create({
             node.setAttribute('active', false);
             doc.rightRail.cards.get(nodeId).deactivate();
         }
+    },
+
+    updateIds: function(lineIds) {
+        console.log('update ids');
+        console.log(lineIds);
+        console.log($H(lineIds));
+        $H(lineIds).each(function(idArray) {
+            console.log(idArray);
+            console.log(this.iDoc.document.getElementById(idArray[0]));
+            this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
+        }.bind(this));
     }
 });
 

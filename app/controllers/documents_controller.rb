@@ -43,15 +43,17 @@ class DocumentsController < ApplicationController
       
       @document.update_attribute(:html,html)
       dp = DocumentParser.new(html)
-      Line.preorder_save(dp.doc.children, dp.root, @document.id)
+      root = Line.create(:document_id => @document.id, :text => 'root')
+      Line.preorder_save(dp.doc.children, root, @document.id)
 
     else
     
       @document.update_attribute(:html,html)
       existing_lines = @document.lines
       dp = DocumentParser.new(html)
+      root = Line.find_by_document_id(@document.id)
       Line.update_line(dp.doc.children,existing_lines)
-      Line.preorder_augment(dp.doc.children, dp.root, existing_lines, @document.id)
+      Line.preorder_augment(dp.doc.children, root, existing_lines, @document.id)
       
     end
     

@@ -288,4 +288,37 @@ class LineTest < ActiveSupport::TestCase
     assert_equal('a just to keep track', lines_tree.children[1].children[0].text)
     assert_equal('deep c', lines_tree.children[1].children[2].children[2].text)
   end
+
+  def test_save_proper_roots
+
+    name = 'roots!'
+    html = '<body><p id="node_2" line_id="" changed="1293391053370" class="outline_node" active="false">q</p><p line_id="" changed="1293391053768" class="outline_node" active="false" id="node_3">w</p><p line_id="" changed="1293391054264" class="outline_node" active="false" id="node_4">e</p><p line_id="" changed="1293391056744" class="outline_node" active="false" id="node_5">r<br></p><p line_id="" changed="1293391056744" class="outline_node" active="false">t</p><p line_id="" changed="1293391056744" class="outline_node" active="false" id="node_6">y</p></body>'
+
+    #save
+    document = Document.find_or_create_by_name(name)
+    root = Line.create(:text => "root", :document_id => document.id)
+    dp = DocumentsHelper::DocumentParser.new(html)
+    Line.preorder_save(dp.doc.children, root, document.id)
+
+    #get recently saved
+    document = Document.find_by_name(name)
+    lines_all = Line.find(:all)
+    lines_tree = Line.find(:first,
+                          :include => { :children => { :children => { :children => { :children => :children }}}},
+                          :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
+    lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
+
+#    puts lines_all.to_yaml
+
+    #cardinality assertions
+    assert_equal(7, lines_all.size)
+#    assert_equal(7, lines.size)
+#    assert_equal(3, lines_tree.children.size)
+#    assert_equal(3, lines_tree.children[1].children.size)
+#
+#    #order assertions
+#    assert_equal('root', lines_tree.text)
+#    assert_equal('a This is a test - think', lines_tree.children[0].text)
+#    assert_equal('a just to keep track', lines_tree.children[1].children[0].text)
+  end
 end
