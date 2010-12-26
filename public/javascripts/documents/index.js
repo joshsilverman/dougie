@@ -64,11 +64,11 @@ var cOutline = Class.create({
         //activate/dactivate card
         if (checkbox.checked) {
             node.setAttribute('active', true);
-            doc.rightRail.cards[nodeId].activate();
+            doc.rightRail.cards.get(nodeId).activate();
         }
         else {
             node.setAttribute('active', false);
-            doc.rightRail.cards[nodeId].deactivate();
+            doc.rightRail.cards.get(nodeId).deactivate();
         }
     }
 });
@@ -156,12 +156,14 @@ var cOutlineHandlers = Class.create({
             console.log('error: invalid target tag type');
 
         //new card
-        else if (!id) doc.rightRail.createCard(target);
+        else if (!id) {
+            doc.rightRail.createCard(target);
+        }
 
         //existing card
-        else if (doc.rightRail.cards[id]) {
-            doc.rightRail.cards[id].update(target);
+        else if (doc.rightRail.cards.get(id)) {
             doc.rightRail.focus(id);
+            doc.rightRail.cards.get(id).update(target);
         }
 
         //error
@@ -172,7 +174,7 @@ var cOutlineHandlers = Class.create({
 var cRightRail = Class.create({
 
     cardCount: 0,
-    cards: {},
+    cards: new Hash(),
     inFocus: null,
 
     initialize: function() {
@@ -187,7 +189,7 @@ var cRightRail = Class.create({
         if (   node.tagName.toUpperCase() != 'LI'
             && node.tagName.toUpperCase() != 'P') return;
 
-        this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount)
+        this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount));
         this.focus(this.cardCount++);
     },
 
@@ -202,38 +204,47 @@ var cRightRail = Class.create({
             return;
         }
 
+        //scroll function
         var rightRail = document.getElementById("right_rail");
+        var scrollTo = function () {
+            rightRail.scrollTop = this.inFocus.offsetTop
+                - this.inFocus.getHeight()
+                - $('right_rail').getHeight()/2
+                - 10;
+        }.bind(this);
 
-        //check if already in focus
-        if(this.inFocus && this.inFocus.id == cardId) return
+        //check if already in focus - if so, just make sure scrollTtop is still correct
+        if(this.inFocus && this.inFocus.id == cardId) {
+            scrollTo();
+            return;
+        }
 
         //unfocus previously focused
         else if(this.inFocus && this.inFocus.id != cardId) {
             Element.removeClassName(this.inFocus, 'card_focus');
-            this.cards[doc.utilities.toNodeId(this.inFocus)].render(true);
+            var nodeIdPrev = doc.utilities.toNodeId(this.inFocus);
+            var nodePrev = doc.outline.iDoc.document.getElementById(nodeIdPrev);
+            this.cards.get(nodeIdPrev).update(nodePrev, true);
         }
 
         //focus
         this.inFocus = $(cardId);
         Element.addClassName(this.inFocus, 'card_focus');
-        rightRail.scrollTop = this.inFocus.offsetTop
-            - this.inFocus.getHeight()
-            - $('right_rail').getHeight()/2
-            - 10;
+        scrollTo();
     },
 
     /* render right rail - should not be called unless dones so explicitly by
      * user or the rail cards are no longer in sync with the  */
     sync: function() {
         
-        //collect all potential nodes - li/p with text
+        /* collect all potential nodes - li/p with text */
         var nodes = Element.select(doc.outline.iDoc.document, 'li, p')
             .findAll(function (node) {return node.innerHTML});
 
-        //either create or refresh all nodes
+        /* either create or refresh all nodes */
         nodes.each(function(node) {
             if (!node.id) 
-                this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount);
+                this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount++));
             else {
 
                 //truncate boolean true unless node being updated is in focus
@@ -242,11 +253,22 @@ var cRightRail = Class.create({
                     || doc.utilities.toNodeId(this.inFocus.id) != node.id;
 
                 //update
-                this.cards[node.id].update(node, truncate);
+                this.cards.get(node.id).update(node, truncate);
             }
         }.bind(this));
 
+        /* destroy cards if node no longer exists */
+        this.cards.each(function(cardArray) {
+            var nodeId = cardArray[0];
+            var card = cardArray[1];
+            var node = doc.outline.iDoc.document.getElementById(nodeId);
+            if (!node) card.destroy();
+        });
+
         //temp - update sync button count
+        $('sync_button').innerHTML =
+            'Sync - ' +
+            (parseInt($('sync_button').innerHTML.replace('Sync - ', '')) + 1)
 
     }
 });
@@ -265,7 +287,7 @@ var cCard = Class.create({
     updating: false,
 
     autoActivate: false,
-    autoActivated: true,    //if auto activated and later format becomes unnacceptable - autoDeactivate
+    autoActivated: false,    //if auto activated and later format becomes unnacceptable - autoDeactivate
 
     initialize: function(node, cardCount) {
 
@@ -287,9 +309,13 @@ var cCard = Class.create({
     },
 
     update: function(node, truncate) {
+
         this.updating = true;
+
+        Element.writeAttribute(node, {'changed': new Date().getTime()});
         this._parse($(node));
         this.render(truncate);
+
         this.updating = false;
     },
 
@@ -358,6 +384,11 @@ var cCard = Class.create({
 
     },
 
+    destroy: function() {
+        Element.remove(this.elmntCard);
+        doc.rightRail.cards.unset('node_' + this.cardNumber);
+    },
+
     _insert: function(cardHtml) {
 
         /* identify previous node in outline */
@@ -385,13 +416,8 @@ var cCard = Class.create({
         else if (cardIdPrev && !$(cardIdPrev)) {
 
             //@todo create previous card if does not exist
-            console.log('error: no previous card but there should be! creating...');
+            console.log('error: no previous card but there should be!');
             if (this.updating) console.log ('...while updating');
-
-            //create previous card
-            console.log(outlineNodePrev);
-            //doc.rightRail.createCard(outlineNodePrev);
-            console.log('previous card created');
 
             //temp
             $('cards').insert({bottom: cardHtml});
@@ -407,7 +433,7 @@ var cCard = Class.create({
         this.active = node.getAttribute('active') == "true";
 
         //definition
-        var defParts = this.nodeTxt.match(/(^[^-]+) - ([\s\S]+)$/);
+        var defParts = this.nodeTxt.match(/(^[\w\W]+) - ([\s\S]+)$/);
         if (defParts) {
 
             //set autoActivate member if this is the first time text has been parsable
