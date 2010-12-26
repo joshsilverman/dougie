@@ -87,24 +87,13 @@ var cOutline = Class.create({
         //activate/dactivate card
         if (checkbox.checked) {
             node.setAttribute('active', true);
-            doc.rightRail.cards[nodeId].activate();
+            doc.rightRail.cards.get(nodeId).activate();
         }
         else {
             node.setAttribute('active', false);
-            doc.rightRail.cards[nodeId].deactivate();
+            doc.rightRail.cards.get(nodeId).deactivate();
         }
-
-//        //focus on activated outline node
-//        this.focus(nodeId);
-
     }
-
-//    focus: function(nodeId) {
-//
-//        console.log(nodeId);
-//        var node = doc.outline.iDoc.document.getElementById(nodeId);
-//        node.focus();
-//    }
 });
 
 var cOutlineHandlers = Class.create({
@@ -114,39 +103,62 @@ var cOutlineHandlers = Class.create({
     initialize: function(iDoc) {
         //capture iframe keystroke events
         this.iDoc = iDoc;
+        this.iDoc.document.onkeyup = this.delegateHandler.bind(this);
         this.iDoc.document.onkeydown = this.delegateHandler.bind(this);
     },
 
     delegateHandler: function(event) {
 
-        //get real target - target in event object is wrong
+        /* get real target - target in event object is wrong */
+
         //@todo this is not quite there - sometimes it returns a ul; also, I
         //      couldn't overwrite event.target
         //@todo target may be be UL or BODY on return key!
         var range, target;
+        //trident?
         if (this.iDoc.document.selection) {
             range = this.iDoc.document.selection.createRange();
             target = range.parentElement();
         }
+        //gecko, webkit, others?
         else if (this.iDoc.window.getSelection) {
             range = this.iDoc.window.getSelection().getRangeAt(0);
-            target = range.commonAncestorContainer.parentNode;
+            var rangeParent = range.commonAncestorContainer;
+            var rangeGrandParent = range.commonAncestorContainer.parentNode;
+
+            //common select valid target
+            if (rangeParent.tagName == 'LI' || rangeParent.tagName == 'P')
+                target = rangeParent
+            else target = rangeGrandParent
         }
 
-        //invoke proper handlers
-        switch (event.keyCode) {
-            case Event.KEY_TAB:
-                this.onTab(event, target);
-                break;
-            case Event.KEY_RETURN:
-                this.onReturn(event, target);
-                break;
-            case Event.KEY_UP:break;
-            case Event.KEY_DOWN:break;
-            case Event.KEY_LEFT:break;
-            case Event.KEY_RIGHT:break;
-            default:
-                this.onLetter(event, target);
+        /* invoke proper handlers */
+
+        //keydown events
+        if (event.type == "keydown") {
+            switch (event.keyCode) {
+                case Event.KEY_TAB:
+                    this.onTab(event, target);
+                    break;
+                case Event.KEY_RETURN:break;
+                default:break;
+            }
+        }
+
+        //keyup events
+        else {
+            switch (event.keyCode) {
+                //down event caught
+                case Event.KEY_TAB:break;
+                case Event.KEY_RETURN:break;
+
+                case Event.KEY_UP:break;
+                case Event.KEY_DOWN:break;
+                case Event.KEY_LEFT:break;
+                case Event.KEY_RIGHT:break;
+                default:
+                    this.onLetter(event, target);
+            }
         }
     },
 
@@ -157,24 +169,24 @@ var cOutlineHandlers = Class.create({
         else doc.editor.execCommand('indent');
     },
 
-    onReturn: function(event, target) {
-
-        //@todo ajust spec - no need to add attributes until node has content
-        //      is this necessary
-    },
-
     onLetter: function(event, target) {
 
         //get core attributes
         var id = Element.readAttribute(target, 'id') || null;
 
+        //invalid target
+        if (target.tagName != 'P' && target.tagName != 'LI')
+            console.log('error: invalid target tag type');
+
         //new card
-        if (!id) doc.rightRail.createCard(target);
+        else if (!id) {
+            doc.rightRail.createCard(target);
+        }
 
         //existing card
-        else if (doc.rightRail.cards[id]) {
-            doc.rightRail.cards[id].update(target);
+        else if (doc.rightRail.cards.get(id)) {
             doc.rightRail.focus(id);
+            doc.rightRail.cards.get(id).update(target);
         }
 
         //error
@@ -185,10 +197,14 @@ var cOutlineHandlers = Class.create({
 var cRightRail = Class.create({
 
     cardCount: 2,
-    cards: {},
+    cards: new Hash(),
     inFocus: null,
 
-    initialize: function() {},
+    initialize: function() {
+        
+        /* render listener */
+        $('sync_button').observe('click', this.sync.bind(this));
+    },
 
     createCard: function(node) {
 
@@ -196,7 +212,7 @@ var cRightRail = Class.create({
         if (   node.tagName.toUpperCase() != 'LI'
             && node.tagName.toUpperCase() != 'P') return;
 
-        this.cards['node_' + this.cardCount] = new cCard(node, this.cardCount)
+        this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount));
         this.focus(this.cardCount++);
     },
 
@@ -204,7 +220,6 @@ var cRightRail = Class.create({
 
         //normalize id
         var cardId = doc.utilities.toCardId(id);
-        var nodeId = doc.utilities.toNodeId(id);
 
         //check card exists
         if (!$(cardId)) {
@@ -212,21 +227,72 @@ var cRightRail = Class.create({
             return;
         }
 
+        //scroll function
         var rightRail = document.getElementById("right_rail");
+        var scrollTo = function () {
+            rightRail.scrollTop = this.inFocus.offsetTop
+                - this.inFocus.getHeight()
+                - $('right_rail').getHeight()/2
+                - 10;
+        }.bind(this);
 
-        //unfocus previously focused
-        if(this.inFocus && this.inFocus.id != cardId) {
-            var nodeIdFocused = 'node_' + this.inFocus.id.replace('card_', '');
-            Element.removeClassName(this.inFocus, 'card_focus');
-            this.cards[doc.utilities.toNodeId(this.inFocus)].render(true);
+        //check if already in focus - if so, just make sure scrollTtop is still correct
+        if(this.inFocus && this.inFocus.id == cardId) {
+            scrollTo();
+            return;
         }
 
+        //unfocus previously focused
+        else if(this.inFocus && this.inFocus.id != cardId) {
+            Element.removeClassName(this.inFocus, 'card_focus');
+            var nodeIdPrev = doc.utilities.toNodeId(this.inFocus);
+            var nodePrev = doc.outline.iDoc.document.getElementById(nodeIdPrev);
+            this.cards.get(nodeIdPrev).update(nodePrev, true);
+        }
+
+        //focus
         this.inFocus = $(cardId);
         Element.addClassName(this.inFocus, 'card_focus');
-        rightRail.scrollTop = 
-            Element.positionedOffset(this.inFocus)[1];
-//            + $('right_rail').getHeight()
-//            - Element.getHeight(this.inFocus);
+        scrollTo();
+    },
+
+    /* render right rail - should not be called unless dones so explicitly by
+     * user or the rail cards are no longer in sync with the  */
+    sync: function() {
+        
+        /* collect all potential nodes - li/p with text */
+        var nodes = Element.select(doc.outline.iDoc.document, 'li, p')
+            .findAll(function (node) {return node.innerHTML});
+
+        /* either create or refresh all nodes */
+        nodes.each(function(node) {
+            if (!node.id) 
+                this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount++));
+            else {
+
+                //truncate boolean true unless node being updated is in focus
+                var truncate =
+                       !this.inFocus
+                    || doc.utilities.toNodeId(this.inFocus.id) != node.id;
+
+                //update
+                this.cards.get(node.id).update(node, truncate);
+            }
+        }.bind(this));
+
+        /* destroy cards if node no longer exists */
+        this.cards.each(function(cardArray) {
+            var nodeId = cardArray[0];
+            var card = cardArray[1];
+            var node = doc.outline.iDoc.document.getElementById(nodeId);
+            if (!node) card.destroy();
+        });
+
+        //temp - update sync button count
+        $('sync_button').innerHTML =
+            'Sync - ' +
+            (parseInt($('sync_button').innerHTML.replace('Sync - ', '')) + 1)
+
     }
 });
 
@@ -244,7 +310,7 @@ var cCard = Class.create({
     updating: false,
 
     autoActivate: false,
-    autoActivated: true,    //if auto activated and later format becomes unnacceptable - autoDeactivate
+    autoActivated: false,    //if auto activated and later format becomes unnacceptable - autoDeactivate
 
     initialize: function(node, cardCount) {
 
@@ -260,18 +326,25 @@ var cCard = Class.create({
         this._parse(node);
 
         //card in dom
-        var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card_focus card"></div>';
+        var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card"></div>';
         this._insert(cardHtml);
         this.elmntCard = $("card_" + this.cardNumber);
         this.render();
     },
 
-    update: function(node) {
-        this.elmnt = $(node);
+    update: function(node, truncate) {
+
+        //node exists?
+        if (!node) {
+            this.destroy();
+            return;
+        }
+
         this.updating = true;
 
-        this._parse(this.elmnt);
-        this.render();
+        Element.writeAttribute(node, {'changed': new Date().getTime()});
+        this._parse($(node));
+        this.render(truncate);
 
         this.updating = false;
     },
@@ -279,11 +352,15 @@ var cCard = Class.create({
     activate: function() {
         this.active = true;
         $('card_' + this.cardNumber).addClassName('card_active');
+        this.render();
     },
 
     deactivate: function() {
         this.active = false;
         $('card_' + this.cardNumber).removeClassName('card_active');
+
+        var truncate = !this.inFocus || this.inFocus.id != 'card_' + this.cardNumber
+        this.render(truncate);
     },
 
     render: function(truncate) {
@@ -308,8 +385,8 @@ var cCard = Class.create({
             //autoActivate
             if (this.autoActivate) {
                 this.autoActivated = true;
-                this.activate();
                 this.autoActivate = false;
+                this.activate();
                 this.elmntCard.down('input').checked = 'yes';
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
             }
@@ -337,11 +414,21 @@ var cCard = Class.create({
 
     },
 
+    destroy: function() {
+        Element.remove(this.elmntCard);
+        doc.rightRail.cards.unset('node_' + this.cardNumber);
+    },
+
     _insert: function(cardHtml) {
-        //identify previous node in outline
+
+        /* identify previous node in outline */
+
+        //collect nodes which have cards
         var nodeId = 'node_' + this.cardNumber;
-        var outlineNode = doc.outline.iDoc.document.getElementById(nodeId);
-        var outlineNodes = doc.outline.iDoc.document.getElementsByClassName('outline_node');
+        var outlineNodes = $A(doc.outline.iDoc.document.getElementsByClassName('outline_node'))
+            .findAll(function(node) {return node.id});
+
+        //itererate backwards to find previous node; set id vars
         var outlineNodePrev, nodeIdPrev, cardIdPrev;
         for (var i = outlineNodes.length - 1; i >= 0; i--) {
             if (outlineNodes[i].id == nodeId && i != 0) {
@@ -359,13 +446,8 @@ var cCard = Class.create({
         else if (cardIdPrev && !$(cardIdPrev)) {
 
             //@todo create previous card if does not exist
-            console.log('error: no previous card but there should be! creating...');
+            console.log('error: no previous card but there should be!');
             if (this.updating) console.log ('...while updating');
-
-            //create previous card
-            console.log(outlineNodePrev);
-            //doc.rightRail.createCard(outlineNodePrev);
-            console.log('previous card created');
 
             //temp
             $('cards').insert({bottom: cardHtml});
@@ -381,7 +463,7 @@ var cCard = Class.create({
         this.active = node.getAttribute('active') == "true";
 
         //definition
-        var defParts = this.nodeTxt.match(/(^[^-]+) - ([\s\S]+)$/);
+        var defParts = this.nodeTxt.match(/(^[\w\W]+) - ([\s\S]+)$/);
         if (defParts) {
 
             //set autoActivate member if this is the first time text has been parsable
@@ -406,12 +488,12 @@ var cUtilities = Class.create({
 
     toNodeId: function(mixed) {
         var id = this._getId(mixed);
-        if (id) return 'node_' + id;
+        if (id || id == 0) return 'node_' + id;
     },
 
     toCardId: function(mixed) {
         var id = this._getId(mixed);
-        if (id) return 'card_' + id;
+        if (id || id == 0) return 'card_' + id;
     },
 
     _getId: function(mixed) {

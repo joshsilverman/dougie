@@ -50,6 +50,9 @@
     background-color:#E0DFE3;
     color:#9d9d9d;
     position: relative;
+
+    min-height:15px;
+    overflow:hidden;
 }
 
 .card_active {
@@ -66,12 +69,20 @@
 .card_front {
     text-align: center;
     padding:10px;
+
+    min-height:15px;
+    max-height:100px;
+    overflow:hidden;
 }
 
 .card_back {
     text-align: center;
     padding:10px;
     border-top: #C2C2C2 2px solid;
+
+    min-height:15px;
+    max-height:100px;
+    overflow:hidden;
 }
 
 .card_active .card_back {
