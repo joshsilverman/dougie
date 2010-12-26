@@ -13,7 +13,7 @@ development:
 test:
   adapter: mysql
   host: localhost
-  database: outlines
+  database: outlines_test
   username: root
   password:
 

@@ -43,14 +43,23 @@ class Line < ActiveRecord::Base
   end
   
   def self.preorder_augment(lines, parent, existing_lines, document_id)
+    
+    p "MINUS ONE"
+    
     lines.children.each do |line|
       
+      p "ZERO"
+      
       if line.children.first
+        
+        p "FIRST"
         
         # if the element's line_id is blank --> new line
         
         ### if line.children.first.parent.attr("line_id").blank?
         if line.attr("line_id").blank?
+          
+          p "SECOND"
           
           # traverse through existing lines, find line that matches parent
           # of blank lines line_id, add line with blank line_id to children of its parent
@@ -58,7 +67,10 @@ class Line < ActiveRecord::Base
             first_child = line.children.first
             
             ### if e_line.id.to_s == first_child.parent.parent.attr("line_id")
-            if e_line.id.to_s == line.parent.attr("line_id")  
+            if e_line.id.to_s == line.parent.attr("line_id") 
+              
+              p "THIRD"
+               
               created_line = e_line.children.create(:text => first_child.content, 
                                                     :domid => first_child.attr("id"),
                                                     :document_id => document_id )

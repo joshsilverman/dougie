@@ -4,14 +4,13 @@ module DocumentsHelper
 
   class DocumentParser
     
-    attr_reader :html, :doc, :root
+    attr_reader :html, :lines, :doc
     
     def initialize(html = nil)
       
       return nil if html.blank? 
       @html = "<li>#{sanitize(html)}</li>"
       @doc = to_nokogiri(@html)
-      @root = Line.create(:text => "root")
       
     end
     

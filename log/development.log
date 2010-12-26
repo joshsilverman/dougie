@@ -12677,3 +12677,90 @@ Started GET "/" for 127.0.0.1 at Sun Dec 26 17:37:41 -0500 2010
   Processing by DocumentsController#index as HTML
 Rendered documents/index.html.erb within layouts/application (11.2ms)
 Completed 200 OK in 66ms (Views: 65.6ms | ActiveRecord: 0.0ms)
+  [1m[36mSQL (45.7ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.9ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.4ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.5ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.4ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (46.2ms)[0m  DROP TABLE `documents`
+  [1m[36mAREL (0.5ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214173109'[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (131.3ms)[0m  DROP TABLE `mems`
+  [1m[36mAREL (1.2ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162342'[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (1.2ms)[0m  DROP TABLE `lines`
+  [1m[36mAREL (1.0ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162237'[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.9ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (90.2ms)[0m  CREATE TABLE `lines` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `text` text, `domid` varchar(255), `document_id` int(11), `parent_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162237')[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (172.0ms)[0m  CREATE TABLE `mems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `strength` float, `status` tinyint(1), `line_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162342')[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (160.1ms)[0m  CREATE TABLE `documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `html` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214173109')[0m
+  [1m[35mSQL (0.5ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (1.1ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW KEYS FROM `documents`
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW KEYS FROM `lines`
+  [1m[36mSQL (1.1ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW KEYS FROM `mems`
+  [1m[36mDocument Load (0.3ms)[0m  [1mSELECT `documents`.* FROM `documents` LIMIT 1[0m
+  [1m[35mDocument Load (0.4ms)[0m  SELECT `documents`.* FROM `documents` LIMIT 1
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)[0m
+  [1m[35mDocument Load (0.5ms)[0m  SELECT `documents`.* FROM `documents` LIMIT 1
+  [1m[36mLine Load (1.0ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)[0m
+  [1m[35mDocument Load (0.5ms)[0m  SELECT `documents`.* FROM `documents` LIMIT 1
+  [1m[36mLine Load (0.4ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 1)[0m
+  [1m[36mSQL (0.4ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (29.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.5ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (1.1ms)[0m  DROP TABLE `documents`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214173109'[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (1.1ms)[0m  DROP TABLE `mems`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162342'[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (27.2ms)[0m  DROP TABLE `lines`
+  [1m[36mAREL (0.4ms)[0m  [1mDELETE FROM `schema_migrations` WHERE `schema_migrations`.`version` = '20101214162237'[0m
+  [1m[35mSQL (0.4ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to CreateLines (20101214162237)
+  [1m[35mSQL (53.7ms)[0m  CREATE TABLE `lines` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `text` text, `domid` varchar(255), `document_id` int(11), `parent_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162237')[0m
+Migrating to CreateMems (20101214162342)
+  [1m[35mSQL (198.7ms)[0m  CREATE TABLE `mems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `strength` float, `status` tinyint(1), `line_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214162342')[0m
+Migrating to CreateDocuments (20101214173109)
+  [1m[35mSQL (128.1ms)[0m  CREATE TABLE `documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `html` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20101214173109')[0m
+  [1m[35mSQL (0.5ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.4ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.2ms)[0m  SHOW TABLES
+  [1m[36mSQL (1.0ms)[0m  [1mdescribe `documents`[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW KEYS FROM `documents`
+  [1m[36mSQL (1.1ms)[0m  [1mdescribe `lines`[0m
+  [1m[35mSQL (25.2ms)[0m  SHOW KEYS FROM `lines`
+  [1m[36mSQL (1.5ms)[0m  [1mdescribe `mems`[0m
+  [1m[35mSQL (0.5ms)[0m  SHOW KEYS FROM `mems`
