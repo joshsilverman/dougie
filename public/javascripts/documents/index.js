@@ -310,6 +310,12 @@ var cCard = Class.create({
 
     update: function(node, truncate) {
 
+        //node exists?
+        if (!node) {
+            this.destroy();
+            return;
+        }
+
         this.updating = true;
 
         Element.writeAttribute(node, {'changed': new Date().getTime()});
