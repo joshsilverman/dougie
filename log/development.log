@@ -12671,3 +12671,9 @@ Started POST "/update" for 127.0.0.1 at Sat Dec 25 15:38:49 -0500 2010
   [1m[35mSQL (0.3ms)[0m  COMMIT
   [1m[36mLine Load (0.3ms)[0m  [1mSELECT `lines`.* FROM `lines` WHERE (`lines`.document_id = 8)[0m
 Completed 200 OK in 93ms (Views: 4.5ms | ActiveRecord: 12.8ms)
+
+
+Started GET "/" for 127.0.0.1 at Sun Dec 26 17:37:41 -0500 2010
+  Processing by DocumentsController#index as HTML
+Rendered documents/index.html.erb within layouts/application (11.2ms)
+Completed 200 OK in 66ms (Views: 65.6ms | ActiveRecord: 0.0ms)
