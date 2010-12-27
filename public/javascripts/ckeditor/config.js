@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.removePlugins = 'elementspath';
     config.resize_enabled = false;
-    CKEDITOR.config.startupFocus = true;
+    config.startupFocus = true;
 
     config.toolbar =  [
         

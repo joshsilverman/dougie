@@ -179,7 +179,7 @@ var cOutlineHandlers = Class.create({
         }
 
         /* special handling for re-synchronizing right rail */
-
+        
 //        console.log('--');
 //        console.log(event.type);
 //        console.log(range);
@@ -187,7 +187,6 @@ var cOutlineHandlers = Class.create({
 //        console.log(range.commonAncestorContainer);
 //        console.log(range.commonAncestorContainer.tagName != 'Text');
 //        console.log(range.commonAncestorContainer.tagName != undefined);
-//
 //        console.log('///');
 //        console.log(range.startContainer == range.endContainer);
 
@@ -208,11 +207,7 @@ var cOutlineHandlers = Class.create({
                 && event.keyCode != 16     //shift
                 && event.keyCode != 17) {  //ctrl
                 
-                console.log('re-synchronize');
-                (function () {
-                    console.log('call sync');
-                    doc.rightRail.sync();
-                }).delay(1);
+                (function () {doc.rightRail.sync();}).delay(.1);
             }
         }
     },
@@ -316,8 +311,6 @@ var cRightRail = Class.create({
      * user or the rail cards are no longer in sync with the  */
     sync: function() {
 
-        console.log('sync');
-
         /* collect all potential nodes - li/p with text */
         var nodes = Element.select(doc.outline.iDoc.document, 'li, p')
             .findAll(function (node) {return node.innerHTML});
@@ -325,7 +318,7 @@ var cRightRail = Class.create({
         /* either create or refresh all nodes */
         nodes.each(function(node) {
             if (!node.id) 
-                this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount++));
+                this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount++, true));
             else {
 
                 //truncate boolean true unless node being updated is in focus
@@ -370,7 +363,7 @@ var cCard = Class.create({
     autoActivate: false,
     autoActivated: false,    //if auto activated and later format becomes unnacceptable - autoDeactivate
 
-    initialize: function(node, cardCount) {
+    initialize: function(node, cardCount, truncate) {
 
         //set dom node attributes
         this.cardNumber = cardCount;
@@ -387,7 +380,7 @@ var cCard = Class.create({
         var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card"></div>';
         this._insert(cardHtml);
         this.elmntCard = $("card_" + this.cardNumber);
-        this.render();
+        this.render(truncate);
     },
 
     update: function(node, truncate) {
