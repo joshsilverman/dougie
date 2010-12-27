@@ -43,7 +43,10 @@ class DocumentsController < ApplicationController
       
       @document.update_attribute(:html,html)
       dp = DocumentParser.new(html)
-      root = Line.create(:document_id => @document.id, :text => 'root')
+      
+      root = Line.create( :document_id => @document.id,
+                          :text => "root" )
+                          
       Line.preorder_save(dp.doc.children, root, @document.id)
 
     else
