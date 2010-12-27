@@ -94,5 +94,9 @@ class DocumentsController < ApplicationController
     end
     
   end
+
+  def review(id = nil)
+    
+  end
   
 end

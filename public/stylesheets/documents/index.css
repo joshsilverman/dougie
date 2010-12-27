@@ -1,12 +1,3 @@
-.rounded_border {
-    border: 1px solid lightGrey;
-    border-bottom-left-radius: 5px 5px;
-    border-bottom-right-radius: 5px 5px;
-    border-top-left-radius: 5px 5px;
-    border-top-right-radius: 5px 5px;
-    -moz-border-radius:5px 5px 5px 5px;
-}
-
 .doc_options {
     margin-bottom: 8px;
     padding: 5px;
