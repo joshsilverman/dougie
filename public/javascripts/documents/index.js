@@ -161,6 +161,7 @@ var cOutlineHandlers = Class.create({
 
         //keyup events
         else {
+
             switch (event.keyCode) {
                 //down event caught
                 case Event.KEY_TAB:break;
@@ -170,8 +171,48 @@ var cOutlineHandlers = Class.create({
                 case Event.KEY_DOWN:break;
                 case Event.KEY_LEFT:break;
                 case Event.KEY_RIGHT:break;
+                case 16:break; //shift
+                case 17:break; //ctrl
                 default:
                     this.onLetter(event, target);
+            }
+        }
+
+        /* special handling for re-synchronizing right rail */
+
+//        console.log('--');
+//        console.log(event.type);
+//        console.log(range);
+//        console.log(range.endOffset > range.startOffset);
+//        console.log(range.commonAncestorContainer);
+//        console.log(range.commonAncestorContainer.tagName != 'Text');
+//        console.log(range.commonAncestorContainer.tagName != undefined);
+//
+//        console.log('///');
+//        console.log(range.startContainer == range.endContainer);
+
+        //check if multiple nodes are in selection
+        //gecko, webkit, others?
+        if (   range
+            //&& range.endOffset > range.startOffset
+            && range.startContainer != range.endContainer
+            && range.commonAncestorContainer
+            && range.commonAncestorContainer.tagName != 'Text'
+            && range.commonAncestorContainer.tagName != undefined) {
+
+            //key code check
+            if (   event.keyCode != Event.KEY_UP
+                && event.keyCode != Event.KEY_DOWN
+                && event.keyCode != Event.KEY_LEFT
+                && event.keyCode != Event.KEY_RIGHT
+                && event.keyCode != 16     //shift
+                && event.keyCode != 17) {  //ctrl
+                
+                console.log('re-synchronize');
+                (function () {
+                    console.log('call sync');
+                    doc.rightRail.sync();
+                }).delay(1);
             }
         }
     },
@@ -261,7 +302,8 @@ var cRightRail = Class.create({
             Element.removeClassName(this.inFocus, 'card_focus');
             var nodeIdPrev = doc.utilities.toNodeId(this.inFocus);
             var nodePrev = doc.outline.iDoc.document.getElementById(nodeIdPrev);
-            this.cards.get(nodeIdPrev).update(nodePrev, true);
+            if (this.cards.get(nodeIdPrev)) this.cards.get(nodeIdPrev).update(nodePrev, true);
+            else console.log('error: cannot unfocus previous card');
         }
 
         //focus
@@ -273,7 +315,9 @@ var cRightRail = Class.create({
     /* render right rail - should not be called unless dones so explicitly by
      * user or the rail cards are no longer in sync with the  */
     sync: function() {
-        
+
+        console.log('sync');
+
         /* collect all potential nodes - li/p with text */
         var nodes = Element.select(doc.outline.iDoc.document, 'li, p')
             .findAll(function (node) {return node.innerHTML});

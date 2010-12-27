@@ -40,8 +40,8 @@ class LineTest < ActiveSupport::TestCase
     document = Document.find_by_name(name)
     lines_all = Line.find(:all)
     lines_tree = Line.find(:first,
-                          :include => { :children => { :children => { :children => { :children => :children }}}},
-                          :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
+                           :include => { :children => { :children => { :children => { :children => :children }}}},
+                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
     lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #cardinality assertions
@@ -308,17 +308,7 @@ class LineTest < ActiveSupport::TestCase
                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
     lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
-#    puts lines_all.to_yaml
-
     #cardinality assertions
     assert_equal(7, lines_all.size)
-#    assert_equal(7, lines.size)
-#    assert_equal(3, lines_tree.children.size)
-#    assert_equal(3, lines_tree.children[1].children.size)
-#
-#    #order assertions
-#    assert_equal('root', lines_tree.text)
-#    assert_equal('a This is a test - think', lines_tree.children[0].text)
-#    assert_equal('a just to keep track', lines_tree.children[1].children[0].text)
   end
 end
