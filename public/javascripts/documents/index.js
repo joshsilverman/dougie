@@ -353,7 +353,7 @@ var cCard = Class.create({
 
     front: '',
     back: '',
-    nodeTxt: '',
+    text: '',
 
     active: false,
     elmntCard: null,
@@ -362,6 +362,8 @@ var cCard = Class.create({
 
     autoActivate: false,
     autoActivated: false,    //if auto activated and later format becomes unnacceptable - autoDeactivate
+
+    parser: null,
 
     initialize: function(node, cardCount, truncate) {
 
@@ -374,7 +376,8 @@ var cCard = Class.create({
 
         //parsing
         node.setAttribute('active', false);
-        this._parse(node);
+        this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
+        parser.parse(this);
 
         //card in dom
         var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card"></div>';
@@ -392,9 +395,12 @@ var cCard = Class.create({
         }
 
         this.updating = true;
-
         Element.writeAttribute(node, {'changed': new Date().getTime()});
-        this._parse($(node));
+        this.active = node.getAttribute('active') == "true";
+        
+        //parse and render
+        this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
+        parser.parse(this);
         this.render(truncate);
 
         this.updating = false;
@@ -424,7 +430,7 @@ var cCard = Class.create({
         //truncated txt
         if (truncate && !this.active) {
             this.elmntCard.innerHTML
-                = checkbox + this.nodeTxt;
+                = checkbox + this.text;
         }
 
         //both sides set
@@ -506,32 +512,6 @@ var cCard = Class.create({
 
         //insert later
         else $(cardIdPrev).insert({after: cardHtml});
-    },
-
-    _parse: function(node) {
-
-        this.nodeTxt = node.innerHTML.match(/^([^<]*)<?/)[1];
-        this.active = node.getAttribute('active') == "true";
-
-        //definition
-        var defParts = this.nodeTxt.match(/(^[\w\W]+) - ([\s\S]+)$/);
-        if (defParts) {
-
-            //set autoActivate member if this is the first time text has been parsable
-            if (!this.back && !this.active) this.autoActivate = true;
-
-            this.front = defParts[1];
-            this.back = defParts[2];
-        }
-
-        //fill in the blank
-        else if (false) {}
-
-        //no match
-        else {
-            this.front = this.nodeTxt;
-            this.back = '';
-        }
     }
 });
 
@@ -564,4 +544,8 @@ var cUtilities = Class.create({
     }
 });
 
-var doc = new cDoc();
+/* global objects */
+document.observe('dom:loaded', function() {
+    parser = new cParser();
+    doc = new cDoc();
+});
