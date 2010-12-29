@@ -9,7 +9,7 @@ module DocumentsHelper
     def initialize(html = nil)
       
       return nil if html.blank? 
-      @html = "<li>#{sanitize(html)}</li>"
+      @html = "<li id=\"node_0\">#{sanitize(html)}</li>"
       @doc = to_nokogiri(@html)
       
     end

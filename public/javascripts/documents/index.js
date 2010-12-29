@@ -108,6 +108,7 @@ var cOutline = Class.create({
             console.log(idArray);
             console.log(this.iDoc.document.getElementById(idArray[0]));
             this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
+            console.log(this.iDoc.document.getElementById(idArray[0]).getAttribute('line_id'));
         }.bind(this));
     }
 });
@@ -295,6 +296,25 @@ var cRightRail = Class.create({
                 this.cards.get(node.id).update(node, truncate);
             }
         }.bind(this));
+        
+        /* temp parent attribute setter */
+
+        doc.outline.iDoc.document.body.setAttribute("id","node_0");
+        Element.select(doc.outline.iDoc.document, 'li, p').each(function(ele){
+             var parent = ele.parentNode;
+             if(parent.tagName == "UL"){
+                  console.log("1: "+ parent);
+                  console.log(ele.parentNode.parentNode.id);
+                  ele.setAttribute("parent",ele.parentNode.parentNode.id);
+             } else {
+                  console.log("2: "+ parent);
+                  ele.setAttribute("parent",parent.id);
+             }
+             console.log(ele.firstChild);
+             
+        });
+        
+        /* end temp parent attribute setter */
 
         /* destroy cards if node no longer exists */
         this.cards.each(function(cardArray) {

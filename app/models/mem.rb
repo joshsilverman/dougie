@@ -4,7 +4,7 @@ class Mem < ActiveRecord::Base
   
   def self.create_standard(opts = {})
     
-    default_opts = { :status => true, :strength => 0.5 }
+    default_opts = { :strength => 0.5 }
     opts.merge!(default_opts)
     
     mem = Mem.new(opts)

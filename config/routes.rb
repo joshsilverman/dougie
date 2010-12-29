@@ -61,4 +61,12 @@ Dougie::Application.routes.draw do
   match "/read" => "documents#read"
   match "/update" => "documents#update"
   
+  match "/lines/index" => "lines#index"
+  match "/lines/active" => "lines#active"
+  match "/lines/inactive" => "lines#inactive"
+  
+  match "/mems/index" => "mems#index"
+  match "/mems/active" => "mems#active"
+  match "/mems/inactive" => "mems#inactive"
+  
 end
