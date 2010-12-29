@@ -19,6 +19,10 @@ class MemsController < ApplicationController
   end
   
   def update
+
+    #params[:id]
+    #params[:confidence]
+    #params[:importance]
   end
   
   def destroy

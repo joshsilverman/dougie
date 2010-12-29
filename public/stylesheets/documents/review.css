@@ -1,0 +1,60 @@
+table, tr, td {
+    margin:0;
+    padding:0;
+    border: none;
+}
+
+.card_container {
+    width:900px;
+    height:400px;
+    margin:50px auto 0;
+    position:relative;
+}
+
+.card_container table {
+    width:100%;
+    height:100%;
+    border-spacing: 0;
+}
+
+td {
+    vertical-align: middle;
+    height:50%;
+    text-align: center;
+}
+
+.card_side {
+    width:500px;
+}
+
+#card_front {
+    border-bottom: none;
+}
+
+#card_back {
+    border-top: #5e5e55 dashed 1px;
+}
+
+.grade {
+    width: 200px;
+    vertical-align: bottom;
+}
+
+.grade_lower {
+    vertical-align: top;
+}
+
+.grade button {
+    margin:20px 2px;
+}
+
+.grade_hide button {
+    display:none;
+}
+
+#edit_buttons {
+    position:absolute;
+    top:0px;
+    right:200px;
+    margin: 5px;
+}

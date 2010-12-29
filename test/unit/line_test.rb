@@ -45,8 +45,8 @@ class LineTest < ActiveSupport::TestCase
     document = Document.find_by_name(name)
     lines_all = Line.find(:all)
     lines_tree = Line.find(:first,
-                          :include => { :children => { :children => { :children => { :children => :children }}}},
-                          :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
+                           :include => { :children => { :children => { :children => { :children => :children }}}},
+                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
     lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #cardinality assertions
@@ -434,7 +434,6 @@ class LineTest < ActiveSupport::TestCase
                         </li>
                       </ul>
                     </li>
-
                   </ul>
 
                 </body>
@@ -454,7 +453,6 @@ class LineTest < ActiveSupport::TestCase
         puts "FIRST CHILDREN: #{Line.all.to_json}"
         assert_equal(19, Line.all.length)
         assert_equal("a just to keep track", Line.all[3].text)
-      
       
   end
 end

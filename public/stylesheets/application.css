@@ -4,6 +4,15 @@ body {
      padding:10px;
 }
 
+.rounded_border {
+    border: 1px solid lightGrey;
+    border-bottom-left-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    -moz-border-radius:5px 5px 5px 5px;
+}
+
 header {
      font-size:115%;
      margin:0 0 20px 0;

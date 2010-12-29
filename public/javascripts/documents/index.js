@@ -1,3 +1,5 @@
+/* class declarations */
+
 var cDoc = Class.create({
 
     outline: null,
@@ -164,6 +166,7 @@ var cOutlineHandlers = Class.create({
 
         //keyup events
         else {
+
             switch (event.keyCode) {
                 //down event caught
                 case Event.KEY_TAB:break;
@@ -173,8 +176,43 @@ var cOutlineHandlers = Class.create({
                 case Event.KEY_DOWN:break;
                 case Event.KEY_LEFT:break;
                 case Event.KEY_RIGHT:break;
+                case 16:break; //shift
+                case 17:break; //ctrl
                 default:
                     this.onLetter(event, target);
+            }
+        }
+
+        /* special handling for re-synchronizing right rail */
+        
+//        console.log('--');
+//        console.log(event.type);
+//        console.log(range);
+//        console.log(range.endOffset > range.startOffset);
+//        console.log(range.commonAncestorContainer);
+//        console.log(range.commonAncestorContainer.tagName != 'Text');
+//        console.log(range.commonAncestorContainer.tagName != undefined);
+//        console.log('///');
+//        console.log(range.startContainer == range.endContainer);
+
+        //check if multiple nodes are in selection
+        //gecko, webkit, others?
+        if (   range
+            //&& range.endOffset > range.startOffset
+            && range.startContainer != range.endContainer
+            && range.commonAncestorContainer
+            && range.commonAncestorContainer.tagName != 'Text'
+            && range.commonAncestorContainer.tagName != undefined) {
+
+            //key code check
+            if (   event.keyCode != Event.KEY_UP
+                && event.keyCode != Event.KEY_DOWN
+                && event.keyCode != Event.KEY_LEFT
+                && event.keyCode != Event.KEY_RIGHT
+                && event.keyCode != 16     //shift
+                && event.keyCode != 17) {  //ctrl
+                
+                (function () {doc.rightRail.sync();}).delay(.1);
             }
         }
     },
@@ -264,7 +302,8 @@ var cRightRail = Class.create({
             Element.removeClassName(this.inFocus, 'card_focus');
             var nodeIdPrev = doc.utilities.toNodeId(this.inFocus);
             var nodePrev = doc.outline.iDoc.document.getElementById(nodeIdPrev);
-            this.cards.get(nodeIdPrev).update(nodePrev, true);
+            if (this.cards.get(nodeIdPrev)) this.cards.get(nodeIdPrev).update(nodePrev, true);
+            else console.log('error: cannot unfocus previous card');
         }
 
         //focus
@@ -276,7 +315,7 @@ var cRightRail = Class.create({
     /* render right rail - should not be called unless dones so explicitly by
      * user or the rail cards are no longer in sync with the  */
     sync: function() {
-        
+
         /* collect all potential nodes - li/p with text */
         var nodes = Element.select(doc.outline.iDoc.document, 'li, p')
             .findAll(function (node) {return node.innerHTML});
@@ -284,7 +323,7 @@ var cRightRail = Class.create({
         /* either create or refresh all nodes */
         nodes.each(function(node) {
             if (!node.id) 
-                this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount++));
+                this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount++, true));
             else {
 
                 //truncate boolean true unless node being updated is in focus
@@ -338,7 +377,7 @@ var cCard = Class.create({
 
     front: '',
     back: '',
-    nodeTxt: '',
+    text: '',
 
     active: false,
     elmntCard: null,
@@ -348,7 +387,9 @@ var cCard = Class.create({
     autoActivate: false,
     autoActivated: false,    //if auto activated and later format becomes unnacceptable - autoDeactivate
 
-    initialize: function(node, cardCount) {
+    parser: null,
+
+    initialize: function(node, cardCount, truncate) {
 
         //set dom node attributes
         this.cardNumber = cardCount;
@@ -359,13 +400,14 @@ var cCard = Class.create({
 
         //parsing
         node.setAttribute('active', false);
-        this._parse(node);
+        this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
+        parser.parse(this);
 
         //card in dom
         var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card"></div>';
         this._insert(cardHtml);
         this.elmntCard = $("card_" + this.cardNumber);
-        this.render();
+        this.render(truncate);
     },
 
     update: function(node, truncate) {
@@ -377,9 +419,12 @@ var cCard = Class.create({
         }
 
         this.updating = true;
-
         Element.writeAttribute(node, {'changed': new Date().getTime()});
-        this._parse($(node));
+        this.active = node.getAttribute('active') == "true";
+        
+        //parse and render
+        this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
+        parser.parse(this);
         this.render(truncate);
 
         this.updating = false;
@@ -409,7 +454,7 @@ var cCard = Class.create({
         //truncated txt
         if (truncate && !this.active) {
             this.elmntCard.innerHTML
-                = checkbox + this.nodeTxt;
+                = checkbox + this.text;
         }
 
         //both sides set
@@ -491,32 +536,6 @@ var cCard = Class.create({
 
         //insert later
         else $(cardIdPrev).insert({after: cardHtml});
-    },
-
-    _parse: function(node) {
-
-        this.nodeTxt = node.innerHTML.match(/^([^<]*)<?/)[1];
-        this.active = node.getAttribute('active') == "true";
-
-        //definition
-        var defParts = this.nodeTxt.match(/(^[\w\W]+) - ([\s\S]+)$/);
-        if (defParts) {
-
-            //set autoActivate member if this is the first time text has been parsable
-            if (!this.back && !this.active) this.autoActivate = true;
-
-            this.front = defParts[1];
-            this.back = defParts[2];
-        }
-
-        //fill in the blank
-        else if (false) {}
-
-        //no match
-        else {
-            this.front = this.nodeTxt;
-            this.back = '';
-        }
     }
 });
 
@@ -549,4 +568,8 @@ var cUtilities = Class.create({
     }
 });
 
-var doc = new cDoc();
+/* global objects */
+document.observe('dom:loaded', function() {
+    parser = new cParser();
+    doc = new cDoc();
+});
