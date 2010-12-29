@@ -60,6 +60,8 @@ Dougie::Application.routes.draw do
   match "/create" => "documents#create"
   match "/read" => "documents#read"
   match "/update" => "documents#update"
+
   match "/review/:id" => "documents#review"
+  match "/mems/update/:id/:confidence/:importance" => "mems#update"
   
 end

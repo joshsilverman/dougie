@@ -51,22 +51,25 @@ var cReviewer = Class.create({
 
 var cCard = Class.create({
 
-    grade: null,
     GRADE_KNOW: 4,
     GRADE_MUSTLEARN: 3,
     GRADE_KNOWBUT: 2,
     GRADE_DONTCARE: 1,
 
+    /* out of ten for easy url  */
+    importance: 5,
+    confidence: 5,
+
+    memId: null,
     lineId: null,
     text: '',
     front: '',
     back: '',
-
-    grade: null,
     
     initialize: function(data) {
 
-        this.id = data['id'];
+        this.lineId = data['id'];
+        this.memId = data['mems'][0]['id'];
         this.documentId = data['document_id'];
         this.text = data['text'];
         parser.parse(this);
@@ -95,12 +98,38 @@ var cCard = Class.create({
 
     grade: function(grade) {
 
-        this.grade = grade;
+        switch (grade) {
+            case this.GRADE_KNOW:
+                this.confidence = 8;
+                this.importance = 8;
+                break;
+            case this.GRADE_MUSTLEARN:
+                this.confidence = 2;
+                this.importance = 8;
+                break;
+            case this.GRADE_KNOWBUT:
+                this.confidence = 8;
+                this.importance = 2;
+                break;
+            case this.GRADE_DONTCARE:
+                this.confidence = 2;
+                this.importance = 2;
+                break;
+        }
+
         this._save()
     },
 
     _save: function() {
 
+        var requestUrl = '/mems/update/'+this.memId+'/'+this.confidence+'/'+this.importance;
+        new Ajax.Request(requestUrl, {
+            onSuccess: function() {},
+            onFailure: function() {},
+            onComplete: function(transport) {
+                $('log').update(transport.responseText);
+            }
+        });
     }
     
 });
