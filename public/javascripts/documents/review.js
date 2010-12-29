@@ -65,6 +65,12 @@ var cCard = Class.create({
     text: '',
     front: '',
     back: '',
+
+    buttons: '<div id="edit_buttons">\
+                <button id="button_edit" class="edit" style="display:none">Edit</button>\
+                <button id="button_done" class="done" style="display:none">Done</button>\
+                <button id="button_cancel" class="cancel" style="display:none">X</button>\
+              </div>',
     
     initialize: function(data) {
 
@@ -77,8 +83,10 @@ var cCard = Class.create({
 
     cue: function() {
 
-        /* cue cards */
-        $('card_front').update(this.front);
+        /* front */
+        $('card_front').update("<div id='card_front_text'>"+this.front+"</div>" + this.buttons);
+
+        /* back */
         $('card_back').update('<button id="card_show">Show</button>');
         $('card_show').observe('click', this.showAll.bind(this));
 
@@ -88,16 +96,21 @@ var cCard = Class.create({
 
     showAll: function() {
 
-        /* show both sides */
-        $('card_front').update(this.front);
-        $('card_back').update(this.back);
+        /* show */
+        $('card_front').update("<div id='card_front_text'>"+this.front+"</div>" + this.buttons);
+        $('card_back').update( "<div id='card_back_text'>"+this.back+"</div>");
 
         /* show grading buttons */
         $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
+
+        /* edit button and listener */
+        $('button_edit').observe('click', this.makeEditable.bind(this));
+        $('button_edit').show();
     },
 
     grade: function(grade) {
 
+        /* set confidence and importance */
         switch (grade) {
             case this.GRADE_KNOW:
                 this.confidence = 8;
@@ -117,21 +130,65 @@ var cCard = Class.create({
                 break;
         }
 
-        this._save()
-    },
-
-    _save: function() {
-
+        /* save grade */
         var requestUrl = '/mems/update/'+this.memId+'/'+this.confidence+'/'+this.importance;
         new Ajax.Request(requestUrl, {
             onSuccess: function() {},
+            
             onFailure: function() {},
-            onComplete: function(transport) {
-                $('log').update(transport.responseText);
-            }
+
+            onComplete: function(transport) {$('log').update(transport.responseText);}
+        });
+    },
+
+    makeEditable: function() {
+
+        /* buttons */
+        $('button_done').show();
+        $('button_cancel').show();
+        $('button_edit').hide();
+
+        /* inputs */
+
+        //front
+        var input = "<input id='input_front' value='"+this.front+"'></input>";
+        $('card_front_text').remove();
+        $('edit_buttons').insert({'after': input});
+
+        //back
+        var input = "<input id='input_back' value='"+this.back+"'></input>";
+        $('card_back_text').remove();
+        $('card_back').update(input);
+
+        /* listeners */
+        $('button_done').observe('click', this.update.bind(this));
+        $('button_cancel').observe('click', this.showAll.bind(this));
+    },
+
+    update: function() {
+
+        /* text */
+        var text = $('input_front').value + ' - ' + $('input_back').value;
+
+        /* save */
+        var requestUrl = '/lines/update/'+this.lineId;
+        new Ajax.Request(requestUrl, {
+            method: 'post',
+            parameters: {"line[text]": text, "line[id]": this.lineId},
+            
+            onSuccess: function(transport) {
+
+                /* reparse and update card */
+                var data = transport.responseText.evalJSON();
+                this.text = data['line']['text'];
+                parser.parse(this);
+            }.bind(this),
+
+            onFailure: function() {},
+
+            onComplete: function(transport) {this.showAll();}.bind(this)
         });
     }
-    
 });
 
 var cProgressBar = Class.create({
