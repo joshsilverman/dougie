@@ -1,14 +1,19 @@
 <% @page_specific_scripts_js = ["parser", "documents/review"] %>
 <% @page_specific_scripts_css = ["documents/review"] %>
 
-<div class="rounded_border card">
+<div class="card">
   <table>
-    <tr><td class="card_side" id="card_front"></td></tr>
-    <tr><td class="card_side" id="card_back"><button id="card_next">Next</button></td></tr>
+    <tr>
+      <td class="grade grade_hide"><button id="strength_2">I got it, but who cares</button></td>
+      <td class="rounded_border card_side" id="card_front"></td>
+      <td class="grade grade_hide"><button id="strength_4">I've got this down</button></td>
+    </tr>
+    <tr>
+      <td class="grade grade_hide grade_lower"><button id="strength_1">Don't know, don't care</button></td>
+      <td class="rounded_border card_side" id="card_back"></td>
+      <td class="grade grade_hide grade_lower"><button id="strength_3">I want to know this better</button></td>
+    </tr>
   </table>
 </div>
 
-<div id="card_json" style="display:none;">
-  {"0": {"text": "test0 - asdf", "id": "0"}, "1": {"text": "test1 - iopasdf", "id": "1"}, "2": {"text": "test1 - qweasdf", "id": "2"}}
-  <%#=@cards%>
-</div>
+<div id="card_json" style="display:none;"><%=@lines%></div>

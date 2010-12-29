@@ -1,3 +1,5 @@
+/* class declarations */
+
 var cDoc = Class.create({
 
     outline: null,

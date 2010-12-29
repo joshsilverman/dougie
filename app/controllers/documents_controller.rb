@@ -95,8 +95,11 @@ class DocumentsController < ApplicationController
     
   end
 
-  def review(id = nil)
-    
+  def review()
+
+#    Line.joins(:mems)
+#    @lines = Line.where("lines.document_id = ?", params[:id]).to_json :include => :mems
+    @lines = Line.where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json
   end
   
 end

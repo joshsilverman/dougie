@@ -5,7 +5,7 @@ table, tr, td {
 }
 
 .card {
-    width:500px;
+    width:900px;
     height:400px;
     margin:50px auto 0;
 }
@@ -16,15 +16,37 @@ table, tr, td {
     border-spacing: 0;
 }
 
-.card_side {
+td {
     vertical-align: middle;
     height:50%;
     text-align: center;
 }
 
+.card_side {
+    width:500px;
+}
+
 #card_front {
+    border-bottom: none;
 }
 
 #card_back {
     border-top: #5e5e55 dashed 1px;
+}
+
+.grade {
+    width: 200px;
+    vertical-align: bottom;
+}
+
+.grade_lower {
+    vertical-align: top;
+}
+
+.grade button {
+    margin:20px 2px;
+}
+
+.grade_hide button {
+    display:none;
 }
