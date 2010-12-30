@@ -5,21 +5,23 @@ class DocumentsController < ApplicationController
   def index
   end
   
-  
   # Look for existing documents (by name for now)
   # If exists, use this document, otherwise set document html and construct Line objects
-  def create(name = nil,html = nil)
+  def create
     
-    name = params[:name] || name
-    return if name.blank?
-    @document = Document.create(name)
+    @document = Document.create(:name => 'untitled')
+    render 'editor'
     
-    render :json => @document
-
   end
   
   
-  def read(name = nil)
+  def read(id = nil)
+
+    id = params[:id] || id
+    @document = Document.find_by_id(id)
+
+    render 'editor'
+    
   end
   
   

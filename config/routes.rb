@@ -55,14 +55,15 @@ Dougie::Application.routes.draw do
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
-  
-  match "/" => "documents#index"
-  match "/create" => "documents#create"
-  match "/read" => "documents#read"
-  match "/update" => "documents#update"
+
+  #editor
+  match "/" => "documents#create" #** public **#
+  match "/editor" => "documents#create" #** public **#
+  match "/editor/:id" => "documents#read"
+  match "/documents/update" => "documents#update"
 
   #reviwer
-  match "/review/:id" => "documents#review"
+  match "/review/:id" => "documents#review" #** public **#
   match "/mems/update/:id/:confidence/:importance" => "mems#update"
   match "/lines/update/:id" => "lines#update"
   
