@@ -11,6 +11,8 @@ class MemsController < ApplicationController
     #params[:id]
     #params[:confidence]
     #params[:importance]
+
+    render :json => ''
   end
   
   def destroy

@@ -1,4 +1,4 @@
-<% @page_specific_scripts_js = ["parser", "documents/review"] %>
+<% @page_specific_scripts_js = ["parser", "documents/review", "progressbar"] %>
 <% @page_specific_scripts_css = ["documents/review"] %>
 
 <div class="card_container">
@@ -14,6 +14,11 @@
       <td class="grade grade_hide grade_lower"><button id="strength_3">I want to know this better</button></td>
     </tr>
   </table>
+  
+  <div id="progress_bar_container">< Back&nbsp;&nbsp;|&nbsp;&nbsp;
+    <span id="progress_bar"></span>&nbsp;&nbsp;&nbsp;
+    <span id="progress_fraction"></span>&nbsp;&nbsp;|&nbsp;&nbsp;Next >
+  </div>
 </div>
 
 <div id="card_json" style="display:none;"><%=@lines%></div>
