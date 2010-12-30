@@ -66,4 +66,12 @@ Dougie::Application.routes.draw do
   match "/mems/update/:id/:confidence/:importance" => "mems#update"
   match "/lines/update/:id" => "lines#update"
   
+  match "/lines/index" => "lines#index"
+  match "/lines/active" => "lines#active"
+  match "/lines/inactive" => "lines#inactive"
+  
+  match "/mems/index" => "mems#index"
+  match "/mems/active" => "mems#active"
+  match "/mems/inactive" => "mems#inactive"
+  
 end

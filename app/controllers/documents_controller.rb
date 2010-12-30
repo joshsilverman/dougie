@@ -16,21 +16,12 @@ class DocumentsController < ApplicationController
     
     render :json => @document
 
-#    #params
-#    name = params[:name]
-#    html = params[:html]
-#    return if name.blank? || html.blank?
-#
-#    #save
-#    document = Document.find_or_create_by_name(name)
-#    root = Line.create(:document_id => document.id)
-#    parser = DocumentsHelper::DocumentParser.new(html)
-#    Line.preorder_save(parser.doc.children, root, document.id)
-
   end
+  
   
   def read(name = nil)
   end
+  
   
   def update(name = nil, html = nil)
 
@@ -39,26 +30,25 @@ class DocumentsController < ApplicationController
     @document = Document.find_by_id(id)
     return nil if id.blank? || html.blank? || @document.blank?
     
-    if @document.html.blank?
-      
-      @document.update_attribute(:html,html)
-      dp = DocumentParser.new(html)
-      root = Line.create(:document_id => @document.id, :text => 'root')
-      Line.preorder_save(dp.doc.children, root, @document.id)
-
-    else
+    # create new Nokogiri nodeset
+    dp = DocumentParser.new(html)
     
-      @document.update_attribute(:html,html)
-      existing_lines = @document.lines
-      dp = DocumentParser.new(html)
-      root = Line.find_by_document_id(@document.id)
-      Line.update_line(dp.doc.children,existing_lines)
-      Line.preorder_augment(dp.doc.children, root, existing_lines, @document.id)
-      
-    end
+    # pull all existing document line
+    existing_lines = @document.lines
     
-    hsh = Line.id_hash(@document)
+    root = Line.find_or_create_by_document_id( :document_id => @document.id,
+                                               :domid => Line.dom_id(0),
+                                               :text => "root" )
+    
+    Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
+      
+    @document.update_attribute(:html,html)
+    Line.preorder_save(dp.doc, @document.id)
+    
+    hsh = Line.id_hash(Document.find_by_id(id))
+    
     render :json => hsh
+    
   end
 
 #  def update
