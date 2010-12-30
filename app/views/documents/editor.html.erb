@@ -1,0 +1,36 @@
+<% @page_specific_scripts_js = ["ckeditor/ckeditor", "parser", "documents/editor"] %>
+<% @page_specific_scripts_css = ["documents/editor"] %>
+
+<div class="rounded_border doc_options">
+  <span>Name: <input id="document_name" value="<%=@document.name%>"></input></span>
+  <button id="save_button" style="float:right">Save</button>
+  <button id="sync_button"  style="float:right">Sync - 0</button>
+</div>
+
+<div id="editor_container">
+  <textarea id="editor" name="editor"><%=@document.html%></textarea>
+</div>
+
+<div id="right_rail" class="rounded_border">
+  <table class="align_bottom" valign="bottom"><tr><td id="cards" valign="bottom">
+    <!--<div class="card card_active rounded_border"><input type="checkbox" class="card_activation" />truncated test</div>
+    <div class="card_focus card rounded_border">
+      <input type="checkbox" class="card_activation" />
+      <div class="card_front">front</div>
+      <div class="card_back">back and probablyaf sfkljasldk jfasldjfl;aksdjflsjdfsj flsjf lsk</div>
+    </div>-->
+  </td></tr></table>
+</div>
+
+<!-- document vars -->
+<div id="document_id" style="display:none;"><%=@document.id%></div>
+
+<script type="text/javascript">
+//<![CDATA[
+  CKEDITOR.replace( 'editor', {
+    startupFocus : true,
+    fullPage : true,
+    on: {instanceReady : function( ev ) {Event.fire(document, 'CKEDITOR:ready');}}
+  });
+//]]>
+</script>
