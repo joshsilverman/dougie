@@ -64,7 +64,7 @@ class Line < ActiveRecord::Base
 
         # add line to db, save as variable for mem creation
         
-        created_line = existing_parent.children.create( :text => child.content, 
+        created_line = existing_parent.children.create( :text => child.content.strip,
                                                         :domid => parent.attr("id"),
                                                         :document_id => document_id )
                                                         

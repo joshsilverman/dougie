@@ -58,6 +58,7 @@ class LineTest < ActiveSupport::TestCase
     #order assertions
     assert_equal('root', lines_tree.text)
     assert_equal('a This is a test - think', lines_tree.children[0].text)
+    assert_equal("a the letter 'a' i am using", lines_tree.children[1].text)
     assert_equal('a just to keep track', lines_tree.children[1].children[0].text)
   end
 
@@ -329,7 +330,7 @@ class LineTest < ActiveSupport::TestCase
 
         assert_equal(8, Line.all.length)
         assert_equal("node 1",Line.find_by_domid("2").text)
-        assert_equal("node 4",Line.find_by_domid("4").text)
+        assert_equal("node 3",Line.find_by_domid("4").text)
         
         
         assert_equal("node 2",Line.find_by_domid("3").text)
@@ -450,10 +451,45 @@ class LineTest < ActiveSupport::TestCase
         document[1].update_attribute(:html,html[1])
         Line.preorder_save(dp[1].doc, document[1].id)
 
-        puts "FIRST CHILDREN: #{Line.all.to_json}"
+        #cardinality
         assert_equal(19, Line.all.length)
-        assert_equal("a just to keep track", Line.all[3].text)
-      
+
+        #tree relations
+        [1, 2, 6].each do |i|
+          assert_equal(Line.find_by_domid(0).id, Line.find_by_domid(i).parent_id)
+        end
+        [3, 4, 5].each do |i|
+          assert_equal(Line.find_by_domid(2).id, Line.find_by_domid(i).parent_id)
+        end
+        [7, 8, 9, 10, 11].each do |i|
+          assert_equal(Line.find_by_domid(6).id, Line.find_by_domid(i).parent_id)
+        end
+        [12, 13, 14, 18].each do |i|
+          assert_equal(Line.find_by_domid(11).id, Line.find_by_domid(i).parent_id)
+        end
+        [15, 16, 17].each do |i|
+          assert_equal(Line.find_by_domid(14).id, Line.find_by_domid(i).parent_id)
+        end
+
+        #text
+        assert_equal("a This is a test - think",Line.find_by_domid('1').text)
+        assert_equal("a the letter 'a' i am using",Line.find_by_domid('2').text)
+        assert_equal("a just to keep track",Line.find_by_domid('3').text)
+        assert_equal("a of things that are saved on the first",Line.find_by_domid('4').text)
+        assert_equal("a run through",Line.find_by_domid('5').text)
+        assert_equal("a where as items that begin with",Line.find_by_domid('6').text)
+        assert_equal("level 2a",Line.find_by_domid('7').text)
+        assert_equal("level 2b",Line.find_by_domid('8').text)
+        assert_equal("level 2c",Line.find_by_domid('9').text)
+        assert_equal("level 2d",Line.find_by_domid('10').text)
+        assert_equal("level 2e",Line.find_by_domid('11').text)
+        assert_equal("level 3a",Line.find_by_domid('12').text)
+        assert_equal("level 3b",Line.find_by_domid('13').text)
+        assert_equal("level 3c",Line.find_by_domid('14').text)
+        assert_equal("level 4a",Line.find_by_domid('15').text)
+        assert_equal("level 4b",Line.find_by_domid('16').text)
+        assert_equal("level 4c",Line.find_by_domid('17').text)
+        assert_equal("last node",Line.find_by_domid('18').text)
   end
 end
 

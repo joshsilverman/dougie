@@ -50,12 +50,12 @@ var cReviewer = Class.create({
         if (this.cards[this.currentCardIndex + 1]) {
             this.currentCardIndex++;
             this.cards[this.currentCardIndex].cue();
-
-            /* update progress bar */
-            this.progressBar.update((this.currentCardIndex)/this.cards.length);
-            $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
         }
         else alert('No more cards for this document');
+
+        /* update progress bar */
+        this.progressBar.update((this.currentCardIndex)/this.cards.length);
+        $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
     }
 });
 
@@ -213,7 +213,6 @@ var cProgressBar = Class.create({
         this.bramus = new JS_BRAMUS.jsProgressBarHandler();
         this.bramusBrogressBar = new JS_BRAMUS.jsProgressBar( $('progress_bar'), 0, {
             showText	: false,
-            animate	: false,
             width	: 154,
             height	: 11,
             boxImage	: '/images/progressbar/custom1_box.gif',
