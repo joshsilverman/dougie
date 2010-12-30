@@ -68,7 +68,8 @@ var cOutline = Class.create({
         new Ajax.Request('/documents/update', {
             method: 'post',
             parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
-                         'id': this.documentId},
+                         'id': this.documentId,
+                         'name': $('document_name').value},
             onSuccess: function(transport) {
                 var lineIds = transport.responseText.evalJSON();
                 this.updateIds(lineIds);

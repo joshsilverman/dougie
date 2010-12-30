@@ -29,6 +29,7 @@ class DocumentsController < ApplicationController
 
     id = params[:id] || id
     html = params[:html] || html
+    name = params[:name] || name
     @document = Document.find_by_id(id)
     return nil if id.blank? || html.blank? || @document.blank?
     
@@ -44,7 +45,7 @@ class DocumentsController < ApplicationController
     
     Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
       
-    @document.update_attribute(:html,html)
+    @document.update_attributes(:html => html, :name => name)
     Line.preorder_save(dp.doc, @document.id)
     
     hsh = Line.id_hash(Document.find_by_id(id))
