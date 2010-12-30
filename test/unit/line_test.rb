@@ -32,11 +32,11 @@ class LineTest < ActiveSupport::TestCase
 
     #save
     document = Document.find_or_create_by_name(name)
-    root = Line.create(:text => "root", :domid => 0, :document_id => document.id)
+    Line.create(:text => "root", :domid => 0, :document_id => document.id)
     
-    unless document.html.blank?
-      Line.update_line(dp.doc,existing_lines)
-    end
+#    unless document.html.blank?
+#      Line.update_line(dp.doc,existing_lines)
+#    end
     
     dp = DocumentsHelper::DocumentParser.new(html)
     Line.preorder_save(dp.doc, document.id)
@@ -490,6 +490,73 @@ class LineTest < ActiveSupport::TestCase
         assert_equal("level 4b",Line.find_by_domid('16').text)
         assert_equal("level 4c",Line.find_by_domid('17').text)
         assert_equal("last node",Line.find_by_domid('18').text)
+  end
+
+  def test_list
+
+    #setup
+    require 'documents_helper'
+    name = 'new document'
+
+    html = %q[
+              <ul>
+                <li id="node_2" line_id="" changed="1293682573654" class="outline_node" active="false" parent="node_0">1
+                  <ul>
+                    <li line_id="" changed="1293682573654" class="outline_node" active="false" id="node_3" parent="node_2">2</li>
+                    <li line_id="" changed="1293682573654" class="outline_node" active="false" id="node_4" parent="node_2">3
+                      <ul>
+                        <li line_id="" changed="1293682573654" class="outline_node" active="false" id="node_5" parent="node_4">4</li>
+                        <li line_id="" changed="1293682573655" class="outline_node" active="false" id="node_6" parent="node_4">5</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            ]
+
+    #save
+    document = Document.find_or_create_by_name(name)
+    Line.create(:text => "root", :domid => 'node_0', :document_id => document.id)
+
+#    unless document.html.blank?
+#      Line.update_line(dp.doc,existing_lines)
+#    end
+
+    dp = DocumentsHelper::DocumentParser.new(html)
+    Line.preorder_save(dp.doc, document.id)
+
+    #get recently saved
+    document = Document.find_by_name(name)
+    lines_all = Line.find(:all)
+    lines_tree = Line.find(:first,
+                           :include => { :children => { :children => { :children => { :children => :children }}}},
+                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
+    lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
+
+    #cardinality assertions
+    puts lines_all.to_json
+    assert_equal(6, lines_all.size)
+    assert_equal(6, lines.size)
+    assert_equal(1, lines_tree.children.size)
+    assert_equal(2, lines_tree.children[0].children.size)
+    assert_equal(2, lines_tree.children[0].children[1].children.size)
+
+    #text associations
+    assert_equal("root",Line.find_by_domid('node_0').text)
+    assert_equal("1",Line.find_by_domid('node_2').text)
+    assert_equal("2",Line.find_by_domid('node_3').text)
+    assert_equal("3",Line.find_by_domid('node_4').text)
+    assert_equal("4",Line.find_by_domid('node_5').text)
+    assert_equal("5",Line.find_by_domid('node_6').text)
+
+    #tree relations
+    assert_equal(Line.find_by_domid('node_0').id, Line.find_by_domid('node_2').parent_id)
+    [3, 4].each do |i|
+      assert_equal(Line.find_by_domid('node_2').id, Line.find_by_domid("node_%i" % i).parent_id)
+    end
+    [5, 6].each do |i|
+      assert_equal(Line.find_by_domid('node_4').id, Line.find_by_domid("node_%i" % i).parent_id)
+    end
   end
 end
 

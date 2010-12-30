@@ -54,16 +54,16 @@ class Line < ActiveRecord::Base
     children = lines.children
     
     children.each do |child|
+
       parent = child.parent
       
       # check for text node and blank and unsaved lines (blank line_id attributes)
       if child.class == Nokogiri::XML::Text && !parent.attr('parent').blank? && parent.attr("line_id").blank?
         
         # find line in db where domid equals parent's "parent" attribute
-        existing_parent = Line.where('domid = ?',parent.attr("parent")).first
+        existing_parent = Line.where('domid = ? AND document_id = ?',parent.attr("parent"),document_id).first
 
         # add line to db, save as variable for mem creation
-        
         created_line = existing_parent.children.create( :text => child.content.strip,
                                                         :domid => parent.attr("id"),
                                                         :document_id => document_id )
