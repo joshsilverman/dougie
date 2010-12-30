@@ -15,6 +15,8 @@ var cDoc = Class.create({
 
 var cReviewer = Class.create({
 
+    progressBar: null,
+
     cards: [],
     currentCardIndex: 0,
 
@@ -33,6 +35,10 @@ var cReviewer = Class.create({
         $('strength_2').observe('click', this.next.bind(this, 2));
         $('strength_3').observe('click', this.next.bind(this, 3));
         $('strength_4').observe('click', this.next.bind(this, 4));
+
+        /* progress bar */
+        this.progressBar = new cProgressBar();
+        $('progress_fraction').update("0/"+this.cards.length);
     },
 
     next: function(grade) {
@@ -44,6 +50,10 @@ var cReviewer = Class.create({
         if (this.cards[this.currentCardIndex + 1]) {
             this.currentCardIndex++;
             this.cards[this.currentCardIndex].cue();
+
+            /* update progress bar */
+            this.progressBar.update((this.currentCardIndex)/this.cards.length);
+            $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
         }
         else alert('No more cards for this document');
     }
@@ -151,12 +161,13 @@ var cCard = Class.create({
         /* inputs */
 
         //front
-        var input = "<input id='input_front' value='"+this.front+"'></input>";
+        var input = "<textarea id='input_front'>"+this.front+"</textarea>";
         $('card_front_text').remove();
         $('edit_buttons').insert({'after': input});
+        $('input_front').focus();
 
         //back
-        var input = "<input id='input_back' value='"+this.back+"'></input>";
+        var input = "<textarea id='input_back'>"+this.back+"</textarea>";
         $('card_back_text').remove();
         $('card_back').update(input);
 
@@ -193,8 +204,26 @@ var cCard = Class.create({
 
 var cProgressBar = Class.create({
 
+    bramus: null,
+    bramusBrogressBar: null,
+
+    initialize: function() {
+
+        /* bramus instance and set progress instance */
+        this.bramus = new JS_BRAMUS.jsProgressBarHandler();
+        this.bramusBrogressBar = new JS_BRAMUS.jsProgressBar( $('progress_bar'), 0, {
+            showText	: false,
+            animate	: false,
+            width	: 154,
+            height	: 11,
+            boxImage	: '/images/progressbar/custom1_box.gif',
+            barImage	: '/images/progressbar/custom1_bar.gif'});
+    },
+
     update: function(progress) {
 
+        var percentage = progress * 100;
+        this.bramusBrogressBar.setPercentage(percentage);
     }
 });
 
