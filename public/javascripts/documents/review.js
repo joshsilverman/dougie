@@ -45,10 +45,10 @@ var cReviewer = Class.create({
 
         /* grade current */
         this.cards[this.currentCardIndex].grade(grade);
+        this.currentCardIndex++;
 
         /* advance */
-        if (this.cards[this.currentCardIndex + 1]) {
-            this.currentCardIndex++;
+        if (this.cards[this.currentCardIndex]) {
             this.cards[this.currentCardIndex].cue();
         }
         else alert('No more cards for this document');
