@@ -668,7 +668,13 @@ class LineTest < ActiveSupport::TestCase
     lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #active attribute assertions
-    puts Mem.all.to_yaml
+    assert(Line.find_by_domid("1").mems.first.status)
+    assert(Line.find_by_domid("2").mems.first.status)
+    assert(Line.find_by_domid("3").mems.first.status)
+    assert(!Line.find_by_domid("4").mems.first.status)
+    assert(!Line.find_by_domid("5").mems.first.status)
+    assert(Line.find_by_domid("6").mems.first.status)
 
+  end
 
 end
