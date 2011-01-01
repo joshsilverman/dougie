@@ -534,7 +534,6 @@ class LineTest < ActiveSupport::TestCase
     lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #cardinality assertions
-    puts lines_all.to_json
     assert_equal(6, lines_all.size)
     assert_equal(6, lines.size)
     assert_equal(1, lines_tree.children.size)
@@ -558,19 +557,70 @@ class LineTest < ActiveSupport::TestCase
       assert_equal(Line.find_by_domid('node_4').id, Line.find_by_domid("node_%i" % i).parent_id)
     end
   end
-end
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+  #@todo move? mem creation invoked by line model...
+  def test_mem_creation
+
+    #setup
+    Mem.delete_all #@todo shouldn't be necessary...
+    require 'documents_helper'
+    name = 'new document'
+    html = %q[
+              <body>
+
+                <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+
+                <ul>
+
+                  <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                    <ul>
+                      <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                      <li changed="1" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                      <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                    </ul>
+                  </li>
+
+                  <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+
+                </ul>
+
+              </body>
+            ]
+
+    #save
+    document = Document.find_or_create_by_name(name)
+    Line.create(:text => "root", :domid => 0, :document_id => document.id)
+
+    dp = DocumentsHelper::DocumentParser.new(html)
+    Line.preorder_save(dp.doc, document.id)
+
+    #get recently saved
+    document = Document.find_by_name(name)
+    lines_all = Line.find(:all)
+    lines_tree = Line.find(:first,
+                           :include => { :children => { :children => { :children => { :children => :children }}}},
+                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
+    lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
+
+    #cardinality
+    assert_equal(6, Mem.all.size)
+
+    #foreign key check
+    matches = 0
+    Line.all.each do |line|
+      if (line.parent_id.nil?)
+        next
+      end
+      match = false
+      Mem.all.each do |mem|
+        if (line.id == mem.line_id)
+          match = true
+        end
+      end
+      assert(match)
+      matches += 1
+    end
+    assert(matches == 6)
+  end
+
+end

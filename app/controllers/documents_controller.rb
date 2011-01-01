@@ -80,9 +80,7 @@ class DocumentsController < ApplicationController
     #efficient join
     #@todo: why does it need to requery model when building json structure
     #@lines = Line.joins(:mems).where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json :include => :mems
-
-    #no join
-    #@lines = Line.where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json
+    
   end
   
 end
