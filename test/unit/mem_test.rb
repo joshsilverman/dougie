@@ -26,8 +26,6 @@ class MemTest < ActiveSupport::TestCase
     strength_deviation = (strength_pre - mem.strength).abs/mem.strength
     review_deviation = (review_after.to_f - mem.review_after.to_f).abs / mem.review_after.to_f
 
-    puts review_deviation
-
     assert(strength_deviation < 0.01)
     assert(review_deviation < 0.01)
   end

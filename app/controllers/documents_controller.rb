@@ -53,26 +53,6 @@ class DocumentsController < ApplicationController
     render :json => hsh
     
   end
-
-#  def update
-#
-#    #params
-#    name = params[:name] || name
-#    html = params[:html] || html
-#    document = Document.find_by_name(name)
-#    return nil if name.blank? || html.blank? || document.blank?
-#
-#    #get existing
-#    existing_lines = document.lines
-#    root = Line.find_by_document_id(document.id)
-#
-#    #update and augment
-#    document.update_attribute(:html,html)
-#    parser = DocumentParser.new(html)
-#    Line.update_line(parser.doc.children,existing_lines)
-#    Line.preorder_augment(parser.doc.children, root, existing_lines, document.id)
-#  end
-  
   
   def destroy(name = nil)
     
@@ -91,11 +71,15 @@ class DocumentsController < ApplicationController
   def review()
 
     #inefficient join via json include
-    @lines = Line.where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json :include => :mems
+    @lines = Line.joins(:mems)\
+                 .where("     lines.document_id = ?
+                          AND lines.text <> 'root'
+                          AND mems.review_after < ?", params[:id], Time.now())\
+                 .to_json :include => :mems
 
     #efficient join
     #@todo: why does it need to requery model when building json structure
-    #@lines = Line.join(:mems).where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json :include => :mems
+    #@lines = Line.joins(:mems).where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json :include => :mems
 
     #no join
     #@lines = Line.where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json

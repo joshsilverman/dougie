@@ -20,14 +20,10 @@ class MemsController < ApplicationController
   
   def update
 
-    #params[:id]
-    #params[:confidence]
-    #params[:importance]
-
     mem = Mem.find(params[:id])
+    mem.update_reviewed(params[:confidence], params[:importance])
 
-
-    render :json => mem
+    render :nothing => true
   end
   
   def destroy
