@@ -24,7 +24,10 @@ class MemsController < ApplicationController
     #params[:confidence]
     #params[:importance]
 
-    render :json => ''
+    mem = Mem.find(params[:id])
+
+
+    render :json => mem
   end
   
   def destroy

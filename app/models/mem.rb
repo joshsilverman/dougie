@@ -11,5 +11,28 @@ class Mem < ActiveRecord::Base
     mem.save
     
   end
+
+  def update_reviewed(confidence, importance)
+
+    #calculate time delta
+    time_delta_to_now = Time.now - self.updated_at
+
+    #calculate strength_pre or strength before this repetition
+    strength_pre = (-1) * time_delta_to_now / Math.log(confidence.to_f/10)
+
+    #temp strength_post, strength_next
+    strength_growth_factor = 1.1
+    strength_post = strength_pre * strength_growth_factor
+    strength_next_target = 0.8
+
+    #calculate reviewAfter
+    time_delta_to_next = (-1) * strength_post * Math.log(strength_next_target)
+    review_after = Time.now + time_delta_to_next
+
+    #update attributes
+    self.update_attributes(:review_after => review_after,
+                           :strength => strength_pre)
+
+  end
   
 end
