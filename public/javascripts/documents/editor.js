@@ -337,7 +337,11 @@ var cRightRail = Class.create({
             //existing node, new card
             else if (!this.cards.get(node.id)) {
                 var cardIndex = parseInt(node.id.replace('node_', ''));
-                this.cards.set(node.id, new cCard(node, cardIndex, true));
+                var attributes = {'line_id': node.getAttribute('line_id'),
+                                  'changed': node.getAttribute('changed'),
+                                  'active': node.getAttribute('active'),
+                                  'id': node.getAttribute('id')}
+                this.cards.set(node.id, new cCard(node, cardIndex, true, attributes));
             }
 
             //update existing card
@@ -397,25 +401,30 @@ var cCard = Class.create({
 
     parser: null,
 
-    initialize: function(node, cardCount, truncate) {
+    initialize: function(node, cardCount, truncate, attributes) {
 
-        //set dom node attributes
+        /* set count */
         this.cardNumber = cardCount;
-        Element.writeAttribute(node, {'id': 'node_' + this.cardNumber,
-                                      'line_id':'',
-                                      'changed': new Date().getTime()});
+
+        /* set dom node attributes */
+        var defaultAttributes = $H({'id': 'node_' + this.cardNumber,
+                                    'line_id':'',
+                                    'changed': new Date().getTime(),
+                                    'active': false});
+        attributes = defaultAttributes.merge(attributes).toObject();
+        Element.writeAttribute(node, attributes);
         Element.addClassName(node, 'outline_node');
 
-        //parsing
-        node.setAttribute('active', false);
-        this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
-        parser.parse(this);
-
-        //card in dom
+        /* card in dom */
         var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card"></div>';
         this._insert(cardHtml);
         this.elmntCard = $("card_" + this.cardNumber);
-        this.render(truncate);
+        
+        /* set active - in case regenerating card for existing node */
+        if (node.getAttribute('active') == 'true') this.activate();
+
+        /* update */
+        this.update(node, truncate);
     },
 
     update: function(node, truncate) {
