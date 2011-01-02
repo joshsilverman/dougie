@@ -221,7 +221,7 @@ var cProgressBar = Class.create({
 
     update: function(progress) {
 
-        var percentage = progress * 100;
+        var percentage = Math.round(progress * 100);
         this.bramusBrogressBar.setPercentage(percentage);
     }
 });
