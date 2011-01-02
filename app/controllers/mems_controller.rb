@@ -3,11 +3,13 @@ class MemsController < ApplicationController
   def index
     render :json => Mem.all
   end
-  
+
+  #@todo depracate
   def active
     render :json => Mem.where("status = ?",true)
   end
-  
+
+  #@todo depracate
   def inactive
     render :json => Mem.where("status = ?",false)
   end

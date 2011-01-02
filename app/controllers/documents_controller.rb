@@ -8,8 +8,21 @@ class DocumentsController < ApplicationController
   # Look for existing documents (by name for now)
   # If exists, use this document, otherwise set document html and construct Line objects
   def create
-    
-    @document = Document.create(:name => 'untitled')
+
+    #get tag if none provided
+    tag_id = params[:tag_id]
+    if tag_id.nil?
+      tag = Tag.find_by_misc(true) #@todo should query by user_id too
+
+      #generate miscelaneous tag if none
+      if tag.blank?
+        tag = Tag.create(:misc => true, :name => 'Misc')
+      end
+
+      tag_id = tag.id
+    end
+
+    @document = Document.create(:name => 'untitled', :tag_id => tag_id)
     render 'editor'
     
   end

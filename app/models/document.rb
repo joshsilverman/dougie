@@ -1,6 +1,8 @@
 class Document < ActiveRecord::Base
 
   has_many :lines
+
+  belongs_to :tag
   
   before_save :document_name, :document_html_line_ids
   

@@ -1,4 +1,6 @@
 Dougie::Application.routes.draw do
+  get "tag/index"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -57,7 +59,6 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
 
   #editor
-  match "/" => "documents#create" #** temp **#
   match "/editor" => "documents#create" #** public **#
   match "/editor/:id" => "documents#read"
   match "/documents/update" => "documents#update"
@@ -66,7 +67,10 @@ Dougie::Application.routes.draw do
   match "/review/:id" => "documents#review" #** public **#
   match "/mems/update/:id/:confidence/:importance" => "mems#update"
   match "/lines/update/:id" => "lines#update"
-  
+
+  #organizer
+  match "/" => "tags#index" #** public **#
+
   match "/lines/index" => "lines#index"
   match "/lines/active" => "lines#active"
   match "/lines/inactive" => "lines#inactive"
