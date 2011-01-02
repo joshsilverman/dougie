@@ -338,6 +338,7 @@ class LineTest < ActiveSupport::TestCase
   end
   
   def test_augment_depth_4
+
     #setup
     require 'documents_helper'
     html = []
@@ -439,7 +440,7 @@ class LineTest < ActiveSupport::TestCase
 
                 </body>
               ]
-      
+
         document[1] = Document.find_by_id(document[0].id)
         dp[1] = DocumentsHelper::DocumentParser.new(html[1])
         existing_lines = document[1].lines
@@ -677,4 +678,65 @@ class LineTest < ActiveSupport::TestCase
 
   end
 
+  def test_html_updated
+    #setup
+    require 'documents_helper'
+    name = 'new document'
+    html = %q[
+              <body>
+
+                <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+
+                <ul>
+
+                  <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                    <ul>
+                      <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                      <li line_id="" changed="1" id="4" parent="2" active="false">a of things that are saved on the first</li>
+                      <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                    </ul>
+                  </li>
+
+                  <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+
+                </ul>
+
+              </body>
+            ]
+
+    #save
+    document = Document.find_or_create_by_name(name)
+    Line.create(:text => "root", :domid => 0, :document_id => document.id)
+
+    dp = DocumentsHelper::DocumentParser.new(html)
+    Line.preorder_save(dp.doc, document.id)
+
+    #get recently saved
+    document = Document.find_by_name(name)
+
+#    #@todo i struggled with nokogiri before submitting to a complex regex
+#    lines = html.scan(/(?:<p|<li)[^>]*(?:[^_]id="([^"]*)"[^>]*line_id="([^"]*)"|line_id="([^"]*)"[^>]*[^_]id="([^"]*)")[^>]*>/)
+#    lines.each do |line|
+#
+#      #check for no line id; check that domid exists
+#      dom_id = line[0] || line[3]
+#      if (line[1].blank? && line[2].blank? && !dom_id.blank?)
+#
+#        #retrieve line
+#        line = Line.find_by_domid(dom_id)
+#        if (!line.blank?)
+#          id = line.id
+#          #make substitution - two expressions for readability
+#          html = html.gsub(/((?:<p|<li)[^>]*[^_]id="#{dom_id}"[^>]*line_id=")("[^>]*>)/) {"#{$1}#{id}#{$2}"}
+#          html = html.gsub(/((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) {"#{$1}#{id}#{$2}"}
+#        end
+#      end
+#    end
+
+    puts document.html
+
+    #no assertions
+
+
+  end
 end

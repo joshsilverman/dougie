@@ -67,7 +67,7 @@ class Line < ActiveRecord::Base
         created_line = existing_parent.children.create( :text => child.content.strip,
                                                         :domid => parent.attr("id"),
                                                         :document_id => document_id )
-                                                        
+
         # pass in hash of properties to be merged when creating a Mem
         Mem.create_standard({ :line_id => created_line.id,
                               :status => Line.active_mem?(parent.attr("active")) })
