@@ -70,7 +70,8 @@ class Line < ActiveRecord::Base
 
         # pass in hash of properties to be merged when creating a Mem
         Mem.create_standard({ :line_id => created_line.id,
-                              :status => Line.active_mem?(parent.attr("active")) })
+                              :status => Line.active_mem?(parent.attr("active")),
+                              :review_after => Time.now})
                    
       elsif child.children.length > 0
           Line.preorder_save(child,document_id)
