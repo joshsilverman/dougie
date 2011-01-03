@@ -1,11 +1,11 @@
 .icon_container {
     float:left;
-    padding:2px 12px;
+    padding:2px 2px;
     text-align:center;
     border-width: 0;
     height:85px;
-    width:70px;
-    margin:2px;
+    width:90px;
+    margin:5px;
 }
 
 .icon_container a {
@@ -29,6 +29,10 @@
     color:#5e5e55;
     font-size: 13px;
     margin-bottom:3px;
+    height:15px;
+    overflow: hidden;
+    white-space:nowrap;
+    text-align:center;
 }
 
 .folder_options img {

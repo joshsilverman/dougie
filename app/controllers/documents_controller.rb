@@ -12,15 +12,15 @@ class DocumentsController < ApplicationController
       @tag = Tag.find_by_misc(true) #@todo should query by user_id too
 
       #generate miscelaneous tag if none
-      if tag.blank?
-        tag = Tag.create(:misc => true, :name => 'Misc')
+      if @tag.blank?
+        @tag = Tag.create(:misc => true, :name => 'Misc')
       end
 
-      tag_id = tag.id
+      tag_id = @tag.id
 
     else
       #@todo should query by user_id too and what if tag id is invalid...
-      @tag = Tag.find_by_id(tag)
+      @tag = Tag.find_by_id(tag_id)
     end
 
     @document = Document.create(:name => 'untitled', :tag_id => @tag.id)
@@ -68,17 +68,15 @@ class DocumentsController < ApplicationController
     
   end
   
-  def destroy(name = nil)
+  def destroy
     
-    name = name ? name : params[:name]
-    return nil if name.blank? 
-    
-    @doc = Document.where("name = ?",name)
-    if @doc.length > 0
-      @doc.each do |doc|
-        doc.destroy
-      end
+    if params[:id].nil?
+      render :nothing => true, :status => 400
+      return
     end
+    
+    Document.delete(params[:id]) #@todo check user id
+    render :json => Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
     
   end
 

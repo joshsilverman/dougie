@@ -72,6 +72,7 @@ Dougie::Application.routes.draw do
   match "/" => "tags#index" #** public **#
   match "/tags/create" => "tags#create"
   match "/tags/destroy" => "tags#destroy"
+  match "/documents/destroy" => "documents#destroy"
 
   match "/lines/index" => "lines#index"
   match "/lines/active" => "lines#active"

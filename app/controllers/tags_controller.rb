@@ -30,8 +30,9 @@ class TagsController < ApplicationController
       return
     end
 
-    #create
-    Tag.delete(params[:id])
+    #find and destory - related documents are also deleted
+    tag = Tag.find(params[:id])
+    tag.destroy()
 
     #return all tag for rerendering dir
     render :json => Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})

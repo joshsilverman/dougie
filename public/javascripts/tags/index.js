@@ -2,10 +2,15 @@
 
 var cDoc = Class.create({
 
+    /* parsed tag info */
     tags: null,
 
+    /* views */
     directoryView: null,
-    documentsViews: new Hash,
+    documentsViews: null,
+
+    /* holds tagId of current documentsView or and empty string */
+    currentView: null,
 
     initialize: function() {
 
@@ -15,10 +20,29 @@ var cDoc = Class.create({
             this.tags.set(tag['tag']['id'], tag['tag']);
         }.bind(this));
 
-        /* build and load directory view */
+        /* build directory view */
         this.directoryView = new cDirectoryView(this.tags);
-        this.directoryView.render();
-    }
+
+        /* reset documentsViews */
+        this.documentsViews = new Hash;
+
+        /* listen for hash change */
+        //@todo find cross-browser solution
+        window.onhashchange = this.onChange.bind(this);
+    },
+
+    onChange: function() {
+
+            /* rerender? browser navigation used? */
+            var hashValue = self.document.location.hash.substring(1)
+            var rerender = hashValue != this.currentView;
+
+            /* rerender */
+            if (rerender) {
+                if (hashValue == '') this.directoryView.render();
+                else this.directoryView.openDirectory(hashValue);
+            }
+        }
 });
 
 var cDirectoryView = Class.create({
@@ -65,7 +89,10 @@ var cDirectoryView = Class.create({
 
         //open directory
         $$('img.folder, .icon_container .title').each(function(element) {
-            element.observe('click', this.openDirectory.bind(this));
+            element.observe('click', function(event) {
+                var tagId = event.target.getAttribute('tag_id');
+                this.openDirectory(tagId);
+            }.bind(this));
         }.bind(this));
 
         //new document
@@ -82,12 +109,13 @@ var cDirectoryView = Class.create({
         $$('.destroy_directory').each(function(element) {
             element.observe('click', this.destroyDirectory.bind(this));
         }.bind(this));
+
+        /* set location hash */
+        if (window.doc) doc.currentView = '';
+        self.document.location.hash = '';
     },
 
-    openDirectory: function(event) {
-
-        /* identify tag */
-        var tagId = event.target.getAttribute('tag_id');
+    openDirectory: function(tagId) {
 
         /* get or create documentsView */
         var documentsView = doc.documentsViews.get(tagId);
@@ -122,6 +150,9 @@ var cDirectoryView = Class.create({
     },
 
     destroyDirectory: function(event) {
+
+        /* confirm */
+        if (!confirm('Are you sure you want to delete this directory and all of it\'s contents? This cannot be undone.')) return;
 
         /* request params */
         var tagId = event.target.up('.icon_container').getAttribute('tag_id');
@@ -176,23 +207,23 @@ var cDocumentsView = Class.create({
         this.html += '<div tag_id="'+tag['id']+'" class="icon_container rounded_border new_document_container">\
           <div class="title new_document">&nbsp;</div>\
           <div class="folder new_document">\
-            <img class="new_document" alt="" src="/images/organizer/doc-edit-icon.png" />\
+            <img class="new_document" alt="" src="/images/organizer/doc-new-icon.png" />\
           </div>\
         </div>';
 
         //document links
         this.tag.documents.each(function(document) {
-          this.html += '<div class="icon_container rounded_border">\
+          this.html += '<div document_id="'+document['id']+'" class="icon_container rounded_border">\
               <a href="/editor/'+document['id']+'">\
                 <div class="title">'+document['name']+'</div>\
                 <div class="folder">\
                   <img class="folder" alt="" src="/images/organizer/doc-icon.png" />\
                 </div>\
-              <\a>\
+              </a>\
               <div class="folder_options">\
-                <img class="rounded_border" alt="" src="/images/organizer/add-icon.png" />\
-                <img class="rounded_border" alt="" src="/images/organizer/play-icon.png" />\
-                <img class="rounded_border" alt="" src="/images/organizer/remove-icon.png" />\
+                <a href="/editor/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>\
+                <a href="/review/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/play-icon.png" /></a>\
+                <img class="rounded_border remove_document" alt="" src="/images/organizer/remove-icon.png" />\
               </div>\
             </div>';
         }.bind(this));
@@ -215,7 +246,43 @@ var cDocumentsView = Class.create({
 
         //new document
         $$('.new_document').each(function(element) {
-            element.observe('click', doc.directoryView.createDocument.bind(event));
+            element.observe('click', doc.directoryView.createDocument);
+        });
+
+        //remove document
+        $$('.remove_document').each(function(element) {
+            element.observe('click', this.destroyDocument.bind(this));
+        }.bind(this));
+
+        /* set location hash */
+        doc.currentView = this.tag.id;
+        self.document.location.hash = this.tag.id;
+    },
+
+    destroyDocument: function() {
+
+        /* confirm */
+        if (!confirm('Are you sure you want to delete this document? This cannot be undone.')) return;
+
+        /* request params */
+        var documentId = event.target.up('.icon_container').getAttribute('document_id');
+
+        /* request */
+        new Ajax.Request('/documents/destroy', {
+            method: 'post',
+            parameters: {'id': documentId},
+            onSuccess: function(transport) {
+
+                /* inject json and rerender document */
+                $('tags_json').update(Object.toJSON(transport.responseJSON));
+                doc = new cDoc;
+
+                /* open appropriate directory */
+                doc.directoryView.openDirectory(this.tag.id);
+            }.bind(this),
+            onFailure: function(transport) {
+                alert('There was an error removing the directory.');
+            }
         });
     }
 });
@@ -223,4 +290,5 @@ var cDocumentsView = Class.create({
 /* global objects */
 document.observe('dom:loaded', function() {
     doc = new cDoc;
+    doc.onChange();
 });
