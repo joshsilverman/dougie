@@ -2,6 +2,7 @@
 <% @page_specific_scripts_css = ["tags/index"] %>
 <div id="tags_json" style="display:none;"><%= @tags_json %></div>
 
+<div id="directory_name" style="display:none;"></div>
 <div id="icons">
   <!--<div class="icon_container rounded_border">
     <div class="title">Title here</div>
@@ -15,3 +16,9 @@
     </div>
   </div>-->
 </div>
+
+<!-- form for creating documents on the fly -->
+<form id='create_document' action='editor' method='post'>
+  <input id='tag_id' type="hidden" name='tag_id'></input>
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>" />
+</form>

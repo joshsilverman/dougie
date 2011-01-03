@@ -8,6 +8,10 @@
     margin:2px;
 }
 
+.icon_container a {
+    text-decoration: none;
+}
+
 .misc {
     background-color:#d6dff7;
 }
@@ -26,4 +30,14 @@
 .folder_options img {
     height:14px;
     width:14px;
+}
+
+.folder_options img {
+    height:14px;
+    width:14px;
+}
+
+.folder_options img:hover {
+    background-color: #fff;
+    border-color:#fff;
 }

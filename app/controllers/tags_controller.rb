@@ -6,4 +6,36 @@ class TagsController < ApplicationController
 
   end
 
+  def create
+
+    #param check
+    if params[:name].nil?
+      render :nothing => true, :status => 400
+      return
+    end
+
+    #create
+    Tag.create(:name => params[:name])
+
+    #return all tag for rerendering dir
+    render :json => Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+
+  end
+
+  def destroy
+
+    #param check
+    if params[:id].nil?
+      render :nothing => true, :status => 400
+      return
+    end
+
+    #create
+    Tag.delete(params[:id])
+
+    #return all tag for rerendering dir
+    render :json => Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+
+  end
+
 end
