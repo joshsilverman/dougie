@@ -23,14 +23,14 @@ var cDoc = Class.create({
 
 var cDirectoryView = Class.create({
     
-    html: '',
+    html: null,
 
     initialize: function(tags) {
 
         /* build html string */
         
         //new file
-        this.html += '<div class="icon_container rounded_border misc">\
+        this.html = '<div class="icon_container rounded_border new_directory_container">\
           <div class="title new_directory">&nbsp;</div>\
           <div class="folder ">\
             <img class="new_directory" alt="" src="/images/organizer/folder-add-icon.png" />\
@@ -155,7 +155,7 @@ var cDirectoryView = Class.create({
 
 var cDocumentsView = Class.create({
 
-    html: '',
+    html: null,
     tag : null,
 
     initialize: function(tag) {
@@ -163,6 +163,24 @@ var cDocumentsView = Class.create({
         this.tag = tag
 
         /* build view html string */
+
+        //return to root
+        this.html = '<div class="icon_container rounded_border to_root_container">\
+          <div class="title to_root">&nbsp;</div>\
+          <div class="folder to_root">\
+            <img class="to_root" alt="" src="/images/organizer/folder-up-icon.png" />\
+          </div>\
+        </div>';
+
+        //new document
+        this.html += '<div tag_id="'+tag['id']+'" class="icon_container rounded_border new_document_container">\
+          <div class="title new_document">&nbsp;</div>\
+          <div class="folder new_document">\
+            <img class="new_document" alt="" src="/images/organizer/doc-edit-icon.png" />\
+          </div>\
+        </div>';
+
+        //document links
         this.tag.documents.each(function(document) {
           this.html += '<div class="icon_container rounded_border">\
               <a href="/editor/'+document['id']+'">\
@@ -183,11 +201,22 @@ var cDocumentsView = Class.create({
     render: function() {
         
         /* render doc title */
-        $('directory_name').update(this.tag.name + '/');
-        Effect.BlindDown('directory_name');
+        $('directory_name').update('home/' + this.tag.name + '/');
         
         /* render view */
         $('icons').update(this.html);
+
+        /* listeners */
+
+        //to root
+        $$('.to_root').each(function(element) {
+            element.observe('click', doc.directoryView.render.bind(doc.directoryView));
+        });
+
+        //new document
+        $$('.new_document').each(function(element) {
+            element.observe('click', doc.directoryView.createDocument.bind(event));
+        });
     }
 });
 

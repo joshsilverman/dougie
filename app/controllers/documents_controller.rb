@@ -2,9 +2,6 @@ class DocumentsController < ApplicationController
 
   include DocumentsHelper
   
-  def index
-  end
-  
   # Look for existing documents (by name for now)
   # If exists, use this document, otherwise set document html and construct Line objects
   def create
@@ -12,7 +9,7 @@ class DocumentsController < ApplicationController
     #get tag if none provided
     tag_id = params[:tag_id]
     if tag_id.nil?
-      tag = Tag.find_by_misc(true) #@todo should query by user_id too
+      @tag = Tag.find_by_misc(true) #@todo should query by user_id too
 
       #generate miscelaneous tag if none
       if tag.blank?
@@ -20,9 +17,13 @@ class DocumentsController < ApplicationController
       end
 
       tag_id = tag.id
+
+    else
+      #@todo should query by user_id too and what if tag id is invalid...
+      @tag = Tag.find_by_id(tag)
     end
 
-    @document = Document.create(:name => 'untitled', :tag_id => tag_id)
+    @document = Document.create(:name => 'untitled', :tag_id => @tag.id)
     render 'editor'
     
   end
@@ -32,11 +33,11 @@ class DocumentsController < ApplicationController
 
     id = params[:id] || id
     @document = Document.find_by_id(id)
+    @tag = Tag.find_by_id(@document.tag_id)
 
     render 'editor'
     
   end
-  
   
   def update(name = nil, html = nil)
 

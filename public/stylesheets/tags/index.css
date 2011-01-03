@@ -12,8 +12,12 @@
     text-decoration: none;
 }
 
-.misc {
-    background-color:#d6dff7;
+.to_root_container {
+    background-color:#DAE1F5;
+}
+
+.new_directory_container , .new_document_container {
+    background-color:#E1FFA6;
 }
 
 .icon_container:hover {
@@ -40,4 +44,10 @@
 .folder_options img:hover {
     background-color: #fff;
     border-color:#fff;
+}
+
+#directory_name {
+    margin-bottom:4px;
+    border-bottom: lightgrey solid 1px;
+    padding-bottom:4px;
 }
