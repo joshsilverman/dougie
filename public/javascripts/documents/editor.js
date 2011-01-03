@@ -27,6 +27,9 @@ var cDoc = Class.create({
                 document.fire('editor:loaded');
                 }.bind(this)).delay(.1);
         }.bind(this));
+
+        /* select all in doc name on click */
+        $('document_name').observe('click', function(e) {e.target.select();});
     }
 });
 

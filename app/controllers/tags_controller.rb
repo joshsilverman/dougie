@@ -2,6 +2,12 @@ class TagsController < ApplicationController
 
   def index
 
+    #create Misc tag if not exists
+    misc = Tag.find_by_misc(true)
+    if misc.nil?
+      Tag.create(:misc => true, :name => 'Misc.')
+    end
+
     @tags_json = Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
 
   end
@@ -30,8 +36,16 @@ class TagsController < ApplicationController
       return
     end
 
-    #find and destory - related documents are also deleted
+    #find
     tag = Tag.find(params[:id])
+
+    #don't delete if Misc, or if nothing's there
+    if tag.misc == true or tag.nil?
+      render :nothing => true, :status => 400
+      return
+    end
+
+    #find and destory - related documents are also deleted
     tag.destroy()
 
     #return all tag for rerendering dir
