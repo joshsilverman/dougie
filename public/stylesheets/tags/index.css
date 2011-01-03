@@ -1,0 +1,29 @@
+.icon_container {
+    float:left;
+    padding:2px 12px;
+    text-align:center;
+    border-width: 0;
+    height:85px;
+    width:70px;
+    margin:2px;
+}
+
+.misc {
+    background-color:#d6dff7;
+}
+
+.icon_container:hover {
+    background-color:#eee;
+    cursor:pointer;
+}
+
+.icon_container .title {
+    color:#5e5e55;
+    font-size: 13px;
+    margin-bottom:3px;
+}
+
+.folder_options img {
+    height:14px;
+    width:14px;
+}
