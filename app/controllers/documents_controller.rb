@@ -80,7 +80,7 @@ class DocumentsController < ApplicationController
     
   end
 
-  def review()
+  def review
 
     #inefficient join via json include
     @lines = Line.joins(:mems)\

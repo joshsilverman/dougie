@@ -142,6 +142,7 @@ var cDirectoryView = Class.create({
                 /* inject json and rerender document */
                 $('tags_json').update(Object.toJSON(transport.responseJSON));
                 doc = new cDoc;
+                doc.onChange();
             },
             onFailure: function(transport) {
                 alert('There was an error saving the new directory.');
@@ -166,6 +167,7 @@ var cDirectoryView = Class.create({
                 /* inject json and rerender document */
                 $('tags_json').update(Object.toJSON(transport.responseJSON));
                 doc = new cDoc;
+                doc.onChange();
             },
             onFailure: function(transport) {
                 alert('There was an error removing the directory.');
@@ -276,6 +278,7 @@ var cDocumentsView = Class.create({
                 /* inject json and rerender document */
                 $('tags_json').update(Object.toJSON(transport.responseJSON));
                 doc = new cDoc;
+                doc.onChange();
 
                 /* open appropriate directory */
                 doc.directoryView.openDirectory(this.tag.id);

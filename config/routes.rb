@@ -65,6 +65,7 @@ Dougie::Application.routes.draw do
 
   #reviwer
   match "/review/:id" => "documents#review" #** public **#
+  match "/review/dir/:id" => "tags#review" #** public **#
   match "/mems/update/:id/:confidence/:importance" => "mems#update"
   match "/lines/update/:id" => "lines#update"
 
