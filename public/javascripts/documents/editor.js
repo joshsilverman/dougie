@@ -378,11 +378,6 @@ var cRightRail = Class.create({
             if (!node) card.destroy();
         });
 
-        //temp - update sync button count
-        $('sync_button').innerHTML =
-            'Sync - ' +
-            (parseInt($('sync_button').innerHTML.replace('Sync - ', '')) + 1)
-
     }
 });
 

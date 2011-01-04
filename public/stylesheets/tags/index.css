@@ -40,11 +40,6 @@
     width:14px;
 }
 
-.folder_options img {
-    height:14px;
-    width:14px;
-}
-
 .folder_options img:hover {
     background-color: #fff;
     border-color:#fff;

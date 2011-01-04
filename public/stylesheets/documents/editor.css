@@ -94,3 +94,16 @@
 #cke_contents_editor {
     height:456px !important;
 }
+
+img.sync {
+    margin:2px;
+    height:21px;
+    width:21px;
+    float:right;
+    cursor:pointer;
+}
+
+img.sync:active {
+    -webkit-transform:rotate(45deg);
+    -moz-transform:rotate(45deg);
+}
