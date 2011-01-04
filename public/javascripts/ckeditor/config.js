@@ -14,15 +14,12 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.toolbar =  [
         
-        ['Save','Preview'],
-        ['Cut','Copy','Paste','-','Print', 'SpellChecker'],
-        ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
-        '/',
         ['NumberedList','BulletedList','-','Outdent','Indent'],
-        ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
+        ['Bold','Italic','Underline','Strike'],
         ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+        ['Undo','Redo'],
+        ['Cut','Copy','Paste','-','Print', 'SpellChecker'],
         ['Link','Unlink'],
-        ['SpecialChar'],
-        ['Maximize']
+        ['SpecialChar']
     ];
 };
