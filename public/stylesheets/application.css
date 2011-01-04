@@ -4,6 +4,10 @@ body {
      padding:10px;
 }
 
+img {
+    border: none;
+}
+
 img.home {
     height:63px;
     width:100px;
