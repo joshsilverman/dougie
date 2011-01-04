@@ -82,7 +82,8 @@ var cDirectoryView = Class.create({
 
     render: function() {
 
-        /* insert */
+        /* render icons and title */
+        $('directory_name').update('home/');
         $('icons').update(this.html)
 
         /* add listeners */
@@ -233,10 +234,8 @@ var cDocumentsView = Class.create({
 
     render: function() {
         
-        /* render doc title */
+        /* render view and title*/
         $('directory_name').update('home/' + this.tag.name + '/');
-        
-        /* render view */
         $('icons').update(this.html);
 
         /* listeners */

@@ -29,21 +29,32 @@ class DocumentsController < ApplicationController
   end
   
   
-  def read(id = nil)
+  def read
 
-    id = params[:id] || id
-    @document = Document.find_by_id(id)
+    #check id posted
+    if params[:id].nil?
+      redirect_to '/', :notice => "Error accessing that document."
+      return
+    end
+
+    #check document exists
+    @document = Document.find_by_id(params[:id])
+    if @document.nil?
+      redirect_to '/', :notice => "Error accessing that document."
+      return
+    end
+
     @tag = Tag.find_by_id(@document.tag_id)
 
     render 'editor'
     
   end
   
-  def update(name = nil, html = nil)
+  def update
 
-    id = params[:id] || id
-    html = params[:html] || html
-    name = params[:name] || name
+    id = params[:id]
+    html = params[:html]
+    name = params[:name]
     @document = Document.find_by_id(id)
     return nil if id.blank? || html.blank? || @document.blank?
     
@@ -81,6 +92,12 @@ class DocumentsController < ApplicationController
   end
 
   def review
+
+    #check params and document exists
+    if params[:id].nil? or Document.find_by_id(params[:id]).nil?
+      redirect_to '/', :notice => "Unable to locate that document."
+      return
+    end
 
     #inefficient join via json include
     @lines = Line.joins(:mems)\
