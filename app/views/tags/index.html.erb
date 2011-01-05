@@ -2,7 +2,15 @@
 <% @page_specific_scripts_css = ["tags/index"] %>
 <div id="tags_json" style="display:none;"><%= @tags_json %></div>
 
-<div id="directory_name">home/</div>
+<div id="organizer_header">
+  <span id="directory_name">home/</span>
+  <span id="sort_options">Sort:
+    <span id="sort_by_name">by title</span>
+    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
+    <span id="sort_by_updated_at">by last edited</span>
+  </span>
+</div>
+
 <div id="icons">
   <!--<div class="icon_container rounded_border">
     <div class="title">Title here</div>

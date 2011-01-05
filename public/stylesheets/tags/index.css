@@ -45,8 +45,32 @@
     border-color:#fff;
 }
 
-#directory_name {
+/* organizer header */
+
+#organizer_header {
     margin-bottom:4px;
     border-bottom: lightgrey solid 1px;
     padding-bottom:4px;
+}
+
+#directory_name {}
+
+#sort_options {
+    float:right;
+}
+
+#sort_options span {
+    padding-left: 20px;
+    background-image: url(/images/shared/down-arrow.gif);
+    background-repeat: no-repeat;
+    cursor:pointer;
+}
+
+#sort_options .active {
+    text-decoration: underline;
+}
+
+#sort_options .reverse {
+    background-image: url(/images/shared/up-arrow.gif);
+    background-position: 0 1px;
 }

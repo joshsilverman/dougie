@@ -46,14 +46,33 @@ var cDoc = Class.create({
 });
 
 var cDirectoryView = Class.create({
-    
+
+    tags: null,
     html: null,
 
     initialize: function(tags) {
 
-        /* build html string */
-        
-        //new file
+        /* set tags */
+        this.tags = tags;
+
+        /* sort (builds html) and render */
+        this.sort(tags, 'updated_at');
+        this.render();
+
+        /* sort listeners */
+        $('sort_by_updated_at').observe('click', function() {
+            this.sort(tags, 'updated_at');
+            this.render();
+        }.bind(this));
+        $('sort_by_name').observe('click', function() {
+            this.sort(tags, 'name');
+            this.render();
+        }.bind(this));
+    },
+
+    _buildHtml: function(tags) {
+
+        /* new file */
         this.html = '<div class="icon_container rounded_border new_directory_container">\
           <div class="title new_directory">&nbsp;</div>\
           <div class="folder ">\
@@ -61,7 +80,7 @@ var cDirectoryView = Class.create({
           </div>\
         </div>';
 
-        //tags
+        /* tags */
         var tag;
         tags.each(function(tagArray) {
 
@@ -184,6 +203,40 @@ var cDirectoryView = Class.create({
         /* post tag_id to documents/create action */
         $('tag_id').value = tagId;
         $('create_document').submit();
+    },
+
+    sort: function(tags, attribute) {
+
+        /* sort */
+        var tags = tags.values().sort(function(tag) {return tag[attribute];});
+        var tagsArray = new Array;
+        tags.each(function(tag) {
+            tagsArray.push([tag['id'], tag]);
+        }.bind(this));
+
+        /* reverse? dom attributes */
+        var activeCurrent = $('sort_by_' + attribute).hasClassName('active');
+        if (!activeCurrent) $('sort_by_' + attribute).addClassName('active');
+
+        var reverseCurrent = $('sort_by_' + attribute).hasClassName('reverse');
+        var reverse = (activeCurrent && !reverseCurrent)
+        if (reverse) {
+            $('sort_by_' + attribute).addClassName('reverse');
+            tagsArray = tagsArray.reverse();
+        }
+        else $('sort_by_' + attribute).removeClassName('reverse');
+
+        /* remove classnames from inactive */
+        $('sort_options').childElements().each(function(sortBy) {
+            if (sortBy.id != 'sort_by_' + attribute) {
+                sortBy.removeClassName('reverse');
+                sortBy.removeClassName('active');
+            }
+        });
+
+
+        /* build html */
+        this._buildHtml(tagsArray);
     }
 });
 
