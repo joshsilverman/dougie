@@ -59,7 +59,12 @@ var cDirectoryView = Class.create({
         this.sort(tags, 'updated_at');
         this.render();
 
-        /* sort listeners */
+        /* sort listeners -remove document listeners */
+        $('sort_options').childElements().each(function(element) {
+            element.stopObserving();
+            element.removeClassName('reverse');
+            element.removeClassName('active');
+        });
         $('sort_by_updated_at').observe('click', function() {
             this.sort(tags, 'updated_at');
             this.render();
@@ -208,7 +213,7 @@ var cDirectoryView = Class.create({
     sort: function(tags, attribute) {
 
         /* sort */
-        var tags = tags.values().sort(function(tag) {return tag[attribute];});
+        var tags = tags.values().sortBy(function(tag) {return tag[attribute].toLowerCase();});
         var tagsArray = new Array;
         tags.each(function(tag) {
             tagsArray.push([tag['id'], tag]);
@@ -217,14 +222,16 @@ var cDirectoryView = Class.create({
         /* reverse? dom attributes */
         var activeCurrent = $('sort_by_' + attribute).hasClassName('active');
         if (!activeCurrent) $('sort_by_' + attribute).addClassName('active');
-
         var reverseCurrent = $('sort_by_' + attribute).hasClassName('reverse');
-        var reverse = (activeCurrent && !reverseCurrent)
+        var reverse = (activeCurrent && !reverseCurrent);
         if (reverse) {
             $('sort_by_' + attribute).addClassName('reverse');
             tagsArray = tagsArray.reverse();
         }
         else $('sort_by_' + attribute).removeClassName('reverse');
+
+        //special handling for updated_at - it's backwards
+        if (attribute == 'updated_at') tagsArray = tagsArray.reverse();
 
         /* remove classnames from inactive */
         $('sort_options').childElements().each(function(sortBy) {
@@ -247,8 +254,30 @@ var cDocumentsView = Class.create({
 
     initialize: function(tag) {
 
+        /* tag member */
         this.tag = tag
 
+        /* sort (builds html) */
+        this.sort(this.tag, 'updated_at');
+
+        /* sort listeners - remove directory listeners/sort classes */
+        $('sort_options').childElements().each(function(element) {
+            element.stopObserving();
+            element.removeClassName('reverse');
+            element.removeClassName('active');
+        });
+        $('sort_by_updated_at').observe('click', function() {
+            this.sort(tag, 'updated_at');
+            this.render();
+        }.bind(this));
+        $('sort_by_name').observe('click', function() {
+            this.sort(tag, 'name');
+            this.render();
+        }.bind(this));
+    },
+
+    _buildHtml: function(tag) {
+        
         /* build view html string */
 
         //return to root
@@ -268,7 +297,7 @@ var cDocumentsView = Class.create({
         </div>';
 
         //document links
-        this.tag.documents.each(function(document) {
+        tag.documents.each(function(document) {
           this.html += '<div document_id="'+document['id']+'" class="icon_container rounded_border">\
               <a href="/editor/'+document['id']+'">\
                 <div class="title">'+document['name']+'</div>\
@@ -339,6 +368,37 @@ var cDocumentsView = Class.create({
                 alert('There was an error removing the directory.');
             }
         });
+    },
+
+    sort: function(tag, attribute) {
+
+        /* sort */
+        tag.documents = tag.documents.sortBy(function(doc) {return doc[attribute].toLowerCase();});
+
+        /* reverse? dom attributes */
+        var activeCurrent = $('sort_by_' + attribute).hasClassName('active');
+        if (!activeCurrent) $('sort_by_' + attribute).addClassName('active');
+        var reverseCurrent = $('sort_by_' + attribute).hasClassName('reverse');
+        var reverse = (activeCurrent && !reverseCurrent)
+        if (reverse) {
+            $('sort_by_' + attribute).addClassName('reverse');
+            tag.documents = tag.documents.reverse();
+        }
+        else $('sort_by_' + attribute).removeClassName('reverse');
+
+        //special handling for updated_at - it's backwards
+        if (attribute == 'updated_at') tag.documents = tag.documents.reverse();
+
+        /* remove classnames from inactive */
+        $('sort_options').childElements().each(function(sortBy) {
+            if (sortBy.id != 'sort_by_' + attribute) {
+                sortBy.removeClassName('reverse');
+                sortBy.removeClassName('active');
+            }
+        });
+
+        /* build html */
+        this._buildHtml(tag);
     }
 });
 
