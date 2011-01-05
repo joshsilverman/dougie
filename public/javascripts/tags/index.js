@@ -15,9 +15,9 @@ var cDoc = Class.create({
     initialize: function() {
 
         /* organize and set json member */
-        this.tags = new Hash;
+        this.tags = [];
         $('tags_json').innerHTML.evalJSON().collect(function(tag) {
-            this.tags.set(tag['tag']['id'], tag['tag']);
+            this.tags.push([tag['tag']['id'], tag['tag']]);
         }.bind(this));
 
         /* build directory view */
@@ -50,32 +50,19 @@ var cDirectoryView = Class.create({
     tags: null,
     html: null,
 
+    sortBy: 'updated_at',
+    reverse: false,
+
     initialize: function(tags) {
 
         /* set tags */
         this.tags = tags;
 
         /* sort (builds html) and render */
-        this.sort(tags, 'updated_at');
-        this.render();
-
-        /* sort listeners -remove document listeners */
-        $('sort_options').childElements().each(function(element) {
-            element.stopObserving();
-            element.removeClassName('reverse');
-            element.removeClassName('active');
-        });
-        $('sort_by_updated_at').observe('click', function() {
-            this.sort(tags, 'updated_at');
-            this.render();
-        }.bind(this));
-        $('sort_by_name').observe('click', function() {
-            this.sort(tags, 'name');
-            this.render();
-        }.bind(this));
+        this.sort('updated_at');
     },
 
-    _buildHtml: function(tags) {
+    _buildHtml: function() {
 
         /* new file */
         this.html = '<div class="icon_container rounded_border new_directory_container">\
@@ -87,7 +74,7 @@ var cDirectoryView = Class.create({
 
         /* tags */
         var tag;
-        tags.each(function(tagArray) {
+        this.tags.each(function(tagArray) {
 
           tag = tagArray[1]
           this.html += '<div tag_id="'+tag['id']+'" class="icon_container rounded_border">\
@@ -109,6 +96,15 @@ var cDirectoryView = Class.create({
         /* render icons and title */
         $('directory_name').update('home/');
         $('icons').update(this.html)
+
+        /* remove old sort listeners/classes; add new classes */
+        $('sort_options').childElements().each(function(element) {
+            element.stopObserving();
+            element.removeClassName('reverse');
+            element.removeClassName('active');
+        });
+        $('sort_by_' + this.sortBy).addClassName('active');
+        if (this.reverse) $('sort_by_' + this.sortBy).addClassName('reverse');
 
         /* add listeners */
 
@@ -135,6 +131,16 @@ var cDirectoryView = Class.create({
             element.observe('click', this.destroyDirectory.bind(this));
         }.bind(this));
 
+        //sort
+        $('sort_by_updated_at').observe('click', function() {
+            this.sort('updated_at');
+            this.render();
+        }.bind(this));
+        $('sort_by_name').observe('click', function() {
+            this.sort('name');
+            this.render();
+        }.bind(this));
+
         /* set location hash */
         if (window.doc) doc.currentView = '';
         self.document.location.hash = '';
@@ -145,7 +151,15 @@ var cDirectoryView = Class.create({
         /* get or create documentsView */
         var documentsView = doc.documentsViews.get(tagId);
         if (!documentsView) {
-            documentsView = new cDocumentsView(doc.tags.get(tagId));
+            var tag;
+            doc.tags.each(function(t) {
+               if (t[0] == tagId) {
+                   tag = t[1];
+                   throw $break;
+               }
+            });
+
+            documentsView = new cDocumentsView(tag);
             doc.documentsViews.set(tagId, documentsView);
         }
 
@@ -210,28 +224,26 @@ var cDirectoryView = Class.create({
         $('create_document').submit();
     },
 
-    sort: function(tags, attribute) {
+    sort: function(attribute) {
+
+        this.sortBy = attribute;
 
         /* sort */
-        var tags = tags.values().sortBy(function(tag) {return tag[attribute].toLowerCase();});
-        var tagsArray = new Array;
-        tags.each(function(tag) {
-            tagsArray.push([tag['id'], tag]);
-        }.bind(this));
+        this.tags = this.tags.sortBy(function(tag) {return tag[1][attribute].toLowerCase();});
 
         /* reverse? dom attributes */
         var activeCurrent = $('sort_by_' + attribute).hasClassName('active');
         if (!activeCurrent) $('sort_by_' + attribute).addClassName('active');
         var reverseCurrent = $('sort_by_' + attribute).hasClassName('reverse');
-        var reverse = (activeCurrent && !reverseCurrent);
-        if (reverse) {
+        this.reverse = (activeCurrent && !reverseCurrent);
+        if (this.reverse) {
             $('sort_by_' + attribute).addClassName('reverse');
-            tagsArray = tagsArray.reverse();
+            this.tags = this.tags.reverse();
         }
         else $('sort_by_' + attribute).removeClassName('reverse');
 
         //special handling for updated_at - it's backwards
-        if (attribute == 'updated_at') tagsArray = tagsArray.reverse();
+        if (attribute == 'updated_at') this.tags = this.tags.reverse();
 
         /* remove classnames from inactive */
         $('sort_options').childElements().each(function(sortBy) {
@@ -243,7 +255,7 @@ var cDirectoryView = Class.create({
 
 
         /* build html */
-        this._buildHtml(tagsArray);
+        this._buildHtml();
     }
 });
 
@@ -252,31 +264,19 @@ var cDocumentsView = Class.create({
     html: null,
     tag : null,
 
+    sortBy: 'updated_at',
+    reverse: false,
+
     initialize: function(tag) {
 
         /* tag member */
         this.tag = tag
 
         /* sort (builds html) */
-        this.sort(this.tag, 'updated_at');
-
-        /* sort listeners - remove directory listeners/sort classes */
-        $('sort_options').childElements().each(function(element) {
-            element.stopObserving();
-            element.removeClassName('reverse');
-            element.removeClassName('active');
-        });
-        $('sort_by_updated_at').observe('click', function() {
-            this.sort(tag, 'updated_at');
-            this.render();
-        }.bind(this));
-        $('sort_by_name').observe('click', function() {
-            this.sort(tag, 'name');
-            this.render();
-        }.bind(this));
+        this.sort('updated_at');
     },
 
-    _buildHtml: function(tag) {
+    _buildHtml: function() {
         
         /* build view html string */
 
@@ -289,7 +289,7 @@ var cDocumentsView = Class.create({
         </div>';
 
         //new document
-        this.html += '<div tag_id="'+tag['id']+'" class="icon_container rounded_border new_document_container">\
+        this.html += '<div tag_id="'+this.tag['id']+'" class="icon_container rounded_border new_document_container">\
           <div class="title new_document">&nbsp;</div>\
           <div class="folder new_document">\
             <img class="new_document" alt="" src="/images/organizer/doc-new-icon.png" />\
@@ -297,7 +297,7 @@ var cDocumentsView = Class.create({
         </div>';
 
         //document links
-        tag.documents.each(function(document) {
+        this.tag.documents.each(function(document) {
           this.html += '<div document_id="'+document['id']+'" class="icon_container rounded_border">\
               <a href="/editor/'+document['id']+'">\
                 <div class="title">'+document['name']+'</div>\
@@ -320,6 +320,15 @@ var cDocumentsView = Class.create({
         $('directory_name').update('home/' + this.tag.name + '/');
         $('icons').update(this.html);
 
+        /* remove old sort listeners/classes; add new classes */
+        $('sort_options').childElements().each(function(element) {
+            element.stopObserving();
+            element.removeClassName('reverse');
+            element.removeClassName('active');
+        });
+        $('sort_by_' + this.sortBy).addClassName('active');
+        if (this.reverse) $('sort_by_' + this.sortBy).addClassName('reverse');
+
         /* listeners */
 
         //to root
@@ -335,6 +344,16 @@ var cDocumentsView = Class.create({
         //remove document
         $$('.remove_document').each(function(element) {
             element.observe('click', this.destroyDocument.bind(this));
+        }.bind(this));
+
+        /* sort listeners */
+        $('sort_by_updated_at').observe('click', function() {
+            this.sort('updated_at');
+            this.render();
+        }.bind(this));
+        $('sort_by_name').observe('click', function() {
+            this.sort('name');
+            this.render();
         }.bind(this));
 
         /* set location hash */
@@ -370,24 +389,27 @@ var cDocumentsView = Class.create({
         });
     },
 
-    sort: function(tag, attribute) {
+    sort: function(attribute) {
+
+        /* sortBy */
+        this.sortBy = attribute;
 
         /* sort */
-        tag.documents = tag.documents.sortBy(function(doc) {return doc[attribute].toLowerCase();});
+        this.tag.documents = this.tag.documents.sortBy(function(doc) {return doc[attribute].toLowerCase();});
 
         /* reverse? dom attributes */
         var activeCurrent = $('sort_by_' + attribute).hasClassName('active');
         if (!activeCurrent) $('sort_by_' + attribute).addClassName('active');
         var reverseCurrent = $('sort_by_' + attribute).hasClassName('reverse');
-        var reverse = (activeCurrent && !reverseCurrent)
-        if (reverse) {
+        this.reverse = (activeCurrent && !reverseCurrent)
+        if (this.reverse) {
             $('sort_by_' + attribute).addClassName('reverse');
-            tag.documents = tag.documents.reverse();
+            this.tag.documents = this.tag.documents.reverse();
         }
         else $('sort_by_' + attribute).removeClassName('reverse');
 
         //special handling for updated_at - it's backwards
-        if (attribute == 'updated_at') tag.documents = tag.documents.reverse();
+        if (attribute == 'updated_at') this.tag.documents = this.tag.documents.reverse();
 
         /* remove classnames from inactive */
         $('sort_options').childElements().each(function(sortBy) {
@@ -398,7 +420,7 @@ var cDocumentsView = Class.create({
         });
 
         /* build html */
-        this._buildHtml(tag);
+        this._buildHtml();
     }
 });
 
