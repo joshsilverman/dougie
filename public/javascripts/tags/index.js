@@ -14,6 +14,12 @@ var cDoc = Class.create({
 
     initialize: function() {
 
+        /* check for reload cookie */
+        console.log('reload?');
+        var reload = AppUtilities.Cookies.read('reloadOrganizer') == 'true';
+        AppUtilities.Cookies.erase('reloadOrganizer')
+        if (reload) self.document.location.reload(true);
+
         /* organize and set json member */
         this.tags = [];
         $('tags_json').innerHTML.evalJSON().collect(function(tag) {
@@ -215,6 +221,9 @@ var cDirectoryView = Class.create({
     },
 
     createDocument: function(event) {
+
+        /* set reload cookie */
+        AppUtilities.Cookies.create('reloadOrganizer', true, 1)
 
         /* request params */
         var tagId = event.target.up('.icon_container').getAttribute('tag_id');
