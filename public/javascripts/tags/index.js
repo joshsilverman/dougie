@@ -89,7 +89,7 @@ var cDirectoryView = Class.create({
               </div>\
               <div class="folder_options">\
                 <img class="rounded_border new_document" alt="" src="/images/organizer/add-icon.png" />\
-                <img class="rounded_border" alt="" src="/images/organizer/play-icon.png" />\
+                <a href="/review/dir/'+tag['id']+'"><img class="rounded_border" alt="" src="/images/organizer/play-icon.png" /></a>\
                 <img class="rounded_border destroy_directory" alt="" src="/images/organizer/remove-icon.png" />\
               </div>\
             </div>';
@@ -121,14 +121,16 @@ var cDirectoryView = Class.create({
             }.bind(this));
         }.bind(this));
 
-        //new document
-        $$('.new_document').each(function(element) {
-            element.observe('click', this.createDocument.bind(this));
-        }.bind(this));
-
         //new directory
         $$('.new_directory').each(function(element) {
             element.observe('click', this.createDirectory.bind(this));
+        }.bind(this));
+
+        //new document
+        //@todo new_document and delete_directory could be combined for a modest
+        //      performance gain
+        $$('.new_document').each(function(element) {
+            element.observe('click', this.createDocument.bind(this));
         }.bind(this));
 
         //delete directory
@@ -240,12 +242,13 @@ var cDirectoryView = Class.create({
         this.tags = this.tags.sortBy(function(tag) {return tag[1][attribute].toLowerCase();});
 
         /* reverse? dom attributes */
-        var activeCurrent = $('sort_by_' + attribute).hasClassName('active');
-        if (!activeCurrent) $('sort_by_' + attribute).addClassName('active');
-        var reverseCurrent = $('sort_by_' + attribute).hasClassName('reverse');
+        var sortBy = $('sort_by_' + attribute);
+        var activeCurrent = sortBy.hasClassName('active');
+        if (!activeCurrent) sortBy.addClassName('active');
+        var reverseCurrent = sortBy.hasClassName('reverse');
         this.reverse = (activeCurrent && !reverseCurrent);
         if (this.reverse) {
-            $('sort_by_' + attribute).addClassName('reverse');
+            sortBy.addClassName('reverse');
             this.tags = this.tags.reverse();
         }
         else $('sort_by_' + attribute).removeClassName('reverse');
@@ -260,7 +263,6 @@ var cDirectoryView = Class.create({
                 sortBy.removeClassName('active');
             }
         });
-
 
         /* build html */
         this._buildHtml();

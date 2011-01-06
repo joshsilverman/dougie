@@ -1,8 +1,6 @@
-// Place your application-specific JavaScript functions and classes here
-// This file is automatically included by javascript_include_tag :defaults
 
-/* dummy console log - ie, firebug disabled, etc... */
-if (!window.console) console = {log: function() {}};
+/* dummy console log - ie, firebug disabled, ie, etc... */
+if (!window.console) console = {log: function() {/* burppp */}};
 
 /* class declaration */
 
