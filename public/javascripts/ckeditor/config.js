@@ -8,6 +8,7 @@ CKEDITOR.editorConfig = function( config ) {
     // config.language = 'fr';
     // config.uiColor = '#AADC6E';
 
+    config.contentsCss = '/stylesheets/documents/editor_contents.css';
     config.removePlugins = 'elementspath';
     config.resize_enabled = false;
     config.startupFocus = true;

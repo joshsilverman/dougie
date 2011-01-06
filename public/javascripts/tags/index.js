@@ -15,7 +15,6 @@ var cDoc = Class.create({
     initialize: function() {
 
         /* check for reload cookie */
-        console.log('reload?');
         var reload = AppUtilities.Cookies.read('reloadOrganizer') == 'true';
         AppUtilities.Cookies.erase('reloadOrganizer')
         if (reload) self.document.location.reload(true);
