@@ -70,7 +70,7 @@ class DocumentsController < ApplicationController
     
     Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
    
-    Line.preorder_save(dp.doc, @document.id)
+    Line.preorder_save(dp.doc, @document.id,{})
     @document.update_attributes(:html => html, :name => name)
     
     hsh = Line.id_hash(Document.find_by_id(id))
