@@ -1,9 +1,6 @@
 Dougie::Application.routes.draw do
-<<<<<<< HEAD
   devise_for :users
 
-=======
->>>>>>> 08f3c2adaa8995a4be5193c62fe185f72e274116
   get "tag/index"
 
   # The priority is based upon order of creation:
@@ -64,19 +61,12 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
 
   #editor
-<<<<<<< HEAD
-  match "/editor" => "documents#create" #** public **#
-  match "/editor/:id" => "documents#read"
-  match "/documents/update" => "documents#update"
 
-  #reviewer
-=======
   match "/editor/:id" => "documents#read" #** public **#
   match "/documents/update" => "documents#update"
   match "/documents/create/:tag_id" => "documents#create"
 
   #reviwer
->>>>>>> 08f3c2adaa8995a4be5193c62fe185f72e274116
   match "/review/:id" => "documents#review" #** public **#
   match "/review/dir/:id" => "tags#review" #** public **#
   match "/mems/update/:id/:confidence/:importance" => "mems#update"
@@ -96,9 +86,6 @@ Dougie::Application.routes.draw do
   match "/mems/active" => "mems#active"
   match "/mems/inactive" => "mems#inactive"
   
-<<<<<<< HEAD
   root :to => "user#index"
-  
-=======
->>>>>>> 08f3c2adaa8995a4be5193c62fe185f72e274116
+
 end
