@@ -39,13 +39,16 @@ var cOutline = Class.create({
     outlineHandlers: null,
 
     documentId: null,
-    documentName: null,
+
+    maxIdle: 1.5,
+    idleSaveTimerId: null,
+    maxActive: 5,
+    activeSaveTimerId: null,
 
     initialize: function() {
 
         /* document members */
         this.documentId = $('document_id').innerHTML;
-        this.documentName = $('document_name').innerHTML;
 
         /* iframe doc */
         var iframe = $$('#cke_contents_editor iframe')[0];
@@ -56,16 +59,42 @@ var cOutline = Class.create({
         /* click observers */
 
         //save button
-        Event.observe($("save_button"),"click",function(e){
-             this.save(e);
-        }.bind(this));
+        Event.observe($("save_button"),"click",function(e){this.save(e);}.bind(this));
+
+        /* outline title observer */
+        $("document_name").observe('keypress', this.autosave.bind(this));
     },
 
-    save: function(e) { 
+    autosave: function() {
+        
+        /* idle save timer */
+        window.clearTimeout(this.idleSaveTimerId);
+        this.idleSaveTimerId = this.save.bind(this).delay(this.maxIdle);
+
+        /* idle save timer */
+        if (this.activeSaveTimerId == null)
+            this.activeSaveTimerId = this.save.bind(this).delay(this.maxActive);
+
+        /* save button styling */
+        $('save_button').innerHTML = 'Save';
+    },
+
+    save: function() {
+
+        /* cancel other timers */
+        window.clearTimeout(this.idleSaveTimerId);
+        window.clearTimeout(this.activeSaveTimerId);
+        this.idleSaveTimerId = null;
+        this.activeSaveTimerId = null;
 
         /* sync */
         //@todo this may become unnecessary later on
         doc.rightRail.sync();
+
+        /* save button styling */
+        var saveButton = $('save_button');
+        saveButton.disabled = true;
+        saveButton.innerHTML = 'Saving';
 
         /* save */
         new Ajax.Request('/documents/update', {
@@ -73,10 +102,18 @@ var cOutline = Class.create({
             parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
                          'id': this.documentId,
                          'name': $('document_name').value},
+                     
             onSuccess: function(transport) {
                 var lineIds = transport.responseText.evalJSON();
                 this.updateIds(lineIds);
-            }.bind(this)
+            }.bind(this),
+
+            onComplete: function() {
+
+                /* save button styling */
+                saveButton.disabled = false;
+                saveButton.innerHTML = 'Saved';
+            }
         });
 
         /* activate card */
@@ -229,6 +266,11 @@ var cOutlineHandlers = Class.create({
 
     onLetter: function(event, target) {
 
+        /* autosave */
+        doc.outline.autosave();
+
+        /* card creation, card update, catch invalid targets */
+
         //get core attributes
         var id = Element.readAttribute(target, 'id') || null;
 
@@ -237,9 +279,7 @@ var cOutlineHandlers = Class.create({
             console.log('error: invalid target tag type');
 
         //new card
-        else if (!id) {
-            doc.rightRail.createCard(target);
-        }
+        else if (!id) doc.rightRail.createCard(target);
 
         //existing card
         else if (doc.rightRail.cards.get(id)) {
