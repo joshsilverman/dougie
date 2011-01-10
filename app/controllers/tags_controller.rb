@@ -8,7 +8,9 @@ class TagsController < ApplicationController
       Tag.create(:misc => true, :name => 'Misc.')
     end
 
-    @tags_json = Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    @tags_json = Tag.includes(:documents)\
+                    .all\
+                    .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
 
   end
 
@@ -24,7 +26,10 @@ class TagsController < ApplicationController
     Tag.create(:name => params[:name])
 
     #return all tag for rerendering dir
-    render :json => Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    tags_json = Tag.includes(:documents)\
+                    .all\
+                    .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    render :json => tags_json
 
   end
 
