@@ -23,8 +23,9 @@ class DocumentsController < ApplicationController
       @tag = Tag.find_by_id(tag_id)
     end
 
+    #create and redirect
     @document = Document.create(:name => 'untitled', :tag_id => @tag.id)
-    render 'editor'
+    redirect_to :action => 'read', :id => @document.id
     
   end
   

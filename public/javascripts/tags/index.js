@@ -229,9 +229,8 @@ var cDirectoryView = Class.create({
         /* request params */
         var tagId = event.target.up('.icon_container').getAttribute('tag_id');
 
-        /* post tag_id to documents/create action */
-        $('tag_id').value = tagId;
-        $('create_document').submit();
+        /* new document */
+        self.document.location.href = '/documents/create/' + tagId
     },
 
     sort: function(attribute) {
