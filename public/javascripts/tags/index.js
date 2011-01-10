@@ -64,6 +64,12 @@ var cDirectoryView = Class.create({
         this.tags = tags;
 
         /* sort (builds html) and render */
+
+        //if rebuilding view, reset active
+        var updatedAt = $('sort_by_updated_at');
+        if (updatedAt) updatedAt.removeClassName('active');
+
+        //sort
         this.sort('updated_at');
     },
 
