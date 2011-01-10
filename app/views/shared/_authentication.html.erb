@@ -1,0 +1,13 @@
+<% if user_signed_in? %>
+	<div class="login" style="width:100%;padding:5px;background-color:#eee;">
+		<span style="float:left;">Welcome, <%= current_user.first_name %></span>
+		<span style="float:right;">
+			<%= link_to "Edit Account", edit_user_registration_path %>&nbsp;|
+			<%= link_to "Sign Out", destroy_user_session_path %>
+		</span>
+		<br class="clr" />
+		<!-- ID: <%= current_user.id %><br>
+		Docs: <%= current_user.documents.inspect %><br>
+		Tags: <%= current_user.tags.inspect %> //-->
+	</div>
+<% end %>

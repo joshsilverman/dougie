@@ -1,0 +1,32 @@
+<% @page_specific_scripts_js = ["tags/index"] %>
+<% @page_specific_scripts_css = ["tags/index"] %>
+<div id="tags_json" style="display:none;"><%= @tags_json %></div>
+
+<div id="organizer_header">
+  <span id="directory_name">home/</span>
+  <span id="sort_options">Sort:
+    <span id="sort_by_name">by title</span>
+    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
+    <span id="sort_by_updated_at">by last edited</span>
+  </span>
+</div>
+
+<div id="icons">
+  <!--<div class="icon_container rounded_border">
+    <div class="title">Title here</div>
+    <div class="folder">
+      <img alt="" src="/images/organizer/folder-full-icon.png" />
+    </div>
+    <div class="folder_options">
+      <img alt="" src="/images/organizer/add-icon.png" />
+      <img alt="" src="/images/organizer/play-icon.png" />
+      <img alt="" src="/images/organizer/process-icon.png" />
+    </div>
+  </div>-->
+</div>
+
+<!-- form for creating documents on the fly -->
+<form id='create_document' action='editor' method='post'>
+  <input id='tag_id' type="hidden" name='tag_id'></input>
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>" />
+</form>

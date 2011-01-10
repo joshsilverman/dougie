@@ -1,0 +1,76 @@
+.icon_container {
+    float:left;
+    padding:2px 2px;
+    text-align:center;
+    border-width: 0;
+    height:85px;
+    width:90px;
+    margin:5px;
+}
+
+.icon_container a {
+    text-decoration: none;
+}
+
+.to_root_container {
+    background-color:#DAE1F5;
+}
+
+.new_directory_container , .new_document_container {
+    background-color:#E1FFA6;
+}
+
+.icon_container:hover {
+    background-color:#eee;
+    cursor:pointer;
+}
+
+.icon_container .title {
+    color:#5e5e55;
+    font-size: 13px;
+    margin-bottom:3px;
+    height:15px;
+    overflow: hidden;
+    white-space:nowrap;
+    text-align:center;
+}
+
+.folder_options img {
+    height:14px;
+    width:14px;
+}
+
+.folder_options img:hover {
+    background-color: #fff;
+    border-color:#fff;
+}
+
+/* organizer header */
+
+#organizer_header {
+    margin-bottom:4px;
+    border-bottom: lightgrey solid 1px;
+    padding-bottom:4px;
+}
+
+#directory_name {}
+
+#sort_options {
+    float:right;
+}
+
+#sort_options span {
+    padding-left: 20px;
+    background-image: url(/images/shared/down-arrow.gif);
+    background-repeat: no-repeat;
+    cursor:pointer;
+}
+
+#sort_options .active {
+    text-decoration: underline;
+}
+
+#sort_options .reverse {
+    background-image: url(/images/shared/up-arrow.gif);
+    background-position: 0 1px;
+}

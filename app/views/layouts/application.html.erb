@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dougie</title>
+
+  <%= stylesheet_link_tag :all %>
+  <%= javascript_include_tag :defaults %>
+  <%= csrf_meta_tag %>
+
+  <% if @page_specific_scripts_js %> <%= javascript_include_tag @page_specific_scripts_js %> <% end %>
+  <% if @page_specific_scripts_css %> <%= stylesheet_link_tag @page_specific_scripts_css %> <% end %>
+
+</head>
+<body>
+
+<!--flash messages-->
+<% unless flash[:notice].blank? %><p class="notice"><%= flash[:notice] %></p><% end %>
+<% unless flash[:error].blank? %><p class="error"><%= flash[:error] %></p><% end %>
+
+<%= render 'shared/authentication' %>
+
+<div class="contents">
+
+  <a href="/"><img class="home" alt="home" src="/images/home.jpg" /></a><br/><br/>
+  <%= yield %>
+
+</div>
+
+</body>
+</html>
