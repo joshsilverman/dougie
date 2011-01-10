@@ -109,9 +109,6 @@ class DocumentsController < ApplicationController
     end
 
     @document = current_user.documents.find_by_id(id)
-      redirect_to '/', :notice => "Unable to locate that document."
-      return
-    end
 
     #get lines
     @lines_json = Line.includes(:mems)\
