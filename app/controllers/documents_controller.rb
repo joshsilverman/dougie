@@ -106,10 +106,6 @@ class DocumentsController < ApplicationController
                           AND lines.text <> 'root'
                           AND mems.review_after < ?", params[:id], Time.now())\
                  .to_json :include => :mems
-
-    #efficient join
-    #@todo: why does it need to requery model when building json structure
-    #@lines = Line.joins(:mems).where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json :include => :mems
     
   end
   
