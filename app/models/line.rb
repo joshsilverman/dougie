@@ -49,7 +49,7 @@ class Line < ActiveRecord::Base
     status.to_s == "true"
   end
   
-  def self.preorder_save(lines,document_id)
+  def self.preorder_save(lines,document_id,saved_parents = {})
     
     children = lines.children
     
@@ -61,7 +61,14 @@ class Line < ActiveRecord::Base
       if child.class == Nokogiri::XML::Text && !parent.attr('parent').blank? && parent.attr("line_id").blank?
         
         # find line in db where domid equals parent's "parent" attribute
-        existing_parent = Line.where('domid = ? AND document_id = ?',parent.attr("parent"),document_id).first
+        
+        parent_attr = parent.attr("parent") || nil
+        if saved_parents[parent_attr]
+          existing_parent = saved_parents[parent_attr]
+        else 
+          existing_parent = Line.where({ :domid => parent_attr, :document_id => document_id }).first
+          saved_parents[parent_attr] = existing_parent
+        end
 
         # add line to db, save as variable for mem creation
         created_line = existing_parent.children.create( :text => child.content.strip,
@@ -74,7 +81,7 @@ class Line < ActiveRecord::Base
                               :review_after => Time.now})
                    
       elsif child.children.length > 0
-          Line.preorder_save(child,document_id)
+          Line.preorder_save(child,document_id,saved_parents)
       end
     end
     
