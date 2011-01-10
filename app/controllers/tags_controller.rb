@@ -70,7 +70,7 @@ class TagsController < ApplicationController
     end
 
     #inefficient join via json include
-    @lines = Line.joins(:mems)\
+    @lines_json = Line.includes(:mems)\
                  .where("     lines.document_id IN (?)
                           AND lines.text <> 'root'
                           AND mems.review_after < ?", document_ids, Time.now())\

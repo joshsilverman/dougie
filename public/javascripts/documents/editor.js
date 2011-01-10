@@ -169,7 +169,6 @@ var cOutlineHandlers = Class.create({
             switch (event.keyCode) {
                 //down event caught
                 case Event.KEY_TAB:break;
-                case Event.KEY_RETURN:break;
 
                 case Event.KEY_UP:break;
                 case Event.KEY_DOWN:break;
@@ -180,6 +179,9 @@ var cOutlineHandlers = Class.create({
                 
                 //normal letter behavior for backspace (rerendering card, etc)
                 //case Event.KEY_BACKSPACE:break;
+
+                //normal behavior for return - allow rerendering when splitting card
+                //case Event.KEY_RETURN:break;
 
                 //all other chars to be treated as letters
                 default:this.onLetter(event, target);

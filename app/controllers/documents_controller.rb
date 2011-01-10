@@ -94,13 +94,14 @@ class DocumentsController < ApplicationController
   def review
 
     #check params and document exists
-    if params[:id].nil? or Document.find_by_id(params[:id]).nil?
+    @document = Document.joins(:tag).find_by_id(params[:id])
+    if params[:id].nil? or @document.nil?
       redirect_to '/', :notice => "Unable to locate that document."
       return
     end
 
-    #inefficient join via json include
-    @lines = Line.joins(:mems)\
+    #get lines
+    @lines_json = Line.includes(:mems)\
                  .where("     lines.document_id = ?
                           AND lines.text <> 'root'
                           AND mems.review_after < ?", params[:id], Time.now())\
