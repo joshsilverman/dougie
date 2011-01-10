@@ -64,6 +64,12 @@ var cDirectoryView = Class.create({
         this.tags = tags;
 
         /* sort (builds html) and render */
+
+        //if rebuilding view, reset active
+        var updatedAt = $('sort_by_updated_at');
+        if (updatedAt) updatedAt.removeClassName('active');
+
+        //sort
         this.sort('updated_at');
     },
 
@@ -99,7 +105,7 @@ var cDirectoryView = Class.create({
     render: function() {
 
         /* render icons and title */
-        $('directory_name').update('home/');
+        $('directory_name').update('/');
         $('icons').update(this.html)
 
         /* remove old sort listeners/classes; add new classes */
@@ -229,9 +235,8 @@ var cDirectoryView = Class.create({
         /* request params */
         var tagId = event.target.up('.icon_container').getAttribute('tag_id');
 
-        /* post tag_id to documents/create action */
-        $('tag_id').value = tagId;
-        $('create_document').submit();
+        /* new document */
+        self.document.location.href = '/documents/create/' + tagId
     },
 
     sort: function(attribute) {
@@ -327,7 +332,7 @@ var cDocumentsView = Class.create({
     render: function() {
         
         /* render view and title*/
-        $('directory_name').update('home/' + this.tag.name + '/');
+        $('directory_name').update('/' + this.tag.name + '/');
         $('icons').update(this.html);
 
         /* remove old sort listeners/classes; add new classes */

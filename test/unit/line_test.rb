@@ -31,7 +31,7 @@ class LineTest < ActiveSupport::TestCase
             ]
 
     #save
-    document = user.documents.find_or_create_by_name(name)
+    document = Document.find_or_create_by_name(name)
     Line.create(:text => "root", :domid => 0, :document_id => document.id)
     
 #    unless document.html.blank?
@@ -42,8 +42,7 @@ class LineTest < ActiveSupport::TestCase
     Line.preorder_save(dp.doc, document.id)
 
     #get recently saved
-    
-    document = user.documents.find_by_name(name)
+    document = Document.find_by_name(name)
     lines_all = Line.find(:all)
     lines_tree = Line.find(:first,
                            :include => { :children => { :children => { :children => { :children => :children }}}},

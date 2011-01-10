@@ -1,3 +1,8 @@
+#title {
+    padding-left: 255px;
+    
+}
+
 table, tr, td {
     margin:0;
     padding:0;
@@ -7,7 +12,7 @@ table, tr, td {
 .card_container {
     width:900px;
     height:400px;
-    margin:50px auto 0;
+    margin:20px auto 0;
     position:relative;
 }
 

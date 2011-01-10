@@ -1,6 +1,16 @@
 <% @page_specific_scripts_js = ["parser", "documents/review", "progressbar"] %>
 <% @page_specific_scripts_css = ["documents/review"] %>
 
+<div id="title">
+  <% if @document.nil? %>
+    /<%= link_to @tag.name, '/#' + @tag.id.to_s %>/
+  <% else %>
+    /<%= link_to @document.tag.name, '/#%i' % @document.tag.id %>/
+    /<%= link_to @document.name, '/editor/%i' % @document.id %>
+  <% end %>
+</div>
+
+>>>>>>> 08f3c2adaa8995a4be5193c62fe185f72e274116
 <div class="card_container">
   <table>
     <tr>
@@ -21,6 +31,6 @@
   </div>
 </div>
 
-<div id="card_json" style="display:none;"><%=@lines%></div>
+<div id="card_json" style="display:none;"><%=@lines_json%></div>
 
 <div id="log" style="margin-top:25px;"></div>

@@ -26,7 +26,7 @@ class DocumentsController < ApplicationController
 
     @document = Document.create(:name => 'untitled', :tag_id => @tag.id)
     current_user.documents << @document
-    render 'editor'
+    redirect_to :action => 'read', :id => @document.id
     
   end
   
@@ -103,22 +103,23 @@ class DocumentsController < ApplicationController
 
     #check params and document exists
     id = params[:id]
-    if id.nil? or current_user.documents.find_by_id(id).nil?
+    if id.nil?
+      render :nothing => true, :status => 400
+      return
+    end
+
+    @document = current_user.documents.find_by_id(id)
       redirect_to '/', :notice => "Unable to locate that document."
       return
     end
 
-    #inefficient join via json include
-    @lines = Line.joins(:mems)\
+    #get lines
+    @lines_json = Line.includes(:mems)\
                  .where("     lines.document_id = ?
                           AND lines.text <> 'root'
                           AND mems.review_after < ?", params[:id], Time.now())\
                  .to_json :include => :mems
-
-    #efficient join
-    #@todo: why does it need to requery model when building json structure
-    #@lines = Line.joins(:mems).where("lines.document_id = ? AND lines.text <> 'root'", params[:id]).to_json :include => :mems
-    
+ 
   end
   
 end

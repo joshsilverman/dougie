@@ -3,12 +3,15 @@ class TagsController < ApplicationController
   def index
 
     #create Misc tag if not exists
-    #misc = Tag.find_by_misc(true)
-    #if misc.nil?
-    #  Tag.create(:misc => true, :name => 'Misc.')
-    #end
+    
+    misc = Tag.find_by_misc(true)
+    if misc.nil?
+      Tag.create(:misc => true, :name => 'Misc.')
+    end
 
-    @tags_json = current_user.tags.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    @tags_json = current_user.tags.includes(:documents)\
+                    .all\
+                    .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
 
   end
 
@@ -26,7 +29,10 @@ class TagsController < ApplicationController
     current_user.tags << tag
 
     #return all tag for rerendering dir
-    render :json => current_user.tags.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    tags_json = current_user.tags.includes(:documents)\
+                    .all\
+                    .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    render :json => tags_json
 
   end
 
@@ -52,6 +58,7 @@ class TagsController < ApplicationController
     tag.destroy()
 
     #return all tag for rerendering dir
+
     render :json => current_user.tags.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
 
   end
@@ -59,22 +66,23 @@ class TagsController < ApplicationController
   def review
 
     #check params and tag exists
+    
     id = params[:id]
-    if id.nil? or current_user.tags.find_by_id(id).blank?
+    if id.nil?
       redirect_to '/', :notice => "Unable to locate that directory."
       return
     end
 
     #get document ids
-    @tag = current_user.tags.joins(:documents).find(params[:id])
+    @tag = current_user.tags.joins(:documents).find_by_id(id)
 
     document_ids = []
     @tag.documents.each do |document|
       document_ids.push(document.id)
     end
 
-    #inefficient join via json include
-    @lines = Line.joins(:mems)\
+    #get lines
+    @lines_json = Line.includes(:mems)\
                  .where("     lines.document_id IN (?)
                           AND lines.text <> 'root'
                           AND mems.review_after < ?", document_ids, Time.now())\
