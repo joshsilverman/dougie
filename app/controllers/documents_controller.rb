@@ -46,8 +46,6 @@ class DocumentsController < ApplicationController
     end
 
     @tag = Tag.find_by_id(@document.tag_id)
-
-    render 'editor'
     
   end
   
