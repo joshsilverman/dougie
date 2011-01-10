@@ -141,6 +141,7 @@ var cOutlineHandlers = Class.create({
             var rangeParent = range.commonAncestorContainer;
             var rangeGrandParent = range.commonAncestorContainer.parentNode;
 
+
             //common select valid target
             if (rangeParent.tagName == 'LI' || rangeParent.tagName == 'P')
                 target = rangeParent
@@ -153,9 +154,11 @@ var cOutlineHandlers = Class.create({
         if (event.type == "keydown") {
             switch (event.keyCode) {
                 case Event.KEY_TAB:
-                    this.onTab(event, target);
+                    this.onTab(event, target, range);
                     break;
-                case Event.KEY_RETURN:break;
+                case Event.KEY_BACKSPACE:
+                    this.onBackspace(event, target, range);
+                    break;
                 default:break;
             }
         }
@@ -174,22 +177,16 @@ var cOutlineHandlers = Class.create({
                 case Event.KEY_RIGHT:break;
                 case 16:break; //shift
                 case 17:break; //ctrl
-                default:
-                    this.onLetter(event, target);
+                
+                //normal letter behavior for backspace (rerendering card, etc)
+                //case Event.KEY_BACKSPACE:break;
+
+                //all other chars to be treated as letters
+                default:this.onLetter(event, target);
             }
         }
 
         /* special handling for re-synchronizing right rail */
-        
-//        console.log('--');
-//        console.log(event.type);
-//        console.log(range);
-//        console.log(range.endOffset > range.startOffset);
-//        console.log(range.commonAncestorContainer);
-//        console.log(range.commonAncestorContainer.tagName != 'Text');
-//        console.log(range.commonAncestorContainer.tagName != undefined);
-//        console.log('///');
-//        console.log(range.startContainer == range.endContainer);
 
         //check if multiple nodes are in selection
         //gecko, webkit, others?
@@ -213,9 +210,17 @@ var cOutlineHandlers = Class.create({
         }
     },
 
-    onTab: function(event, target) {
+    onTab: function(event, target, range) {
 
-        //handle indentation
+        /* ignore if not at beginning of node */
+//        if (range.startOffset != 0) {
+//            Event.stop(event);
+//            event.preventDefault();
+//            return;
+//        }
+        //@todo determine how to overide default tab event
+
+        /* fire indent/outdent */
         if (event.shiftKey) doc.editor.execCommand('outdent');
         else doc.editor.execCommand('indent');
     },
@@ -242,6 +247,36 @@ var cOutlineHandlers = Class.create({
 
         //error
         else console.log('error: node has id but no card exists')
+    },
+
+    onBackspace: function(event, target, range) {
+
+        /* take no action if not at beginning of node or selection */
+        var selection = range.startOffset - range.endOffset != 0;
+        var cursorOffset = range.startOffset;
+        if (selection || cursorOffset != 0) return;
+
+        /* indented paragraph handling */
+        else if (target.tagName == 'P') {
+            //indented
+            if (Element.getStyle(target, 'margin-left') != '0px') {
+                doc.editor.execCommand('outdent');
+                Event.stop(event);
+            }
+
+            //not indented
+            else {
+                
+                //first element in body - stop event
+                if (Element.previousSiblings(target).length == 0) Event.stop(event);
+                
+                //not first element
+                else {/* normal behavior */}
+            }
+        }
+
+        /* li handling */
+        else if (target.tagName == 'LI') doc.editor.execCommand('outdent');
     }
 });
 
