@@ -13,23 +13,20 @@ class DocumentsController < ApplicationController
 
       #generate miscelaneous tag if none
       if @tag.blank?
-        @tag = Tag.create(:misc => true, :name => 'Misc')
-        current_user.tags << @tag
+        current_user.tags = Tag.create(:misc => true, :name => 'Misc')
       end
 
       tag_id = @tag.id
 
     else
-      #@todo should query by user_id too and what if tag id is invalid...
+      #@todo what if tag id is invalid...
       @tag = current_user.tags.find_by_id(tag_id)
     end
 
-    @document = Document.create(:name => 'untitled', :tag_id => @tag.id)
-    current_user.documents << @document
+    @document = current_user.documents.create(:name => 'untitled', :tag_id => @tag.id)
     redirect_to :action => 'read', :id => @document.id
     
   end
-  
   
   def read
 
