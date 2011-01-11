@@ -17,6 +17,7 @@ gem 'devise', '1.1.rc2'
 gem 'warden', '0.10.7'
 gem 'cancan', '1.4.1'
 gem 'ruby-prof'
+gem 'dalli'
 
 # Deploy with Capistrano
 # gem 'capistrano'

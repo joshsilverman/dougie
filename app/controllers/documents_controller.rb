@@ -68,8 +68,11 @@ class DocumentsController < ApplicationController
                                                :text => "root" )
     
     Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
-   
-    Line.preorder_save(dp.doc,@document.id)
+    
+    Line.transaction do
+      Line.preorder_save(dp.doc,@document.id)
+    end
+    
     @document.update_attributes(:html => html, :name => name)
     
     hsh = Line.id_hash(@document)

@@ -59,7 +59,6 @@ var cDirectoryView = Class.create({
     reverse: false,
 
     initialize: function(tags) {
-
         /* set tags */
         this.tags = tags;
 
@@ -103,7 +102,6 @@ var cDirectoryView = Class.create({
     },
 
     render: function() {
-
         /* render icons and title */
         $('directory_name').update('/');
         $('icons').update(this.html)
@@ -237,6 +235,7 @@ var cDirectoryView = Class.create({
 
         /* new document */
         self.document.location.href = '/documents/create/' + tagId
+        
     },
 
     sort: function(attribute) {

@@ -25,8 +25,7 @@ class TagsController < ApplicationController
     end
 
     #create
-    tag = Tag.create(:name => name)
-    current_user.tags << tag
+    current_user.tags << Tag.create(:name => name)
 
     #return all tag for rerendering dir
     tags_json = current_user.tags.includes(:documents)\
@@ -55,7 +54,7 @@ class TagsController < ApplicationController
     end
 
     #find and destory - related documents are also deleted
-    tag.destroy()
+    tag.destroy
 
     #return all tag for rerendering dir
 
