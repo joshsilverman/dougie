@@ -3,9 +3,15 @@ require 'rails/performance_test_help'
 
 class EditorTest < ActionDispatch::PerformanceTest
 
+#  include Devise::TestHelpers
+
   def test_create
 
-    get 'documents/new/1'
+    @user = users(:one)
+    sign_in @user
+##    sign_in :one, @user
+#
+#    get 'documents/new/1'
   end
 
 #  def test_create
