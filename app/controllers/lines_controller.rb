@@ -3,11 +3,13 @@ class LinesController < ApplicationController
   def index
     render :json => Line.all
   end
-  
+
+  #@deprecate
   def active
     render :json => Line.active_cards
   end
-  
+
+  #@deprecate
   def inactive
     render :json => Line.inactive_cards
   end
