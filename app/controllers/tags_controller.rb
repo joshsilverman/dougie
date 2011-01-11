@@ -1,4 +1,6 @@
 class TagsController < ApplicationController
+  
+  helper TagsHelper
 
   def index
 
@@ -9,10 +11,8 @@ class TagsController < ApplicationController
       Tag.create(:misc => true, :name => 'Misc.')
     end
 
-    @tags_json = current_user.tags.includes(:documents)\
-                    .all\
-                    .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
-
+    render :json => Tag.tags_json(current_user)
+    
   end
 
   def create
@@ -26,12 +26,7 @@ class TagsController < ApplicationController
 
     #create
     current_user.tags << Tag.create(:name => name)
-
-    #return all tag for rerendering dir
-    tags_json = current_user.tags.includes(:documents)\
-                    .all\
-                    .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
-    render :json => tags_json
+    render :json => Tag.tags_json(current_user)
 
   end
 
@@ -57,8 +52,7 @@ class TagsController < ApplicationController
     tag.destroy
 
     #return all tag for rerendering dir
-
-    render :json => current_user.tags.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    render :json => Tag.tags_json(current_user)
 
   end
 
