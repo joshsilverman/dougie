@@ -48,8 +48,6 @@ class DocumentsController < ApplicationController
     end
 
     @tag = current_user.tags.find_by_id(@document.tag_id)
-
-    render 'editor'
     
   end
   
