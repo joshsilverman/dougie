@@ -11,8 +11,11 @@ class TagsController < ApplicationController
       Tag.create(:misc => true, :name => 'Misc.')
     end
 
-    render :json => Tag.tags_json(current_user)
+    #@tags_json = current_user.tags.includes(:documents)\
+    #                .all\
+    #                .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
     
+    @tags_json = Tag.tags_json(current_user)
   end
 
   def create
