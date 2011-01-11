@@ -13,14 +13,17 @@
 </head>
 <body>
 
+<!--flash messages-->
+<% unless flash[:notice].blank? %><p class="notice"><%= flash[:notice] %></p><% end %>
+<% unless flash[:error].blank? %><p class="error"><%= flash[:error] %></p><% end %>
+
+<%= render 'shared/authentication' %>
+
 <div class="contents">
+
   <a href="/"><img class="home" alt="home" src="/images/home.jpg" /></a><br/><br/>
-
-  <!--flash messages-->
-  <% if flash[:notice] %><p class="notice"><%= flash[:notice] %></p><% end %>
-  <% if flash[:error] %><p class="error"><%= flash[:error] %></p><% end %>
-
   <%= yield %>
+
 </div>
 
 </body>

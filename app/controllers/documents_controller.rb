@@ -9,22 +9,23 @@ class DocumentsController < ApplicationController
     #get tag if none provided
     tag_id = params[:tag_id]
     if tag_id.nil?
-      @tag = Tag.find_by_misc(true) #@todo should query by user_id too
+      @tag = current_user.tags.find_by_misc(true) #@todo should query by user_id too
 
       #generate miscelaneous tag if none
       if @tag.blank?
         @tag = Tag.create(:misc => true, :name => 'Misc')
+        current_user.tags << @tag
       end
 
       tag_id = @tag.id
 
     else
       #@todo should query by user_id too and what if tag id is invalid...
-      @tag = Tag.find_by_id(tag_id)
+      @tag = current_user.tags.find_by_id(tag_id)
     end
 
-    #create and redirect
     @document = Document.create(:name => 'untitled', :tag_id => @tag.id)
+    current_user.documents << @document
     redirect_to :action => 'read', :id => @document.id
     
   end
@@ -33,19 +34,20 @@ class DocumentsController < ApplicationController
   def read
 
     #check id posted
-    if params[:id].nil?
+    id = params[:id]
+    if id.nil?
       redirect_to '/', :notice => "Error accessing that document."
       return
     end
 
     #check document exists
-    @document = Document.find_by_id(params[:id])
+    @document = current_user.documents.find_by_id(id)
     if @document.nil?
       redirect_to '/', :notice => "Error accessing that document."
       return
     end
 
-    @tag = Tag.find_by_id(@document.tag_id)
+    @tag = current_user.tags.find_by_id(@document.tag_id)
     
   end
   
@@ -53,9 +55,10 @@ class DocumentsController < ApplicationController
 
     id = params[:id]
     html = params[:html]
-    name = params[:name]
-    @document = Document.find_by_id(id)
+    @document = current_user.documents.find_by_id(id)
     return nil if id.blank? || html.blank? || @document.blank?
+    
+    name = params[:name]
     
     # create new Nokogiri nodeset
     dp = DocumentParser.new(html)
@@ -72,32 +75,38 @@ class DocumentsController < ApplicationController
     Line.preorder_save(dp.doc,@document.id)
     @document.update_attributes(:html => html, :name => name)
     
-    hsh = Line.id_hash(Document.find_by_id(id))
+    hsh = Line.id_hash(@document)
     
     render :json => hsh
     
   end
   
   def destroy
-    
-    if params[:id].nil?
+    id = params[:id]
+    if id.nil?
       render :nothing => true, :status => 400
       return
     end
     
-    Document.delete(params[:id]) #@todo check user id
-    render :json => Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    #Document.delete({ :id => params[:id], :user_id => current_user.id }) #@todo check user id
+    
+    document = current_user.documents.find_by_id(id)
+    document.delete unless document.blank?
+    
+    render :json => current_user.tags.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
     
   end
 
   def review
 
     #check params and document exists
-    @document = Document.joins(:tag).find_by_id(params[:id])
-    if params[:id].nil? or @document.nil?
-      redirect_to '/', :notice => "Unable to locate that document."
+    id = params[:id]
+    if id.nil?
+      render :nothing => true, :status => 400
       return
     end
+
+    @document = current_user.documents.find_by_id(id)
 
     #get lines
     @lines_json = Line.includes(:mems)\
@@ -105,7 +114,7 @@ class DocumentsController < ApplicationController
                           AND lines.text <> 'root'
                           AND mems.review_after < ?", params[:id], Time.now())\
                  .to_json :include => :mems
-    
+ 
   end
   
 end

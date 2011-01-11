@@ -8,12 +8,14 @@ gem 'rails', '3.0.3'
 #gem 'sqlite3-ruby', :require => 'sqlite3'
 
 # Use unicorn as the web server
-gem 'pg'
 gem 'unicorn'
 gem 'mysql'
 gem 'nokogiri'
 gem 'acts_as_tree'
 gem 'libxml-ruby'
+gem 'devise', '1.1.rc2'
+gem 'warden', '0.10.7'
+gem 'cancan', '1.4.1'
 
 # Deploy with Capistrano
 # gem 'capistrano'

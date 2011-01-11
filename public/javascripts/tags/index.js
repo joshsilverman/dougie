@@ -376,7 +376,7 @@ var cDocumentsView = Class.create({
         self.document.location.hash = this.tag.id;
     },
 
-    destroyDocument: function() {
+    destroyDocument: function(event) {
 
         /* confirm */
         if (!confirm('Are you sure you want to delete this document? This cannot be undone.')) return;

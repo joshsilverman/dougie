@@ -35,4 +35,12 @@ class Mem < ActiveRecord::Base
 
   end
   
+  def self.active_mems
+    Mem.where("status = ?",true)
+  end
+  
+  def self.inactive_mems
+    Mem.where("status = ?",false)
+  end
+  
 end

@@ -3,6 +3,7 @@ class Document < ActiveRecord::Base
   has_many :lines
 
   belongs_to :tag
+  belongs_to :user
   
   before_save :document_name, :document_html_line_ids
   

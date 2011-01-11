@@ -1,4 +1,6 @@
 Dougie::Application.routes.draw do
+  devise_for :users
+
   get "tag/index"
 
   # The priority is based upon order of creation:
@@ -59,6 +61,7 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
 
   #editor
+
   match "/editor/:id" => "documents#read" #** public **#
   match "/documents/update" => "documents#update"
   match "/documents/create/:tag_id" => "documents#create"
@@ -83,4 +86,6 @@ Dougie::Application.routes.draw do
   match "/mems/active" => "mems#active"
   match "/mems/inactive" => "mems#inactive"
   
+  root :to => "user#index"
+
 end

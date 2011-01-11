@@ -6,12 +6,12 @@ class MemsController < ApplicationController
 
   #@todo depracate
   def active
-    render :json => Mem.where("status = ?",true)
+    render :json => Mem.active_mems
   end
 
   #@todo depracate
   def inactive
-    render :json => Mem.where("status = ?",false)
+    render :json => Mem.inactive_mems
   end
   
   def create

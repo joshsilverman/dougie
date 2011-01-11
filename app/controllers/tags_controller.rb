@@ -3,12 +3,13 @@ class TagsController < ApplicationController
   def index
 
     #create Misc tag if not exists
+    
     misc = Tag.find_by_misc(true)
     if misc.nil?
       Tag.create(:misc => true, :name => 'Misc.')
     end
 
-    @tags_json = Tag.includes(:documents)\
+    @tags_json = current_user.tags.includes(:documents)\
                     .all\
                     .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
 
@@ -17,16 +18,18 @@ class TagsController < ApplicationController
   def create
 
     #param check
-    if params[:name].nil?
+    name = params[:name]
+    if name.nil?
       render :nothing => true, :status => 400
       return
     end
 
     #create
-    Tag.create(:name => params[:name])
+    tag = Tag.create(:name => name)
+    current_user.tags << tag
 
     #return all tag for rerendering dir
-    tags_json = Tag.includes(:documents)\
+    tags_json = current_user.tags.includes(:documents)\
                     .all\
                     .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
     render :json => tags_json
@@ -36,13 +39,14 @@ class TagsController < ApplicationController
   def destroy
 
     #param check
-    if params[:id].nil?
+    id = params[:id]
+    if id.nil?
       render :nothing => true, :status => 400
       return
     end
 
     #find
-    tag = Tag.find(params[:id])
+    tag = current_user.tags.find_by_id(id)
 
     #don't delete if Misc, or if nothing's there
     if tag.misc == true or tag.nil?
@@ -54,20 +58,23 @@ class TagsController < ApplicationController
     tag.destroy()
 
     #return all tag for rerendering dir
-    render :json => Tag.all.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+
+    render :json => current_user.tags.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
 
   end
 
   def review
 
     #check params and tag exists
-    if params[:id].nil? or Tag.find_by_id(params[:id]).blank?
+    
+    id = params[:id]
+    if id.nil?
       redirect_to '/', :notice => "Unable to locate that directory."
       return
     end
 
     #get document ids
-    @tag = Tag.joins(:documents).find(params[:id])
+    @tag = current_user.tags.joins(:documents).find_by_id(id)
 
     document_ids = []
     @tag.documents.each do |document|

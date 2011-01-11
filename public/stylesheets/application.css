@@ -13,6 +13,8 @@ img.home {
     width:100px;
 }
 
+.clr { height:0;clear:both; }
+
 .rounded_border {
     border: 1px solid lightGrey;
     border-bottom-left-radius: 5px 5px;
@@ -31,4 +33,11 @@ header {
 .contents {
      width:1000px;
      margin:10px auto;
+}
+
+.notice, .error {
+     background-color:#eee;
+     border:1px solid #e00;
+     padding:5px;
+     width:100%;
 }
