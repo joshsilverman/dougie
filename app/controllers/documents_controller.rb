@@ -131,6 +131,11 @@ class DocumentsController < ApplicationController
   end
 
   def test_edit
+
+    if (params[:id])
+      @document = Document.find(params[:id])
+    end
+
   end
 
   def test_update

@@ -5,7 +5,7 @@ var cTest = Class.create({
     initialize: function() {
 
         $R(1, parseInt($('user_count').value)).each(function(i) {
-           this.users.push(new cUser(i));
+            this.users.push(new cUser(i));
         }.bind(this));
 
         /* listeners */
@@ -52,8 +52,23 @@ var cUser = Class.create({
         /* members from doc */
         this.documentName = i;
 
-        /* create new document */
-        this.create.bind(this).delay(Math.random() * 10);;
+        /* if first user, check for id, html form elements */
+        if (i == 1 && $('html') && $('id')) {
+
+            /* set members */
+            this.documentId = $('id').value;
+            this.html = $('html').value;
+
+            /* freeze users at 1 */
+
+
+            /* call update */
+            this.update.bind(this).delay(Math.random() * parseInt($('save_interval').value));
+        }
+
+
+        /* else, create new document */
+        else this.create.bind(this).delay(Math.random() * 10);;
     },
 
     create: function() {

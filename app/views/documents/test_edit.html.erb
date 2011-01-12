@@ -28,3 +28,8 @@
 <label for="average_update">Average update time:</label>
 <input id="average_update" value="0" />
 <br/><br/>
+
+<% if !@document.nil? %>
+  <input id="html" type="hidden" value="<%=@document.html%>" />
+  <input id="id" type="hidden" value="<%=@document.id%>" />
+<%  end %>
