@@ -15,7 +15,3 @@ end
 class ActionController::TestCase
   include Devise::TestHelpers
 end
-
-class ActionDispatch::PerformanceTest
- include Devise::TestHelpers
-end 

@@ -5,9 +5,9 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
- email: jez@example.com
- encrypted_password: $2a$10$PoBe1MvkoGJsjMVTEjKqgeBUp.xdfzWoiDjBzQhtLAj16NqIa2fOy
- password_salt: $2a$10$PoBe1MvkoGJsjMVTEjKqge
+ email: a@a.com
+ encrypted_password: $2a$10$V8NJL.Wv5G3TxV3qbXZOMexILYV.OElahwKg2Y4BSUf6hLK.7f3t6
+ password_salt: $2a$10$V8NJL.Wv5G3TxV3qbXZOMe
  reset_password_token: nil
  remember_token: nil
  remember_created_at: nil

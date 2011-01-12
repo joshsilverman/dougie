@@ -6,21 +6,20 @@ class DocumentsController < ApplicationController
   # If exists, use this document, otherwise set document html and construct Line objects
   def create
 
-    #get tag if none provided
+    #attempt to use a provided tag
     tag_id = params[:tag_id]
-    if tag_id.nil?
+    if tag_id
+      @tag = current_user.tags.find_by_id(tag_id)
+    end
+
+    # if not tag look for misc or create misc
+    if @tag.blank?
       @tag = current_user.tags.find_by_misc(true) #@todo should query by user_id too
 
       #generate miscelaneous tag if none
       if @tag.blank?
-        current_user.tags = Tag.create(:misc => true, :name => 'Misc')
+        @tag = current_user.tags.create(:misc => true, :name => 'Misc')
       end
-
-      tag_id = @tag.id
-
-    else
-      #@todo what if tag id is invalid...
-      @tag = current_user.tags.find_by_id(tag_id)
     end
 
     @document = current_user.documents.create(:name => 'untitled', :tag_id => @tag.id)

@@ -91,14 +91,15 @@ class Line < ActiveRecord::Base
     
     # find all lines with line_id attribute
     lines.css("li[line_id]").each do |line|
-      
-      unless id.blank?
+
+      unless object_id.blank?
         existing_lines.each do |e_line|
           
-          #existing line_number equals incoming line number
+          # existing line_number equals incoming line number
           if e_line.id.to_s == line.attr('line_id').to_s
             
-            #existing line epoch updated_at less than incoming line epoch change time
+            # existing line epoch updated_at less than incoming line epoch change time
+            # @todo times are different! on is a frontend time in millisecs (?), the other a back-end time in seconds
             if e_line.updated_at.to_i < line.attr('changed').to_i
               
               # debug
