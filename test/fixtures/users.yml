@@ -5,6 +5,7 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
+ id: 1
  email: a@a.com
  encrypted_password: $2a$10$V8NJL.Wv5G3TxV3qbXZOMexILYV.OElahwKg2Y4BSUf6hLK.7f3t6
  password_salt: $2a$10$V8NJL.Wv5G3TxV3qbXZOMe

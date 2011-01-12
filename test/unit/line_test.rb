@@ -50,7 +50,6 @@ class LineTest < ActiveSupport::TestCase
     lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #cardinality assertions
-    assert_equal(7, lines_all.size)
     assert_equal(7, lines.size)
     assert_equal(3, lines_tree.children.size)
     assert_equal(3, lines_tree.children[1].children.size)
@@ -113,7 +112,7 @@ class LineTest < ActiveSupport::TestCase
 
       #render :json => hsh
       
-      line_id = Line.first.id
+      line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                       <body>
         
@@ -136,7 +135,6 @@ class LineTest < ActiveSupport::TestCase
                         </body>
                       ]
         
-
       document[1] = Document.find_by_id(document[0].id)
       dp = DocumentsHelper::DocumentParser.new(html[1])
       existing_lines = document[1].lines
@@ -147,8 +145,9 @@ class LineTest < ActiveSupport::TestCase
 
       document[1].update_attribute(:html,html[1])
 
-      assert_equal(7, Line.all.length)
-      assert_equal("a just to keep track [EDIT]", Line.all[3].text)
+      lines = Line.find_all_by_document_id(document[1].id)
+      assert_equal(7, lines.length)
+      assert_equal("a just to keep track [EDIT]", lines[3].text)
 
   end
 
@@ -195,15 +194,15 @@ class LineTest < ActiveSupport::TestCase
 
       document[0].update_attribute(:html,html[0])
       Line.preorder_save(dp.doc, document[0].id)
-      
-      assert_equal(7, Line.all.length)
-      
+
+      lines = Line.find_all_by_document_id(document[0].id)
+      assert_equal(7, lines.length)
 
       #hsh = Line.id_hash(Document.find_by_id(id))
 
       #render :json => hsh
       
-      line_id = Line.first.id
+      line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                       <body>
         
@@ -240,10 +239,10 @@ class LineTest < ActiveSupport::TestCase
       document[1].update_attribute(:html,html[1])
       Line.preorder_save(dp.doc, document[1].id)
 
-
-      assert_equal(8, Line.all.length)
-      assert_equal("a just to keep track", Line.all[3].text)
-      assert_equal("PLEASE WORK", Line.all[7].text)
+      lines = Line.find_all_by_document_id(document[0].id)
+      assert_equal(8, lines.length)
+      assert_equal("a just to keep track", lines[3].text)
+      assert_equal("PLEASE WORK", lines[7].text)
       
   end
   
@@ -291,7 +290,7 @@ class LineTest < ActiveSupport::TestCase
       
       ###
       
-      line_id = Line.first.id
+      line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                   
                   <body>
@@ -328,12 +327,13 @@ class LineTest < ActiveSupport::TestCase
         document[1].update_attribute(:html,html[1])
         Line.preorder_save(dp[1].doc, document[1].id)
 
-        assert_equal(8, Line.all.length)
-        assert_equal("node 1",Line.find_by_domid("2").text)
-        assert_equal("node 3",Line.find_by_domid("4").text)
+        lines = Line.find_all_by_document_id(document[0].id)
+        assert_equal(8, lines.length)
+        assert_equal("node 1",Line.where("domid = 2 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("node 3",Line.where("domid = 4 AND document_id = ?", document[0].id)[0].text)
         
         
-        assert_equal("node 2",Line.find_by_domid("3").text)
+        assert_equal("node 2",Line.where("domid = 3 AND document_id = ?", document[0].id)[0].text)
     
   end
   
@@ -393,7 +393,7 @@ class LineTest < ActiveSupport::TestCase
       
       ###
       
-      line_id = Line.first.id
+      line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                   <body>
 
@@ -453,44 +453,45 @@ class LineTest < ActiveSupport::TestCase
         Line.preorder_save(dp[1].doc, document[1].id)
 
         #cardinality
-        assert_equal(19, Line.all.length)
+        lines = Line.find_all_by_document_id(document[0].id)
+        assert_equal(19, lines.length)
 
         #tree relations
         [1, 2, 6].each do |i|
-          assert_equal(Line.find_by_domid(0).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 0 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
         [3, 4, 5].each do |i|
-          assert_equal(Line.find_by_domid(2).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 2 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
         [7, 8, 9, 10, 11].each do |i|
-          assert_equal(Line.find_by_domid(6).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 6 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
         [12, 13, 14, 18].each do |i|
-          assert_equal(Line.find_by_domid(11).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 11 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
         [15, 16, 17].each do |i|
-          assert_equal(Line.find_by_domid(14).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 14 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
 
         #text
-        assert_equal("a This is a test - think",Line.find_by_domid('1').text)
-        assert_equal("a the letter 'a' i am using",Line.find_by_domid('2').text)
-        assert_equal("a just to keep track",Line.find_by_domid('3').text)
-        assert_equal("a of things that are saved on the first",Line.find_by_domid('4').text)
-        assert_equal("a run through",Line.find_by_domid('5').text)
-        assert_equal("a where as items that begin with",Line.find_by_domid('6').text)
-        assert_equal("level 2a",Line.find_by_domid('7').text)
-        assert_equal("level 2b",Line.find_by_domid('8').text)
-        assert_equal("level 2c",Line.find_by_domid('9').text)
-        assert_equal("level 2d",Line.find_by_domid('10').text)
-        assert_equal("level 2e",Line.find_by_domid('11').text)
-        assert_equal("level 3a",Line.find_by_domid('12').text)
-        assert_equal("level 3b",Line.find_by_domid('13').text)
-        assert_equal("level 3c",Line.find_by_domid('14').text)
-        assert_equal("level 4a",Line.find_by_domid('15').text)
-        assert_equal("level 4b",Line.find_by_domid('16').text)
-        assert_equal("level 4c",Line.find_by_domid('17').text)
-        assert_equal("last node",Line.find_by_domid('18').text)
+        assert_equal("a This is a test - think",Line.where("domid = 1 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a the letter 'a' i am using",Line.where("domid = 2 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a just to keep track",Line.where("domid = 3 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a of things that are saved on the first",Line.where("domid = 4 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a run through",Line.where("domid = 5 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a where as items that begin with",Line.where("domid = 6 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2a",Line.where("domid = 7 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2b",Line.where("domid = 8 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2c",Line.where("domid = 9 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2d",Line.where("domid = 10 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2e",Line.where("domid = 11 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 3a",Line.where("domid = 12 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 3b",Line.where("domid = 13 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 3c",Line.where("domid = 14 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 4a",Line.where("domid = 15 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 4b",Line.where("domid = 16 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 4c",Line.where("domid = 17 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("last node",Line.where("domid = 18 AND document_id = ?", document[0].id)[0].text)
   end
 
   def test_list
@@ -528,7 +529,7 @@ class LineTest < ActiveSupport::TestCase
 
     #get recently saved
     document = Document.find_by_name(name)
-    lines_all = Line.find(:all)
+    lines_all = Line.find_all_by_document_id(document.id)
     lines_tree = Line.find(:first,
                            :include => { :children => { :children => { :children => { :children => :children }}}},
                            :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
@@ -542,20 +543,20 @@ class LineTest < ActiveSupport::TestCase
     assert_equal(2, lines_tree.children[0].children[1].children.size)
 
     #text associations
-    assert_equal("root",Line.find_by_domid('node_0').text)
-    assert_equal("1",Line.find_by_domid('node_2').text)
-    assert_equal("2",Line.find_by_domid('node_3').text)
-    assert_equal("3",Line.find_by_domid('node_4').text)
-    assert_equal("4",Line.find_by_domid('node_5').text)
-    assert_equal("5",Line.find_by_domid('node_6').text)
+    assert_equal("root",Line.where("domid = 'node_0' AND document_id = ?", document.id)[0].text)
+    assert_equal("1",Line.where("domid = 'node_2' AND document_id = ?", document.id)[0].text)
+    assert_equal("2",Line.where("domid = 'node_3' AND document_id = ?", document.id)[0].text)
+    assert_equal("3",Line.where("domid = 'node_4' AND document_id = ?", document.id)[0].text)
+    assert_equal("4",Line.where("domid = 'node_5' AND document_id = ?", document.id)[0].text)
+    assert_equal("5",Line.where("domid = 'node_6' AND document_id = ?", document.id)[0].text)
 
     #tree relations
-    assert_equal(Line.find_by_domid('node_0').id, Line.find_by_domid('node_2').parent_id)
+    assert_equal(Line.where("domid = 'node_0' AND document_id = ?", document.id)[0].id, Line.where("domid = 'node_2' AND document_id = ?", document.id)[0].parent_id)
     [3, 4].each do |i|
-      assert_equal(Line.find_by_domid('node_2').id, Line.find_by_domid("node_%i" % i).parent_id)
+      assert_equal(Line.where("domid = 'node_2' AND document_id = ?", document.id)[0].id, Line.where("domid = ? AND document_id = ?", "node_%i" % i, document.id)[0].parent_id)
     end
     [5, 6].each do |i|
-      assert_equal(Line.find_by_domid('node_4').id, Line.find_by_domid("node_%i" % i).parent_id)
+      assert_equal(Line.where("domid = 'node_4' AND document_id = ?", document.id)[0].id, Line.where("domid = ? AND document_id = ?", "node_%i" % i, document.id)[0].parent_id)
     end
   end
 
@@ -597,18 +598,13 @@ class LineTest < ActiveSupport::TestCase
 
     #get recently saved
     document = Document.find_by_name(name)
-    lines_all = Line.find(:all)
-    lines_tree = Line.find(:first,
-                           :include => { :children => { :children => { :children => { :children => :children }}}},
-                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
-    lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #cardinality
     assert_equal(6, Mem.all.size)
 
     #foreign key check
     matches = 0
-    Line.all.each do |line|
+    Line.find_all_by_document_id(document.id).each do |line|
       if (line.parent_id.nil?)
         next
       end
@@ -662,11 +658,6 @@ class LineTest < ActiveSupport::TestCase
 
     #get recently saved
     document = Document.find_by_name(name)
-    lines_all = Line.find(:all)
-    lines_tree = Line.find(:first,
-                           :include => { :children => { :children => { :children => { :children => :children }}}},
-                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
-    lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #active attribute assertions
     assert(Line.find_by_domid("1").mems.first.status)
@@ -733,7 +724,7 @@ class LineTest < ActiveSupport::TestCase
 #      end
 #    end
 
-    puts document.html
+#    puts document.html
 
     #no assertions
 

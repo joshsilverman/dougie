@@ -53,7 +53,7 @@ class DocumentsController < ApplicationController
     html = params[:html]
     @document = current_user.documents.find_by_id(id)
     return nil if id.blank? || html.blank? || @document.blank?
-    
+
     name = params[:name]
     
     # create new Nokogiri nodeset
