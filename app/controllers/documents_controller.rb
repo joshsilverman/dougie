@@ -113,5 +113,53 @@ class DocumentsController < ApplicationController
                  .to_json :include => :mems
  
   end
-  
+
+  def test_create
+
+    #get tag if none provided
+    tag_id = 1
+    @tag = current_user.tags.find_by_id(tag_id) #@todo should query by user_id too
+
+    #generate miscelaneous tag if none
+    if @tag.blank?
+      @tag = current_user.tags.create(:misc => true, :name => 'Misc')
+    end
+
+    @document = current_user.documents.create(:name => 'untitled', :tag_id => @tag.id)
+    render :json => @document.id
+
+  end
+
+  def test_edit
+  end
+
+  def test_update
+
+    id = params[:id]
+    html = params[:html]
+    @document = current_user.documents.find_by_id(id)
+    return nil if id.blank? || html.blank? || @document.blank?
+
+    name = params[:name]
+
+    # create new Nokogiri nodeset
+    dp = DocumentParser.new(html)
+
+    # pull all existing document line
+    existing_lines = @document.lines
+
+    root = Line.find_or_create_by_document_id( :document_id => @document.id,
+                                               :domid => Line.dom_id(0),
+                                               :text => "root" )
+
+    Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
+
+    Line.preorder_save(dp.doc,@document.id)
+    @document.update_attributes(:html => html, :name => name)
+
+    hsh = Line.id_hash(@document)
+
+    render :json => @document.html
+
+  end
 end
