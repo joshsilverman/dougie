@@ -11,11 +11,8 @@ class TagsController < ApplicationController
       Tag.create(:misc => true, :name => 'Misc.')
     end
 
-    #@tags_json = current_user.tags.includes(:documents)\
-    #                .all\
-    #                .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
-    
     @tags_json = Tag.tags_json(current_user)
+
   end
 
   def create
@@ -51,7 +48,7 @@ class TagsController < ApplicationController
       return
     end
 
-    #find and destory - related documents are also deleted
+    #find and destroy - related documents are also deleted
     tag.destroy
 
     #return all tag for rerendering dir

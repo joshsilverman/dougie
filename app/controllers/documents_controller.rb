@@ -49,9 +49,9 @@ class DocumentsController < ApplicationController
   
   def update
 
-    f = open('tmp/benchmarks/doc-update.txt', 'a');
-    f.puts("\n\n*** documents/update ***\n\n")
-    start_time = Time.now
+    #f = open('tmp/benchmarks/doc-update.txt', 'a');
+    #f.puts("\n\n*** documents/update ***\n\n")
+    #start_time = Time.now
 
     id = params[:id]
     html = params[:html]
@@ -71,28 +71,28 @@ class DocumentsController < ApplicationController
                                                  :domid => Line.dom_id(0),
                                                  :text => "root" )
 
-      f.puts('Doc created:' + (Time.now - start_time).to_s + "\n")
+      #f.puts('Doc created:' + (Time.now - start_time).to_s + "\n")
 
       Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
 
-      f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
+      #f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
 
       Line.document_html = html
       Line.preorder_save(dp.doc,@document.id)
 
-      f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
+      #f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
 
       @document.update_attributes(:html => Line.document_html, :name => name)
 
     end
 
-    f.puts('Doc updated:' + (Time.now - start_time).to_s + "\n")
+    #f.puts('Doc updated:' + (Time.now - start_time).to_s + "\n")
 
     hsh = Line.id_hash(@document)
     
     render :json => hsh
 
-    f.puts('Controller time:' + (Time.now - start_time).to_s + "\n")
+    #f.puts('Controller time:' + (Time.now - start_time).to_s + "\n")
     
   end
   

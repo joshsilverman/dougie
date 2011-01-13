@@ -16,7 +16,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     get "/users/sign_out"
     get "/users/sign_in"
     assert_response :success
-    post_via_redirect "/users/sign_in", {'user[email]' => users(:one).email, 'user[password]' => 'aaaaaa'}
+    post_via_redirect "/users/sign_in", { 'user[email]' => users(:one).email, 'user[password]' => 'aaaaaa'}
     assert_equal '/', path
 
     # new document
@@ -49,7 +49,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     get "/users/sign_out"
     get "/users/sign_in"
     assert_response :success
-    post_via_redirect "/users/sign_in", {'user[email]' => users(:one).email, 'user[password]' => 'aaaaaa'}
+    post_via_redirect "/users/sign_in", { 'user[email]' => users(:one).email, 'user[password]' => 'aaaaaa'}
     assert_equal '/', path
 
     # new document

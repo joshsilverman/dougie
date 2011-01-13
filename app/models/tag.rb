@@ -8,6 +8,7 @@ class Tag < ActiveRecord::Base
     current_user.tags.includes(:documents)\
                     .all\
                     .to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    rescue: []
   end
 
 end
