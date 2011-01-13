@@ -49,6 +49,10 @@ class DocumentsController < ApplicationController
   
   def update
 
+    f = open('tmp/benchmarks/doc-update.txt', 'a');
+    f.puts("\n\n*****\n\n")
+    start_time = Time.now
+
     id = params[:id]
     html = params[:html]
     @document = current_user.documents.find_by_id(id)
@@ -65,15 +69,26 @@ class DocumentsController < ApplicationController
     root = Line.find_or_create_by_document_id( :document_id => @document.id,
                                                :domid => Line.dom_id(0),
                                                :text => "root" )
-    
+
+    f.puts('Doc created:' + (Time.now - start_time).to_s + "\n")
+
     Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
-   
+
+    f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
+
     Line.preorder_save(dp.doc,@document.id)
+
+    f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
+
     @document.update_attributes(:html => html, :name => name)
-    
+
+    f.puts('Doc updated:' + (Time.now - start_time).to_s + "\n")
+
     hsh = Line.id_hash(@document)
     
     render :json => hsh
+
+    f.puts('Controller time:' + (Time.now - start_time).to_s + "\n")
     
   end
   
@@ -112,5 +127,58 @@ class DocumentsController < ApplicationController
                  .to_json :include => :mems
  
   end
-  
+
+  def test_create
+
+    #get tag if none provided
+    tag_id = 1
+    @tag = current_user.tags.find_by_id(tag_id) #@todo should query by user_id too
+
+    #generate miscelaneous tag if none
+    if @tag.blank?
+      @tag = current_user.tags.create(:misc => true, :name => 'Misc')
+    end
+
+    @document = current_user.documents.create(:name => 'untitled', :tag_id => @tag.id)
+    render :json => @document.id
+
+  end
+
+  def test_edit
+
+    if (params[:id])
+      @document = Document.find(params[:id])
+    end
+
+  end
+
+  def test_update
+
+    id = params[:id]
+    html = params[:html]
+    @document = current_user.documents.find_by_id(id)
+    return nil if id.blank? || html.blank? || @document.blank?
+
+    name = params[:name]
+
+    # create new Nokogiri nodeset
+    dp = DocumentParser.new(html)
+
+    # pull all existing document line
+    existing_lines = @document.lines
+
+    root = Line.find_or_create_by_document_id( :document_id => @document.id,
+                                               :domid => Line.dom_id(0),
+                                               :text => "root" )
+
+    Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
+
+    Line.preorder_save(dp.doc,@document.id)
+    @document.update_attributes(:html => html, :name => name)
+
+    hsh = Line.id_hash(@document)
+
+    render :json => @document.html
+
+  end
 end

@@ -61,10 +61,14 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
 
   #editor
-
   match "/editor/:id" => "documents#read" #** public **#
   match "/documents/update" => "documents#update"
   match "/documents/create/:tag_id" => "documents#create"
+
+  match "/documents/test_edit" => "documents#test_edit"
+  match "/documents/test_edit/:id" => "documents#test_edit"
+  match "/documents/test_create" => "documents#test_create"
+  match "/documents/test_update" => "documents#test_update"
 
   #reviwer
   match "/review/:id" => "documents#review" #** public **#

@@ -24,7 +24,8 @@ class Line < ActiveRecord::Base
     return "" if num.blank?
     "node_#{num}"
   end
-  
+
+  #@deprecate
   def self.active_cards
     arr = []
     Line.all.each do |line|
@@ -34,7 +35,8 @@ class Line < ActiveRecord::Base
     end
     arr
   end
-  
+
+  #@deprecate
   def self.inactive_cards
     arr = []
     Line.all.each do |line|
@@ -44,7 +46,8 @@ class Line < ActiveRecord::Base
     end
     arr
   end
-  
+
+  #@deprecate?
   def self.active_mem?(status)
     status.to_s == "true"
   end
