@@ -8,6 +8,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     ###################
     # 1.5, 1.45, 1.37, 1.55, 1.61, 1.59, 1.7 - 1.53 (Baseline)
     # 1.27, 1.22 - 1.25 (line_id into document.id during preorder save)
+    # 1.12, 1.14, 1.22 - 1.15
 
     # login via https
     https!
@@ -37,7 +38,8 @@ class EditorTest < ActionDispatch::PerformanceTest
     ###################
     # 3.16, 3.19 (baseline)
     # 1.42, 1.45, 1.45 (update_line from O(n) -> O(n^2)) - something funky here
-    # 1.43, 1.41, 1.37, 1.48, 1.54 - 1.44(line_id into document.id during preorder save)
+    # 1.43, 1.41, 1.37, 1.48, 1.54 - 1.44 (line_id into document.id during preorder save)
+    # 1.33, 1.33, 1.36 - 1.34 (combing preorder save and update_line queries into two transactions)
 
     # login via https
     https!

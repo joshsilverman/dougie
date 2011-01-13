@@ -72,7 +72,9 @@ class DocumentsController < ApplicationController
 
     f.puts('Doc created:' + (Time.now - start_time).to_s + "\n")
 
-    Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
+    Line.transaction do
+      Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
+    end
 
     f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
 
