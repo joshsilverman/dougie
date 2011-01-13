@@ -77,7 +77,9 @@ class DocumentsController < ApplicationController
     f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
 
     Line.document_html = html
-    Line.preorder_save(dp.doc,@document.id)
+    Line.transaction do
+      Line.preorder_save(dp.doc,@document.id)
+    end
 
     f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
 
