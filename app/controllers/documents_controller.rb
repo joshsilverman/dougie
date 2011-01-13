@@ -50,7 +50,7 @@ class DocumentsController < ApplicationController
   def update
 
     f = open('tmp/benchmarks/doc-update.txt', 'a');
-    f.puts("\n\n*****\n\n")
+    f.puts("\n\n*** documents/update ***\n\n")
     start_time = Time.now
 
     id = params[:id]
@@ -76,11 +76,12 @@ class DocumentsController < ApplicationController
 
     f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
 
+    Line.document_html = html
     Line.preorder_save(dp.doc,@document.id)
 
     f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
 
-    @document.update_attributes(:html => html, :name => name)
+    @document.update_attributes(:html => Line.document_html, :name => name)
 
     f.puts('Doc updated:' + (Time.now - start_time).to_s + "\n")
 
@@ -173,8 +174,9 @@ class DocumentsController < ApplicationController
 
     Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
 
+    Line.document_html = html
     Line.preorder_save(dp.doc,@document.id)
-    @document.update_attributes(:html => html, :name => name)
+    @document.update_attributes(:html => Line.document_html, :name => name)
 
     hsh = Line.id_hash(@document)
 

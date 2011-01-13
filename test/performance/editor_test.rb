@@ -6,7 +6,8 @@ class EditorTest < ActionDispatch::PerformanceTest
   def test_create_large_doc
 
     ###################
-    # (1) 1.5, 1.45, 1.37, 1.55, 1.61, 1.59
+    # 1.5, 1.45, 1.37, 1.55, 1.61, 1.59, 1.7 - 1.53 (Baseline)
+    # 1.27, 1.22 - 1.25 (line_id into document.id during preorder save)
 
     # login via https
     https!
@@ -34,8 +35,9 @@ class EditorTest < ActionDispatch::PerformanceTest
   def test_augment_large_doc
 
     ###################
-    # (1) 3.16, 3.19
-    # (2) 1.42, 1.45, 1.45
+    # 3.16, 3.19 (baseline)
+    # 1.42, 1.45, 1.45 (update_line from O(n) -> O(n^2)) - something funky here
+    # 1.43, 1.41, 1.37, 1.48, 1.54 - 1.44(line_id into document.id during preorder save)
 
     # login via https
     https!
@@ -61,6 +63,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     #augment
     html = Document.find(document_id).html + '<p id="node_81" line_id="" changed="1294800081564" class="outline_node" parent="node_0">81</p>'
     post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    assert_response :success
 
   end
 

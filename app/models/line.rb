@@ -4,7 +4,9 @@ class Line < ActiveRecord::Base
   
   has_many :mems
   belongs_to :document
-  
+
+  cattr_accessor :document_html
+
   def self.id_hash(document)
     
     return nil if document.blank?
@@ -53,7 +55,7 @@ class Line < ActiveRecord::Base
   end
   
   def self.preorder_save(lines,document_id,saved_parents = {})
-    
+
     children = lines.children
     
     children.each do |child|
@@ -74,9 +76,13 @@ class Line < ActiveRecord::Base
         end
 
         # add line to db, save as variable for mem creation
+        dom_id = parent.attr("id")
         created_line = existing_parent.children.create( :text => child.content.strip,
-                                                        :domid => parent.attr("id"),
+                                                        :domid => dom_id,
                                                         :document_id => document_id )
+
+        @@document_html = @@document_html.gsub(/((?:<p|<li)[^>]*[^_]id="#{dom_id}"[^>]*line_id=")("[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
+        @@document_html = @@document_html.gsub(/((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
 
         # pass in hash of properties to be merged when creating a Mem
         Mem.create_standard({ :line_id => created_line.id,
@@ -110,12 +116,6 @@ class Line < ActiveRecord::Base
 
         # existing line epoch updated_at less than incoming line epoch change time
 #        if e_line.updated_at.to_i < line.attr('changed').to_i
-
-          # debug
-          # p "LINE CHANGED!"
-          # p "ELINE: #{e_line.updated_at.to_i}"
-          # p "LINE: #{line}"
-          # p "TEXT: #{line.text}"
 
           # replace existing line text with incoming line text
           # updated_at time is automatically set by rails

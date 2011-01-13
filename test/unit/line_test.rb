@@ -34,16 +34,12 @@ class LineTest < ActiveSupport::TestCase
     document = Document.find_or_create_by_name(name)
     Line.create(:text => "root", :domid => 0, :document_id => document.id)
     
-#    unless document.html.blank?
-#      Line.update_line(dp.doc,existing_lines)
-#    end
-    
     dp = DocumentsHelper::DocumentParser.new(html)
+    Line.document_html = html
     Line.preorder_save(dp.doc, document.id)
 
     #get recently saved
     document = Document.find_by_name(name)
-    lines_all = Line.find(:all)
     lines_tree = Line.find(:first,
                            :include => { :children => { :children => { :children => { :children => :children }}}},
                            :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
@@ -102,16 +98,10 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
 
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp.doc, document[0].id)
-      
-      #assert_equal(7, Line.all.length)
-      
+      document[0].update_attribute(:html, Line.document_html)
 
-      #hsh = Line.id_hash(Document.find_by_id(id))
-
-      #render :json => hsh
-      
       line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                       <body>
@@ -192,8 +182,9 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
 
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp.doc, document[0].id)
+      document[0].update_attribute(:html,Line.document_html)
 
       lines = Line.find_all_by_document_id(document[0].id)
       assert_equal(7, lines.length)
@@ -236,8 +227,9 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
 
-      document[1].update_attribute(:html,html[1])
+      Line.document_html = html[1]
       Line.preorder_save(dp.doc, document[1].id)
+      document[1].update_attribute(:html,Line.document_html)
 
       lines = Line.find_all_by_document_id(document[0].id)
       assert_equal(8, lines.length)
@@ -283,8 +275,9 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
       
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp[0].doc,document[0].id)
+      document[0].update_attribute(:html,Line.document_html)
       
       assert_equal(5,document[0].lines.length)
       
@@ -324,8 +317,9 @@ class LineTest < ActiveSupport::TestCase
           Line.update_line(dp[1].doc,existing_lines)
         end
 
-        document[1].update_attribute(:html,html[1])
+        Line.document_html = html[1]
         Line.preorder_save(dp[1].doc, document[1].id)
+        document[1].update_attribute(:html,Line.document_html)
 
         lines = Line.find_all_by_document_id(document[0].id)
         assert_equal(8, lines.length)
@@ -386,8 +380,9 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
       
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp[0].doc,document[0].id)
+      document[0].update_attribute(:html,Line.document_html)
       
       assert_equal(11,document[0].lines.length)
       
@@ -449,8 +444,9 @@ class LineTest < ActiveSupport::TestCase
           Line.update_line(dp[1].doc,existing_lines)
         end
 
-        document[1].update_attribute(:html,html[1])
-        Line.preorder_save(dp[1].doc, document[1].id)
+        Line.document_html = html[1]
+        Line.preorder_save(dp[1].doc,document[1].id)
+        document[1].update_attribute(:html,Line.document_html)
 
         #cardinality
         lines = Line.find_all_by_document_id(document[0].id)
@@ -700,7 +696,10 @@ class LineTest < ActiveSupport::TestCase
     Line.create(:text => "root", :domid => 0, :document_id => document.id)
 
     dp = DocumentsHelper::DocumentParser.new(html)
-    Line.preorder_save(dp.doc, document.id)
+
+    Line.document_html = html
+    Line.preorder_save(dp.doc,document.id)
+    document.update_attribute(:html,Line.document_html)
 
     #get recently saved
     document = Document.find_by_name(name)
@@ -815,15 +814,9 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
 
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp.doc, document[0].id)
-
-      #assert_equal(7, Line.all.length)
-
-
-      #hsh = Line.id_hash(Document.find_by_id(id))
-
-      #render :json => hsh
+      document[0].update_attribute(:html,Line.document_html)
 
       line_id = Line.first.id
       html[1] = %Q[
@@ -896,13 +889,9 @@ class LineTest < ActiveSupport::TestCase
       dp = DocumentsHelper::DocumentParser.new(html[1])
       existing_lines = document[1].lines
 
-      start_time = Time.now
-
       unless document[1].html.blank?
         Line.update_line(dp.doc,existing_lines)
       end
-
-      puts Time.now - start_time
 
 #      document[1].update_attribute(:html,html[1])
 #
