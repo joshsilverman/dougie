@@ -1,1 +1,320 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+#1:
+#    document_id: "980190964"
+#    domid: node_0
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: root
+#    id: "41"
+#    parent_id:
+#2:
+#    document_id: "980190964"
+#    domid: node_2
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "2"
+#    id: "122"
+#    parent_id: "41"
+#3:
+#    document_id: "980190964"
+#    domid: node_3
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "3"
+#    id: "123"
+#    parent_id: "41"
+#4:
+#    document_id: "980190964"
+#    domid: node_4
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "4"
+#    id: "124"
+#    parent_id: "41"
+#5:
+#    document_id: "980190964"
+#    domid: node_5
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "5"
+#    id: "125"
+#    parent_id: "41"
+#6:
+#    document_id: "980190964"
+#    domid: node_6
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "6"
+#    id: "126"
+#    parent_id: "41"
+#7:
+#    document_id: "980190964"
+#    domid: node_7
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "7"
+#    id: "127"
+#    parent_id: "41"
+#8:
+#    document_id: "980190964"
+#    domid: node_8
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "8"
+#    id: "128"
+#    parent_id: "41"
+#9:
+#    document_id: "980190964"
+#    domid: node_9
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "9"
+#    id: "129"
+#    parent_id: "41"
+#10:
+#    document_id: "980190964"
+#    domid: node_10
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "10"
+#    id: "130"
+#    parent_id: "41"
+#11:
+#    document_id: "980190964"
+#    domid: node_11
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "11"
+#    id: "131"
+#    parent_id: "41"
+#12:
+#    document_id: "980190964"
+#    domid: node_12
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "12"
+#    id: "132"
+#    parent_id: "41"
+#13:
+#    document_id: "980190964"
+#    domid: node_13
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "13"
+#    id: "133"
+#    parent_id: "41"
+#14:
+#    document_id: "980190964"
+#    domid: node_14
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "14"
+#    id: "134"
+#    parent_id: "41"
+#15:
+#    document_id: "980190964"
+#    domid: node_15
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "15"
+#    id: "135"
+#    parent_id: "41"
+#16:
+#    document_id: "980190964"
+#    domid: node_16
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "16"
+#    id: "136"
+#    parent_id: "41"
+#17:
+#    document_id: "980190964"
+#    domid: node_17
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "17"
+#    id: "137"
+#    parent_id: "41"
+#18:
+#    document_id: "980190964"
+#    domid: node_18
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "18"
+#    id: "138"
+#    parent_id: "41"
+#19:
+#    document_id: "980190964"
+#    domid: node_19
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "19"
+#    id: "139"
+#    parent_id: "41"
+#20:
+#    document_id: "980190964"
+#    domid: node_20
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "20"
+#    id: "140"
+#    parent_id: "41"
+#21:
+#    document_id: "980190964"
+#    domid: node_21
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "21"
+#    id: "141"
+#    parent_id: "41"
+#22:
+#    document_id: "980190964"
+#    domid: node_22
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "22"
+#    id: "142"
+#    parent_id: "41"
+#23:
+#    document_id: "980190964"
+#    domid: node_23
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "23"
+#    id: "143"
+#    parent_id: "41"
+#24:
+#    document_id: "980190964"
+#    domid: node_24
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "24"
+#    id: "144"
+#    parent_id: "41"
+#25:
+#    document_id: "980190964"
+#    domid: node_25
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "25"
+#    id: "145"
+#    parent_id: "41"
+#26:
+#    document_id: "980190964"
+#    domid: node_26
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "26"
+#    id: "146"
+#    parent_id: "41"
+#27:
+#    document_id: "980190964"
+#    domid: node_27
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "27"
+#    id: "147"
+#    parent_id: "41"
+#28:
+#    document_id: "980190964"
+#    domid: node_28
+#    created_at: 2011-01-12 04:21:37
+#    updated_at: 2011-01-12 04:21:37
+#    text: "28"
+#    id: "148"
+#    parent_id: "41"
+#29:
+#    document_id: "980190964"
+#    domid: node_29
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "29"
+#    id: "149"
+#    parent_id: "41"
+#30:
+#    document_id: "980190964"
+#    domid: node_30
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "30"
+#    id: "150"
+#    parent_id: "41"
+#31:
+#    document_id: "980190964"
+#    domid: node_31
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "31"
+#    id: "151"
+#    parent_id: "41"
+#32:
+#    document_id: "980190964"
+#    domid: node_32
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "32"
+#    id: "152"
+#    parent_id: "41"
+#33:
+#    document_id: "980190964"
+#    domid: node_33
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "33"
+#    id: "153"
+#    parent_id: "41"
+#34:
+#    document_id: "980190964"
+#    domid: node_34
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "34"
+#    id: "154"
+#    parent_id: "41"
+#35:
+#    document_id: "980190964"
+#    domid: node_35
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "35"
+#    id: "155"
+#    parent_id: "41"
+#36:
+#    document_id: "980190964"
+#    domid: node_36
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "36"
+#    id: "156"
+#    parent_id: "41"
+#37:
+#    document_id: "980190964"
+#    domid: node_37
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "37"
+#    id: "157"
+#    parent_id: "41"
+#38:
+#    document_id: "980190964"
+#    domid: node_38
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "38"
+#    id: "158"
+#    parent_id: "41"
+#39:
+#    document_id: "980190964"
+#    domid: node_39
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "39"
+#    id: "159"
+#    parent_id: "41"
+#40:
+#    document_id: "980190964"
+#    domid: node_40
+#    created_at: 2011-01-12 04:21:38
+#    updated_at: 2011-01-12 04:21:38
+#    text: "40"
+#    id: "160"
+#    parent_id: "41"

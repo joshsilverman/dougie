@@ -5,3 +5,4 @@ tmp/*
 nbproject/*
 Gemfile.lock
 test/tmp/*
+.bundle/config

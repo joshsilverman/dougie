@@ -34,23 +34,18 @@ class LineTest < ActiveSupport::TestCase
     document = Document.find_or_create_by_name(name)
     Line.create(:text => "root", :domid => 0, :document_id => document.id)
     
-#    unless document.html.blank?
-#      Line.update_line(dp.doc,existing_lines)
-#    end
-    
     dp = DocumentsHelper::DocumentParser.new(html)
+    Line.document_html = html
     Line.preorder_save(dp.doc, document.id)
 
     #get recently saved
     document = Document.find_by_name(name)
-    lines_all = Line.find(:all)
     lines_tree = Line.find(:first,
                            :include => { :children => { :children => { :children => { :children => :children }}}},
                            :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
     lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #cardinality assertions
-    assert_equal(7, lines_all.size)
     assert_equal(7, lines.size)
     assert_equal(3, lines_tree.children.size)
     assert_equal(3, lines_tree.children[1].children.size)
@@ -103,17 +98,11 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
 
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp.doc, document[0].id)
-      
-      #assert_equal(7, Line.all.length)
-      
+      document[0].update_attribute(:html, Line.document_html)
 
-      #hsh = Line.id_hash(Document.find_by_id(id))
-
-      #render :json => hsh
-      
-      line_id = Line.first.id
+      line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                       <body>
         
@@ -136,19 +125,19 @@ class LineTest < ActiveSupport::TestCase
                         </body>
                       ]
         
-
       document[1] = Document.find_by_id(document[0].id)
       dp = DocumentsHelper::DocumentParser.new(html[1])
       existing_lines = document[1].lines
-      
+
       unless document[1].html.blank?
         Line.update_line(dp.doc,existing_lines)
-      end          
+      end 
 
       document[1].update_attribute(:html,html[1])
 
-      assert_equal(7, Line.all.length)
-      assert_equal("a just to keep track [EDIT]", Line.all[3].text)
+      lines = Line.find_all_by_document_id(document[1].id)
+      assert_equal(7, lines.length)
+      assert_equal("a just to keep track [EDIT]", lines[3].text)
 
   end
 
@@ -193,17 +182,18 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
 
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp.doc, document[0].id)
-      
-      assert_equal(7, Line.all.length)
-      
+      document[0].update_attribute(:html,Line.document_html)
+
+      lines = Line.find_all_by_document_id(document[0].id)
+      assert_equal(7, lines.length)
 
       #hsh = Line.id_hash(Document.find_by_id(id))
 
       #render :json => hsh
       
-      line_id = Line.first.id
+      line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                       <body>
         
@@ -237,13 +227,14 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
 
-      document[1].update_attribute(:html,html[1])
+      Line.document_html = html[1]
       Line.preorder_save(dp.doc, document[1].id)
+      document[1].update_attribute(:html,Line.document_html)
 
-
-      assert_equal(8, Line.all.length)
-      assert_equal("a just to keep track", Line.all[3].text)
-      assert_equal("PLEASE WORK", Line.all[7].text)
+      lines = Line.find_all_by_document_id(document[0].id)
+      assert_equal(8, lines.length)
+      assert_equal("a just to keep track", lines[3].text)
+      assert_equal("PLEASE WORK", lines[7].text)
       
   end
   
@@ -284,14 +275,15 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
       
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp[0].doc,document[0].id)
+      document[0].update_attribute(:html,Line.document_html)
       
       assert_equal(5,document[0].lines.length)
       
       ###
       
-      line_id = Line.first.id
+      line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                   
                   <body>
@@ -325,15 +317,17 @@ class LineTest < ActiveSupport::TestCase
           Line.update_line(dp[1].doc,existing_lines)
         end
 
-        document[1].update_attribute(:html,html[1])
+        Line.document_html = html[1]
         Line.preorder_save(dp[1].doc, document[1].id)
+        document[1].update_attribute(:html,Line.document_html)
 
-        assert_equal(8, Line.all.length)
-        assert_equal("node 1",Line.find_by_domid("2").text)
-        assert_equal("node 3",Line.find_by_domid("4").text)
+        lines = Line.find_all_by_document_id(document[0].id)
+        assert_equal(8, lines.length)
+        assert_equal("node 1",Line.where("domid = 2 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("node 3",Line.where("domid = 4 AND document_id = ?", document[0].id)[0].text)
         
         
-        assert_equal("node 2",Line.find_by_domid("3").text)
+        assert_equal("node 2",Line.where("domid = 3 AND document_id = ?", document[0].id)[0].text)
     
   end
   
@@ -386,14 +380,15 @@ class LineTest < ActiveSupport::TestCase
         Line.update_line(dp.doc,existing_lines)
       end
       
-      document[0].update_attribute(:html,html[0])
+      Line.document_html = html[0]
       Line.preorder_save(dp[0].doc,document[0].id)
+      document[0].update_attribute(:html,Line.document_html)
       
       assert_equal(11,document[0].lines.length)
       
       ###
       
-      line_id = Line.first.id
+      line_id = Line.where("text = 'root'").order("created_at DESC").first.id
       html[1] = %Q[
                   <body>
 
@@ -449,48 +444,50 @@ class LineTest < ActiveSupport::TestCase
           Line.update_line(dp[1].doc,existing_lines)
         end
 
-        document[1].update_attribute(:html,html[1])
-        Line.preorder_save(dp[1].doc, document[1].id)
+        Line.document_html = html[1]
+        Line.preorder_save(dp[1].doc,document[1].id)
+        document[1].update_attribute(:html,Line.document_html)
 
         #cardinality
-        assert_equal(19, Line.all.length)
+        lines = Line.find_all_by_document_id(document[0].id)
+        assert_equal(19, lines.length)
 
         #tree relations
         [1, 2, 6].each do |i|
-          assert_equal(Line.find_by_domid(0).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 0 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
         [3, 4, 5].each do |i|
-          assert_equal(Line.find_by_domid(2).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 2 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
         [7, 8, 9, 10, 11].each do |i|
-          assert_equal(Line.find_by_domid(6).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 6 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
         [12, 13, 14, 18].each do |i|
-          assert_equal(Line.find_by_domid(11).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 11 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
         [15, 16, 17].each do |i|
-          assert_equal(Line.find_by_domid(14).id, Line.find_by_domid(i).parent_id)
+          assert_equal(Line.where("domid = 14 AND document_id = ?", document[0].id)[0].id, Line.where("domid = ? AND document_id = ?", i, document[0].id)[0].parent_id)
         end
 
         #text
-        assert_equal("a This is a test - think",Line.find_by_domid('1').text)
-        assert_equal("a the letter 'a' i am using",Line.find_by_domid('2').text)
-        assert_equal("a just to keep track",Line.find_by_domid('3').text)
-        assert_equal("a of things that are saved on the first",Line.find_by_domid('4').text)
-        assert_equal("a run through",Line.find_by_domid('5').text)
-        assert_equal("a where as items that begin with",Line.find_by_domid('6').text)
-        assert_equal("level 2a",Line.find_by_domid('7').text)
-        assert_equal("level 2b",Line.find_by_domid('8').text)
-        assert_equal("level 2c",Line.find_by_domid('9').text)
-        assert_equal("level 2d",Line.find_by_domid('10').text)
-        assert_equal("level 2e",Line.find_by_domid('11').text)
-        assert_equal("level 3a",Line.find_by_domid('12').text)
-        assert_equal("level 3b",Line.find_by_domid('13').text)
-        assert_equal("level 3c",Line.find_by_domid('14').text)
-        assert_equal("level 4a",Line.find_by_domid('15').text)
-        assert_equal("level 4b",Line.find_by_domid('16').text)
-        assert_equal("level 4c",Line.find_by_domid('17').text)
-        assert_equal("last node",Line.find_by_domid('18').text)
+        assert_equal("a This is a test - think",Line.where("domid = 1 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a the letter 'a' i am using",Line.where("domid = 2 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a just to keep track",Line.where("domid = 3 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a of things that are saved on the first",Line.where("domid = 4 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a run through",Line.where("domid = 5 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("a where as items that begin with",Line.where("domid = 6 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2a",Line.where("domid = 7 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2b",Line.where("domid = 8 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2c",Line.where("domid = 9 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2d",Line.where("domid = 10 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 2e",Line.where("domid = 11 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 3a",Line.where("domid = 12 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 3b",Line.where("domid = 13 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 3c",Line.where("domid = 14 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 4a",Line.where("domid = 15 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 4b",Line.where("domid = 16 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("level 4c",Line.where("domid = 17 AND document_id = ?", document[0].id)[0].text)
+        assert_equal("last node",Line.where("domid = 18 AND document_id = ?", document[0].id)[0].text)
   end
 
   def test_list
@@ -528,7 +525,7 @@ class LineTest < ActiveSupport::TestCase
 
     #get recently saved
     document = Document.find_by_name(name)
-    lines_all = Line.find(:all)
+    lines_all = Line.find_all_by_document_id(document.id)
     lines_tree = Line.find(:first,
                            :include => { :children => { :children => { :children => { :children => :children }}}},
                            :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
@@ -542,20 +539,20 @@ class LineTest < ActiveSupport::TestCase
     assert_equal(2, lines_tree.children[0].children[1].children.size)
 
     #text associations
-    assert_equal("root",Line.find_by_domid('node_0').text)
-    assert_equal("1",Line.find_by_domid('node_2').text)
-    assert_equal("2",Line.find_by_domid('node_3').text)
-    assert_equal("3",Line.find_by_domid('node_4').text)
-    assert_equal("4",Line.find_by_domid('node_5').text)
-    assert_equal("5",Line.find_by_domid('node_6').text)
+    assert_equal("root",Line.where("domid = 'node_0' AND document_id = ?", document.id)[0].text)
+    assert_equal("1",Line.where("domid = 'node_2' AND document_id = ?", document.id)[0].text)
+    assert_equal("2",Line.where("domid = 'node_3' AND document_id = ?", document.id)[0].text)
+    assert_equal("3",Line.where("domid = 'node_4' AND document_id = ?", document.id)[0].text)
+    assert_equal("4",Line.where("domid = 'node_5' AND document_id = ?", document.id)[0].text)
+    assert_equal("5",Line.where("domid = 'node_6' AND document_id = ?", document.id)[0].text)
 
     #tree relations
-    assert_equal(Line.find_by_domid('node_0').id, Line.find_by_domid('node_2').parent_id)
+    assert_equal(Line.where("domid = 'node_0' AND document_id = ?", document.id)[0].id, Line.where("domid = 'node_2' AND document_id = ?", document.id)[0].parent_id)
     [3, 4].each do |i|
-      assert_equal(Line.find_by_domid('node_2').id, Line.find_by_domid("node_%i" % i).parent_id)
+      assert_equal(Line.where("domid = 'node_2' AND document_id = ?", document.id)[0].id, Line.where("domid = ? AND document_id = ?", "node_%i" % i, document.id)[0].parent_id)
     end
     [5, 6].each do |i|
-      assert_equal(Line.find_by_domid('node_4').id, Line.find_by_domid("node_%i" % i).parent_id)
+      assert_equal(Line.where("domid = 'node_4' AND document_id = ?", document.id)[0].id, Line.where("domid = ? AND document_id = ?", "node_%i" % i, document.id)[0].parent_id)
     end
   end
 
@@ -597,18 +594,13 @@ class LineTest < ActiveSupport::TestCase
 
     #get recently saved
     document = Document.find_by_name(name)
-    lines_all = Line.find(:all)
-    lines_tree = Line.find(:first,
-                           :include => { :children => { :children => { :children => { :children => :children }}}},
-                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
-    lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #cardinality
     assert_equal(6, Mem.all.size)
 
     #foreign key check
     matches = 0
-    Line.all.each do |line|
+    Line.find_all_by_document_id(document.id).each do |line|
       if (line.parent_id.nil?)
         next
       end
@@ -662,11 +654,6 @@ class LineTest < ActiveSupport::TestCase
 
     #get recently saved
     document = Document.find_by_name(name)
-    lines_all = Line.find(:all)
-    lines_tree = Line.find(:first,
-                           :include => { :children => { :children => { :children => { :children => :children }}}},
-                           :conditions => {'lines.parent_id' => nil, 'lines.document_id' => document.id})
-    lines = Line.find(:all, :conditions => {'lines.document_id' => document.id})
 
     #active attribute assertions
     assert(Line.find_by_domid("1").mems.first.status)
@@ -709,7 +696,10 @@ class LineTest < ActiveSupport::TestCase
     Line.create(:text => "root", :domid => 0, :document_id => document.id)
 
     dp = DocumentsHelper::DocumentParser.new(html)
-    Line.preorder_save(dp.doc, document.id)
+
+    Line.document_html = html
+    Line.preorder_save(dp.doc,document.id)
+    document.update_attribute(:html,Line.document_html)
 
     #get recently saved
     document = Document.find_by_name(name)
@@ -733,10 +723,182 @@ class LineTest < ActiveSupport::TestCase
 #      end
 #    end
 
-    puts document.html
+#    puts document.html
 
     #no assertions
 
 
   end
+
+  def test_augment_large
+
+    #setup
+    require 'documents_helper'
+    html = []
+    document = []
+    html[0] = %Q[
+                <body>
+
+                  <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+
+                  <ul>
+
+                    <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                      <ul>
+                        <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+
+                        <li changed="1" id="7" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="8" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="9" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="10" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="11" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="12" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="13" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="14" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="15" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="16" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="17" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="18" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="19" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="20" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="21" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="22" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="23" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="24" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="25" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="26" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="27" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="28" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="29" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="30" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="31" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="32" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="33" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="34" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="35" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="36" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="37" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="38" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="39" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="40" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="41" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="42" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="43" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="44" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="45" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="1" id="46" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="1" id="47" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="1" id="48" parent="2" line_id="" active="false">a run through</li>
+                      </ul>
+                    </li>
+
+                    <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+
+                  </ul>
+
+                </body>
+            #]
+
+
+      document[0] = Document.create
+      dp = DocumentsHelper::DocumentParser.new(html[0])
+      existing_lines = document[0].lines
+
+      root = Line.create( :document_id => document[0].id,
+                          :domid => 0,
+                          :text => "root" )
+
+      unless document[0].html.blank?
+        Line.update_line(dp.doc,existing_lines)
+      end
+
+      Line.document_html = html[0]
+      Line.preorder_save(dp.doc, document[0].id)
+      document[0].update_attribute(:html,Line.document_html)
+
+      line_id = Line.first.id
+      html[1] = %Q[
+                      <body>
+
+                          <p changed="1" parent="0" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
+
+                          <ul>
+
+                            <li changed="1" parent="0" id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
+                              <ul>
+                                <li parent="2" changed="90273598237590879082372" id="3" line_id="#{line_id+3}" active="true">a just to keep track [EDIT]</li>
+                                <li parent="2" changed="1" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first</li>
+                                <li parent="2" changed="1" id="5" line_id="#{line_id+5}" active="false">a run through</li>
+
+                                <li changed="1" id="7" parent="2" line_id="#{line_id+6}" active="true">a just to keep track</li>
+                                <li changed="1" id="8" parent="2" line_id="#{line_id+7}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="9" parent="2" line_id="#{line_id+8}" active="false">a run through</li>
+                                <li changed="1" id="10" parent="2" line_id="#{line_id+9}" active="true">a just to keep track</li>
+                                <li changed="1" id="11" parent="2" line_id="#{line_id+10}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="12" parent="2" line_id="#{line_id+11}" active="false">a run through</li>
+                                <li changed="1" id="13" parent="2" line_id="#{line_id+12}" active="true">a just to keep track</li>
+                                <li changed="1" id="14" parent="2" line_id="#{line_id+13}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="15" parent="2" line_id="#{line_id+14}" active="false">a run through</li>
+                                <li changed="1" id="16" parent="2" line_id="#{line_id+15}" active="true">a just to keep track</li>
+                                <li changed="1" id="17" parent="2" line_id="#{line_id+16}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="18" parent="2" line_id="#{line_id+17}" active="false">a run through</li>
+                                <li changed="1" id="19" parent="2" line_id="#{line_id+18}" active="true">a just to keep track</li>
+                                <li changed="1" id="20" parent="2" line_id="#{line_id+19}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="21" parent="2" line_id="#{line_id+20}" active="false">a run through</li>
+                                <li changed="1" id="22" parent="2" line_id="#{line_id+21}" active="true">a just to keep track</li>
+                                <li changed="1" id="23" parent="2" line_id="#{line_id+22}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="24" parent="2" line_id="#{line_id+23}" active="false">a run through</li>
+                                <li changed="1" id="25" parent="2" line_id="#{line_id+24}" active="true">a just to keep track</li>
+                                <li changed="1" id="26" parent="2" line_id="#{line_id+25}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="27" parent="2" line_id="#{line_id+26}" active="false">a run through</li>
+                                <li changed="1" id="28" parent="2" line_id="#{line_id+27}" active="true">a just to keep track</li>
+                                <li changed="1" id="29" parent="2" line_id="#{line_id+28}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="30" parent="2" line_id="#{line_id+29}" active="false">a run through</li>
+                                <li changed="1" id="31" parent="2" line_id="#{line_id+30}" active="true">a just to keep track</li>
+                                <li changed="1" id="32" parent="2" line_id="#{line_id+31}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="33" parent="2" line_id="#{line_id+32}" active="false">a run through</li>
+                                <li changed="1" id="34" parent="2" line_id="#{line_id+33}" active="true">a just to keep track</li>
+                                <li changed="1" id="35" parent="2" line_id="#{line_id+34}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="36" parent="2" line_id="#{line_id+35}" active="false">a run through</li>
+                                <li changed="1" id="37" parent="2" line_id="#{line_id+36}" active="true">a just to keep track</li>
+                                <li changed="1" id="38" parent="2" line_id="#{line_id+37}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="39" parent="2" line_id="#{line_id+38}" active="false">a run through</li>
+                                <li changed="1" id="40" parent="2" line_id="#{line_id+39}" active="true">a just to keep track</li>
+                                <li changed="1" id="41" parent="2" line_id="#{line_id+40}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="42" parent="2" line_id="#{line_id+41}" active="false">a run through</li>
+                                <li changed="1" id="43" parent="2" line_id="#{line_id+42}" active="true">a just to keep track</li>
+                                <li changed="1" id="44" parent="2" line_id="#{line_id+43}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="45" parent="2" line_id="#{line_id+44}" active="false">a run through</li>
+                                <li changed="1" id="46" parent="2" line_id="#{line_id+45}" active="true">a just to keep track</li>
+                                <li changed="1" id="47" parent="2" line_id="#{line_id+46}" active="false">a of things that are saved on the first</li>
+                                <li changed="1" id="48" parent="2" line_id="#{line_id+47}" active="false">a run through</li>
+                              </ul>
+                            </li>
+
+                            <li changed="1" parent="0" id="6" line_id="#{line_id+48}" active="true">a where as items that begin with</li>
+
+                          </ul>
+
+                        </body>
+                      ]
+
+
+      document[1] = Document.find_by_id(document[0].id)
+      dp = DocumentsHelper::DocumentParser.new(html[1])
+      existing_lines = document[1].lines
+
+      unless document[1].html.blank?
+        Line.update_line(dp.doc,existing_lines)
+      end
+
+#      document[1].update_attribute(:html,html[1])
+#
+#      assert_equal(7, Line.all.length)
+#      assert_equal("a just to keep track [EDIT]", Line.all[3].text)
+
+  end
+
+
 end
