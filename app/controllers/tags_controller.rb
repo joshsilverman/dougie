@@ -4,7 +4,7 @@ class TagsController < ApplicationController
 
   def index
 
-    #create Misc tag if not exists
+    # create Misc tag if not exists
     
     misc = Tag.find_by_misc(true)
     if misc.nil?

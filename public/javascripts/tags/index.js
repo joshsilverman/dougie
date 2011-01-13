@@ -228,6 +228,9 @@ var cDirectoryView = Class.create({
 
     createDocument: function(event) {
 
+        /* stop bubble */
+        event.stop();
+
         /* set reload cookie */
         AppUtilities.Cookies.create('reloadOrganizer', true, 1)
 
@@ -355,7 +358,6 @@ var cDocumentsView = Class.create({
         $$('.new_document').each(function(element) {
             element.observe('click', doc.directoryView.createDocument);
         });
-
 
         //remove document
         $$('.remove_document').each(function(element) {
