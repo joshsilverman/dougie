@@ -59,17 +59,15 @@ class Line < ActiveRecord::Base
     lines.children.each do |child|
 
       parent = child.parent
-      parent_attr = parent.attr('parent')
-      
+
       # check for text node and blank and unsaved lines (blank line_id attributes)
-      if child.class == Nokogiri::XML::Text && !parent_attr.blank? && parent.attr("line_id").blank?
-        
+      if child.class == Nokogiri::XML::Text && !parent.attr('parent').blank? && parent.attr("line_id").blank?
+
         # find line in db where domid equals parent's "parent" attribute
-        
-        saved_parent = saved_parents[parent_attr]
-        unless saved_parent.blank?
-          existing_parent = saved_parent
-        else 
+        parent_attr = parent.attr("parent") || nil
+        if saved_parents[parent_attr]
+            existing_parent = saved_parents[parent_attr]
+        else
           existing_parent = Line.where({ :domid => parent_attr, :document_id => document_id }).first
           saved_parents[parent_attr] = existing_parent
         end
