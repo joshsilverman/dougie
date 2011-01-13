@@ -45,6 +45,9 @@ var cOutline = Class.create({
     maxActive: 5,
     activeSaveTimerId: null,
 
+    unsavedChanges: [],  //list of domIds for unsaved changes
+    savingChanges: [],  //list of domIds for changes sent to server
+
     initialize: function() {
 
         /* document members */
@@ -87,6 +90,9 @@ var cOutline = Class.create({
         this.idleSaveTimerId = null;
         this.activeSaveTimerId = null;
 
+        /* don't save if nothing changed */
+        if (doc.outline.unsavedChanges.length == 0) return;
+
         /* sync */
         //@todo this may become unnecessary later on
         doc.rightRail.sync();
@@ -102,17 +108,36 @@ var cOutline = Class.create({
             parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
                          'id': this.documentId,
                          'name': $('document_name').value},
-                     
+
+            onCreate: function() {
+                doc.outline.unsavedChanges.each(function(domId) {
+                    Element.writeAttribute(doc.outline.iDoc.document.getElementById(domId), {'changed': '0'});
+                });
+                doc.outline.savingChanges = doc.outline.unsavedChanges;
+                doc.outline.unsavedChanges = [];
+            },
+
             onSuccess: function(transport) {
                 var lineIds = transport.responseText.evalJSON();
                 this.updateIds(lineIds);
             }.bind(this),
+
+            onFailure: function() {
+                /* add unsuccessfully saved changes back to unsaved changes and set attributes */
+                doc.outline.unsavedChanges.concat(doc.outline.savingChanges).uniq();
+                doc.outline.unsavedChanges.each(function(domId) {
+                    Element.writeAttribute(doc.outline.iDoc.document.getElementById(domId), {'changed': '1'});
+                });
+            },
 
             onComplete: function() {
 
                 /* save button styling */
                 saveButton.disabled = false;
                 saveButton.innerHTML = 'Saved';
+
+                /* clear saving changes */
+                doc.outline.savingChanges = []
             }
         });
 
@@ -274,12 +299,22 @@ var cOutlineHandlers = Class.create({
         //get core attributes
         var id = Element.readAttribute(target, 'id') || null;
 
-        //invalid target
-        if (target.tagName != 'P' && target.tagName != 'LI')
+        /* invalid target */
+        if (target.tagName != 'P' && target.tagName != 'LI') {
             console.log('error: invalid target tag type');
+            return;
+        }
+
+        /* set outline changed attribute, unsaved changes list */
+        if (target.id != '') {
+            Element.writeAttribute(target, {'changed': '1'});
+            doc.outline.unsavedChanges.push(target.id)
+        }
+
+        /* new/existing card handling */
 
         //new card
-        else if (!id) doc.rightRail.createCard(target);
+        if (!id) doc.rightRail.createCard(target);
 
         //existing card
         else if (doc.rightRail.cards.get(id)) {
@@ -484,7 +519,7 @@ var cCard = Class.create({
         /* set dom node attributes */
         var defaultAttributes = $H({'id': 'node_' + this.cardNumber,
                                     'line_id':'',
-                                    'changed': new Date().getTime(),
+                                    'changed': '0',
                                     'active': false});
         attributes = defaultAttributes.merge(attributes).toObject();
         Element.writeAttribute(node, attributes);
@@ -510,16 +545,12 @@ var cCard = Class.create({
             return;
         }
 
-        this.updating = true;
-        Element.writeAttribute(node, {'changed': new Date().getTime()});
         this.active = node.getAttribute('active') == "true";
         
         //parse and render
         this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
         parser.parse(this);
         this.render(truncate);
-
-        this.updating = false;
     },
 
     activate: function() {
@@ -580,10 +611,7 @@ var cCard = Class.create({
         }
 
         //no card to update
-        else {
-            console.log('error: cannot render - no card in dom to update')
-            if (this.updating) console.log ('...while updating')
-        }
+        else console.log('error: cannot render - no card in dom to update')
 
     },
 
@@ -620,7 +648,6 @@ var cCard = Class.create({
 
             //@todo create previous card if does not exist
             console.log('error: no previous card but there should be!');
-            if (this.updating) console.log ('...while updating');
 
             //temp
             $('cards').insert({bottom: cardHtml});

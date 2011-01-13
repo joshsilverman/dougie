@@ -11,19 +11,19 @@ class LineTest < ActiveSupport::TestCase
     html = %q[
               <body>
 
-                <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+                <p changed="0" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
 
                 <ul>
 
-                  <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                  <li changed="0" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
                     <ul>
-                      <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
-                      <li changed="1" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                      <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                      <li changed="0" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                      <li changed="0" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                      <li changed="0" id="5" parent="2" line_id="" active="false">a run through</li>
                     </ul>
                   </li>
 
-                  <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+                  <li changed="0" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
 
                 </ul>
 
@@ -66,19 +66,19 @@ class LineTest < ActiveSupport::TestCase
     html[0] = %q[
                 <body>
 
-                  <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+                  <p changed="0" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
 
                   <ul>
 
-                    <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                    <li changed="0" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
                       <ul>
-                        <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="5" parent="2" line_id="" active="false">a run through</li>
                       </ul>
                     </li>
 
-                    <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+                    <li changed="0" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
 
                   </ul>
 
@@ -106,19 +106,19 @@ class LineTest < ActiveSupport::TestCase
       html[1] = %Q[
                       <body>
         
-                          <p changed="1" parent="0" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
+                          <p changed="0" parent="0" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
         
                           <ul>
         
-                            <li changed="1" parent="0" id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
+                            <li changed="0" parent="0" id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
                               <ul>
-                                <li parent="2" changed="90273598237590879082372" id="3" line_id="#{line_id+3}" active="true">a just to keep track [EDIT]</li>
-                                <li parent="2" changed="1" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first</li>
-                                <li parent="2" changed="1" id="5" line_id="#{line_id+5}" active="false">a run through</li>
+                                <li parent="2" changed="1" id="3" line_id="#{line_id+3}" active="true">a just to keep track [EDIT]</li>
+                                <li parent="2" changed="0" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first [FALSE EDIT]</li>
+                                <li parent="2" changed="0" id="5" line_id="#{line_id+5}" active="false">a run through</li>
                               </ul>
                             </li>
         
-                            <li changed="1" parent="0" id="6" line_id="#{line_id+6}" active="true">a where as items that begin with</li>
+                            <li changed="0" parent="0" id="6" line_id="#{line_id+6}" active="true">a where as items that begin with</li>
         
                           </ul>
         
@@ -138,6 +138,7 @@ class LineTest < ActiveSupport::TestCase
       lines = Line.find_all_by_document_id(document[1].id)
       assert_equal(7, lines.length)
       assert_equal("a just to keep track [EDIT]", lines[3].text)
+      assert_equal("a of things that are saved on the first", lines[4].text)
 
   end
 
@@ -150,19 +151,19 @@ class LineTest < ActiveSupport::TestCase
     html[0] = %q[
                 <body>
 
-                  <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+                  <p changed="0" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
 
                   <ul>
 
-                    <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                    <li changed="0" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
                       <ul>
-                        <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="5" parent="2" line_id="" active="false">a run through</li>
                       </ul>
                     </li>
 
-                    <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+                    <li changed="0" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
 
                   </ul>
 
@@ -197,21 +198,21 @@ class LineTest < ActiveSupport::TestCase
       html[1] = %Q[
                       <body>
         
-                          <p changed="1" parent="0" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
+                          <p changed="0" parent="0" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
         
                           <ul>
         
-                            <li changed="1" parent="0"  id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
+                            <li changed="0" parent="0"  id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
                               <ul>
-                                <li parent="2" changed="90273598237590879082372" id="3" line_id="#{line_id+3}" active="true">a just to keep track</li>
-                                <li parent="2" changed="1" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first</li>
-                                <li parent="2" changed="1" id="5" line_id="#{line_id+5}" active="false">a run through</li>
+                                <li parent="2" changed="0" id="3" line_id="#{line_id+3}" active="true">a just to keep track</li>
+                                <li parent="2" changed="0" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first</li>
+                                <li parent="2" changed="0" id="5" line_id="#{line_id+5}" active="false">a run through</li>
                               </ul>
                             </li>
         
-                            <li parent="0" changed="1" id="6" line_id="#{line_id+6}" active="true">a where as items that begin with</li>
+                            <li parent="0" changed="0" id="6" line_id="#{line_id+6}" active="true">a where as items that begin with</li>
                             
-                            <li parent="0" changed="" id="7" line_id="" active="true">PLEASE WORK</li>
+                            <li parent="0" changed="0" id="7" line_id="" active="true">PLEASE WORK</li>
         
                           </ul>
         
@@ -246,16 +247,16 @@ class LineTest < ActiveSupport::TestCase
     document = []
     html[0] = %q[
                 <body>
-                <p parent="0" active="false" class="outline_node" changed="" line_id="" id="2">
+                <p parent="0" active="false" class="outline_node" changed="0" line_id="" id="2">
                 	node 1<br>
                 </p>
-                <p parent="0" id="3" active="false" class="outline_node" changed="" line_id="">
+                <p parent="0" id="3" active="false" class="outline_node" changed="0" line_id="">
                 	node 2<br>
                 </p>
                 <ul>
-                	<li parent="0" id="4" active="false" class="outline_node" changed="" line_id="">node 3<br>
+                	<li parent="0" id="4" active="false" class="outline_node" changed="0" line_id="">node 3<br>
                 	</li>
-                	<li parent="0" id="5" active="false" class="outline_node" changed="" line_id="">node 4<br>
+                	<li parent="0" id="5" active="false" class="outline_node" changed="0" line_id="">node 4<br>
                 		</li>
                 </ul>
                 </body>
@@ -287,21 +288,21 @@ class LineTest < ActiveSupport::TestCase
       html[1] = %Q[
                   
                   <body>
-                	<p parent="0" active="false" class="outline_node" changed="1" line_id="#{line_id+1}" id="2">node 1<br></p>
-                  <p parent="0" id="3" active="false" class="outline_node" changed="1" line_id="#{line_id+2}">node 2<br>
+                	<p parent="0" active="false" class="outline_node" changed="0" line_id="#{line_id+1}" id="2">node 1<br></p>
+                  <p parent="0" id="3" active="false" class="outline_node" changed="0" line_id="#{line_id+2}">node 2<br>
                   </p>
                   <ul>
-                  	<li parent="0" id="4" active="false" class="outline_node" changed="1" line_id="#{line_id+3}">node 3<br>
+                  	<li parent="0" id="4" active="false" class="outline_node" changed="0" line_id="#{line_id+3}">node 3<br>
                   	</li>
-                  	<li parent="0" id="5" active="false" class="outline_node" changed="1" line_id="#{line_id+4}">node 4<br>
+                  	<li parent="0" id="5" active="false" class="outline_node" changed="0" line_id="#{line_id+4}">node 4<br>
                   		<ul>
-                  			<li id="6" parent="5" active="false" class="outline_node" changed="" line_id="">node 5<br>
+                  			<li id="6" parent="5" active="false" class="outline_node" changed="0" line_id="">node 5<br>
                   			</li>
-                  			<li id="7" parent="5" active="false" class="outline_node" changed="" line_id="">node 6<br>
+                  			<li id="7" parent="5" active="false" class="outline_node" changed="0" line_id="">node 6<br>
                   			</li>
                   		</ul>
                   	</li>
-                  	<li id="8" parent="0" active="false" class="outline_node" changed="" line_id="">node 7<br>
+                  	<li id="8" parent="0" active="false" class="outline_node" changed="0" line_id="">node 7<br>
                   	</li>
                   </ul>
                   </body>
@@ -340,24 +341,24 @@ class LineTest < ActiveSupport::TestCase
     html[0] = %q[
                 <body>
 
-                <p parent="0" changed="1" id="1" line_id="" active="true">a This is a test - think<br></p>
+                <p parent="0" changed="0" id="1" line_id="" active="true">a This is a test - think<br></p>
 
                 <ul>
 
-                  <li parent="0" changed="1" id="2" line_id="" active="true">a the letter 'a' i am using
+                  <li parent="0" changed="0" id="2" line_id="" active="true">a the letter 'a' i am using
                     <ul>
-                      <li parent="2" changed="1" id="3" line_id="" active="true">a just to keep track</li>
-                      <li parent="2" changed="1" id="4" line_id="" active="false">a of things that are saved on the first</li>
-                      <li parent="2" changed="1" id="5" line_id="" active="false">a run through</li>
+                      <li parent="2" changed="0" id="3" line_id="" active="true">a just to keep track</li>
+                      <li parent="2" changed="0" id="4" line_id="" active="false">a of things that are saved on the first</li>
+                      <li parent="2" changed="0" id="5" line_id="" active="false">a run through</li>
                     </ul>
                   </li>
 
-                  <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with
+                  <li changed="0" id="6" parent="0" line_id="" active="true">a where as items that begin with
                     <ul>
-                      <li parent="6" changed="1" id="7" line_id="" active="true">level 2a</li>
-                      <li parent="6" changed="1" id="8" line_id="" active="false">level 2b</li>
-                      <li parent="6" changed="1" id="9" line_id="" active="false">level 2c</li>
-                      <li parent="6" changed="1" id="10" line_id="" active="false">level 2d</li>
+                      <li parent="6" changed="0" id="7" line_id="" active="true">level 2a</li>
+                      <li parent="6" changed="0" id="8" line_id="" active="false">level 2b</li>
+                      <li parent="6" changed="0" id="9" line_id="" active="false">level 2c</li>
+                      <li parent="6" changed="0" id="10" line_id="" active="false">level 2d</li>
                     </ul>
                   </li>
 
@@ -392,39 +393,39 @@ class LineTest < ActiveSupport::TestCase
       html[1] = %Q[
                   <body>
 
-                  <p parent="0" changed="1" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
+                  <p parent="0" changed="0" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
 
                   <ul>
 
-                    <li parent="0" changed="1" id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
+                    <li parent="0" changed="0" id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
                       <ul>
-                        <li parent="2" changed="1" id="3" line_id="#{line_id+3}" active="true">a just to keep track</li>
-                        <li parent="2" changed="1" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first</li>
-                        <li parent="2" changed="1" id="5" line_id="#{line_id+5}" active="false">a run through</li>
+                        <li parent="2" changed="0" id="3" line_id="#{line_id+3}" active="true">a just to keep track</li>
+                        <li parent="2" changed="0" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first</li>
+                        <li parent="2" changed="0" id="5" line_id="#{line_id+5}" active="false">a run through</li>
                       </ul>
                     </li>
 
-                    <li changed="1" id="6" parent="0" line_id="#{line_id+6}" active="true">a where as items that begin with
+                    <li changed="0" id="6" parent="0" line_id="#{line_id+6}" active="true">a where as items that begin with
                       <ul>
-                        <li parent="6" changed="1" id="7" line_id="#{line_id+7}" active="true">level 2a</li>
-                        <li parent="6" changed="1" id="8" line_id="#{line_id+8}" active="false">level 2b</li>
-                        <li parent="6" changed="1" id="9" line_id="#{line_id+9}" active="false">level 2c</li>
-                        <li parent="6" changed="1" id="10" line_id="#{line_id+10}" active="false">level 2d</li>
-                        <li parent="6" changed="1" id="11" line_id="" active="false">level 2e
+                        <li parent="6" changed="0" id="7" line_id="#{line_id+7}" active="true">level 2a</li>
+                        <li parent="6" changed="0" id="8" line_id="#{line_id+8}" active="false">level 2b</li>
+                        <li parent="6" changed="0" id="9" line_id="#{line_id+9}" active="false">level 2c</li>
+                        <li parent="6" changed="0" id="10" line_id="#{line_id+10}" active="false">level 2d</li>
+                        <li parent="6" changed="0" id="11" line_id="" active="false">level 2e
                         
                           <ul>
-                            <li parent="11" changed="1" id="12" line_id="" active="true">level 3a</li>
-                            <li parent="11" changed="1" id="13" line_id="" active="false">level 3b</li>
-                            <li parent="11" changed="1" id="14" line_id="" active="false">level 3c
+                            <li parent="11" changed="0" id="12" line_id="" active="true">level 3a</li>
+                            <li parent="11" changed="0" id="13" line_id="" active="false">level 3b</li>
+                            <li parent="11" changed="0" id="14" line_id="" active="false">level 3c
                             
                               <ul>
-                                <li parent="14" changed="1" id="15" line_id="" active="true">level 4a</li>
-                                <li parent="14" changed="1" id="16" line_id="" active="false">level 4b</li>
-                                <li parent="14" changed="1" id="17" line_id="" active="false">level 4c</li>
+                                <li parent="14" changed="0" id="15" line_id="" active="true">level 4a</li>
+                                <li parent="14" changed="0" id="16" line_id="" active="false">level 4b</li>
+                                <li parent="14" changed="0" id="17" line_id="" active="false">level 4c</li>
                               </ul>
                             
                             </li>
-                            <li parent="11" changed="1" id="18" line_id="" active="false">last node</li>
+                            <li parent="11" changed="0" id="18" line_id="" active="false">last node</li>
                           </ul>
                         
                         
@@ -498,13 +499,13 @@ class LineTest < ActiveSupport::TestCase
 
     html = %q[
               <ul>
-                <li id="node_2" line_id="" changed="1293682573654" class="outline_node" active="false" parent="node_0">1
+                <li id="node_2" line_id="" changed="0" class="outline_node" active="false" parent="node_0">1
                   <ul>
-                    <li line_id="" changed="1293682573654" class="outline_node" active="false" id="node_3" parent="node_2">2</li>
-                    <li line_id="" changed="1293682573654" class="outline_node" active="false" id="node_4" parent="node_2">3
+                    <li line_id="" changed="0" class="outline_node" active="false" id="node_3" parent="node_2">2</li>
+                    <li line_id="" changed="0" class="outline_node" active="false" id="node_4" parent="node_2">3
                       <ul>
-                        <li line_id="" changed="1293682573654" class="outline_node" active="false" id="node_5" parent="node_4">4</li>
-                        <li line_id="" changed="1293682573655" class="outline_node" active="false" id="node_6" parent="node_4">5</li>
+                        <li line_id="" changed="0" class="outline_node" active="false" id="node_5" parent="node_4">4</li>
+                        <li line_id="" changed="0" class="outline_node" active="false" id="node_6" parent="node_4">5</li>
                       </ul>
                     </li>
                   </ul>
@@ -566,19 +567,19 @@ class LineTest < ActiveSupport::TestCase
     html = %q[
               <body>
 
-                <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+                <p changed="0" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
 
                 <ul>
 
-                  <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                  <li changed="0" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
                     <ul>
-                      <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
-                      <li changed="1" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                      <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                      <li changed="0" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                      <li changed="0" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                      <li changed="0" id="5" parent="2" line_id="" active="false">a run through</li>
                     </ul>
                   </li>
 
-                  <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+                  <li changed="0" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
 
                 </ul>
 
@@ -626,19 +627,19 @@ class LineTest < ActiveSupport::TestCase
     html = %q[
               <body>
 
-                <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+                <p changed="0" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
 
                 <ul>
 
-                  <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                  <li changed="0" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
                     <ul>
-                      <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
-                      <li changed="1" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                      <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                      <li changed="0" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                      <li changed="0" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                      <li changed="0" id="5" parent="2" line_id="" active="false">a run through</li>
                     </ul>
                   </li>
 
-                  <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+                  <li changed="0" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
 
                 </ul>
 
@@ -672,19 +673,19 @@ class LineTest < ActiveSupport::TestCase
     html = %q[
               <body>
 
-                <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+                <p changed="0" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
 
                 <ul>
 
-                  <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                  <li changed="0" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
                     <ul>
-                      <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
-                      <li line_id="" changed="1" id="4" parent="2" active="false">a of things that are saved on the first</li>
-                      <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                      <li changed="0" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                      <li line_id="" changed="0" id="4" parent="2" active="false">a of things that are saved on the first</li>
+                      <li changed="0" id="5" parent="2" line_id="" active="false">a run through</li>
                     </ul>
                   </li>
 
-                  <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+                  <li changed="0" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
 
                 </ul>
 
@@ -739,62 +740,62 @@ class LineTest < ActiveSupport::TestCase
     html[0] = %Q[
                 <body>
 
-                  <p changed="1" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
+                  <p changed="0" id="1" parent="0" line_id="" active="true">a This is a test - think<br></p>
 
                   <ul>
 
-                    <li changed="1" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
+                    <li changed="0" id="2" parent="0" line_id="" active="true">a the letter 'a' i am using
                       <ul>
-                        <li changed="1" id="3" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="5" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="3" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="4" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="5" parent="2" line_id="" active="false">a run through</li>
 
-                        <li changed="1" id="7" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="8" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="9" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="10" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="11" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="12" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="13" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="14" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="15" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="16" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="17" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="18" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="19" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="20" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="21" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="22" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="23" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="24" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="25" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="26" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="27" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="28" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="29" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="30" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="31" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="32" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="33" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="34" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="35" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="36" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="37" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="38" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="39" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="40" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="41" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="42" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="43" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="44" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="45" parent="2" line_id="" active="false">a run through</li>
-                        <li changed="1" id="46" parent="2" line_id="" active="true">a just to keep track</li>
-                        <li changed="1" id="47" parent="2" line_id="" active="false">a of things that are saved on the first</li>
-                        <li changed="1" id="48" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="7" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="8" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="9" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="10" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="11" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="12" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="13" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="14" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="15" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="16" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="17" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="18" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="19" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="20" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="21" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="22" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="23" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="24" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="25" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="26" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="27" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="28" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="29" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="30" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="31" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="32" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="33" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="34" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="35" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="36" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="37" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="38" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="39" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="40" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="41" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="42" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="43" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="44" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="45" parent="2" line_id="" active="false">a run through</li>
+                        <li changed="0" id="46" parent="2" line_id="" active="true">a just to keep track</li>
+                        <li changed="0" id="47" parent="2" line_id="" active="false">a of things that are saved on the first</li>
+                        <li changed="0" id="48" parent="2" line_id="" active="false">a run through</li>
                       </ul>
                     </li>
 
-                    <li changed="1" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
+                    <li changed="0" id="6" parent="0" line_id="" active="true">a where as items that begin with</li>
 
                   </ul>
 
@@ -822,62 +823,62 @@ class LineTest < ActiveSupport::TestCase
       html[1] = %Q[
                       <body>
 
-                          <p changed="1" parent="0" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
+                          <p changed="0" parent="0" id="1" line_id="#{line_id+1}" active="true">a This is a test - think<br></p>
 
                           <ul>
 
-                            <li changed="1" parent="0" id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
+                            <li changed="0" parent="0" id="2" line_id="#{line_id+2}" active="true">a the letter 'a' i am using
                               <ul>
-                                <li parent="2" changed="90273598237590879082372" id="3" line_id="#{line_id+3}" active="true">a just to keep track [EDIT]</li>
-                                <li parent="2" changed="1" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first</li>
-                                <li parent="2" changed="1" id="5" line_id="#{line_id+5}" active="false">a run through</li>
+                                <li parent="2" changed="0" id="3" line_id="#{line_id+3}" active="true">a just to keep track [EDIT]</li>
+                                <li parent="2" changed="0" id="4" line_id="#{line_id+4}" active="false">a of things that are saved on the first</li>
+                                <li parent="2" changed="0" id="5" line_id="#{line_id+5}" active="false">a run through</li>
 
-                                <li changed="1" id="7" parent="2" line_id="#{line_id+6}" active="true">a just to keep track</li>
-                                <li changed="1" id="8" parent="2" line_id="#{line_id+7}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="9" parent="2" line_id="#{line_id+8}" active="false">a run through</li>
-                                <li changed="1" id="10" parent="2" line_id="#{line_id+9}" active="true">a just to keep track</li>
-                                <li changed="1" id="11" parent="2" line_id="#{line_id+10}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="12" parent="2" line_id="#{line_id+11}" active="false">a run through</li>
-                                <li changed="1" id="13" parent="2" line_id="#{line_id+12}" active="true">a just to keep track</li>
-                                <li changed="1" id="14" parent="2" line_id="#{line_id+13}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="15" parent="2" line_id="#{line_id+14}" active="false">a run through</li>
-                                <li changed="1" id="16" parent="2" line_id="#{line_id+15}" active="true">a just to keep track</li>
-                                <li changed="1" id="17" parent="2" line_id="#{line_id+16}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="18" parent="2" line_id="#{line_id+17}" active="false">a run through</li>
-                                <li changed="1" id="19" parent="2" line_id="#{line_id+18}" active="true">a just to keep track</li>
-                                <li changed="1" id="20" parent="2" line_id="#{line_id+19}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="21" parent="2" line_id="#{line_id+20}" active="false">a run through</li>
-                                <li changed="1" id="22" parent="2" line_id="#{line_id+21}" active="true">a just to keep track</li>
-                                <li changed="1" id="23" parent="2" line_id="#{line_id+22}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="24" parent="2" line_id="#{line_id+23}" active="false">a run through</li>
-                                <li changed="1" id="25" parent="2" line_id="#{line_id+24}" active="true">a just to keep track</li>
-                                <li changed="1" id="26" parent="2" line_id="#{line_id+25}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="27" parent="2" line_id="#{line_id+26}" active="false">a run through</li>
-                                <li changed="1" id="28" parent="2" line_id="#{line_id+27}" active="true">a just to keep track</li>
-                                <li changed="1" id="29" parent="2" line_id="#{line_id+28}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="30" parent="2" line_id="#{line_id+29}" active="false">a run through</li>
-                                <li changed="1" id="31" parent="2" line_id="#{line_id+30}" active="true">a just to keep track</li>
-                                <li changed="1" id="32" parent="2" line_id="#{line_id+31}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="33" parent="2" line_id="#{line_id+32}" active="false">a run through</li>
-                                <li changed="1" id="34" parent="2" line_id="#{line_id+33}" active="true">a just to keep track</li>
-                                <li changed="1" id="35" parent="2" line_id="#{line_id+34}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="36" parent="2" line_id="#{line_id+35}" active="false">a run through</li>
-                                <li changed="1" id="37" parent="2" line_id="#{line_id+36}" active="true">a just to keep track</li>
-                                <li changed="1" id="38" parent="2" line_id="#{line_id+37}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="39" parent="2" line_id="#{line_id+38}" active="false">a run through</li>
-                                <li changed="1" id="40" parent="2" line_id="#{line_id+39}" active="true">a just to keep track</li>
-                                <li changed="1" id="41" parent="2" line_id="#{line_id+40}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="42" parent="2" line_id="#{line_id+41}" active="false">a run through</li>
-                                <li changed="1" id="43" parent="2" line_id="#{line_id+42}" active="true">a just to keep track</li>
-                                <li changed="1" id="44" parent="2" line_id="#{line_id+43}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="45" parent="2" line_id="#{line_id+44}" active="false">a run through</li>
-                                <li changed="1" id="46" parent="2" line_id="#{line_id+45}" active="true">a just to keep track</li>
-                                <li changed="1" id="47" parent="2" line_id="#{line_id+46}" active="false">a of things that are saved on the first</li>
-                                <li changed="1" id="48" parent="2" line_id="#{line_id+47}" active="false">a run through</li>
+                                <li changed="0" id="7" parent="2" line_id="#{line_id+6}" active="true">a just to keep track</li>
+                                <li changed="0" id="8" parent="2" line_id="#{line_id+7}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="9" parent="2" line_id="#{line_id+8}" active="false">a run through</li>
+                                <li changed="0" id="10" parent="2" line_id="#{line_id+9}" active="true">a just to keep track</li>
+                                <li changed="0" id="11" parent="2" line_id="#{line_id+10}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="12" parent="2" line_id="#{line_id+11}" active="false">a run through</li>
+                                <li changed="0" id="13" parent="2" line_id="#{line_id+12}" active="true">a just to keep track</li>
+                                <li changed="0" id="14" parent="2" line_id="#{line_id+13}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="15" parent="2" line_id="#{line_id+14}" active="false">a run through</li>
+                                <li changed="0" id="16" parent="2" line_id="#{line_id+15}" active="true">a just to keep track</li>
+                                <li changed="0" id="17" parent="2" line_id="#{line_id+16}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="18" parent="2" line_id="#{line_id+17}" active="false">a run through</li>
+                                <li changed="0" id="19" parent="2" line_id="#{line_id+18}" active="true">a just to keep track</li>
+                                <li changed="0" id="20" parent="2" line_id="#{line_id+19}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="21" parent="2" line_id="#{line_id+20}" active="false">a run through</li>
+                                <li changed="0" id="22" parent="2" line_id="#{line_id+21}" active="true">a just to keep track</li>
+                                <li changed="0" id="23" parent="2" line_id="#{line_id+22}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="24" parent="2" line_id="#{line_id+23}" active="false">a run through</li>
+                                <li changed="0" id="25" parent="2" line_id="#{line_id+24}" active="true">a just to keep track</li>
+                                <li changed="0" id="26" parent="2" line_id="#{line_id+25}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="27" parent="2" line_id="#{line_id+26}" active="false">a run through</li>
+                                <li changed="0" id="28" parent="2" line_id="#{line_id+27}" active="true">a just to keep track</li>
+                                <li changed="0" id="29" parent="2" line_id="#{line_id+28}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="30" parent="2" line_id="#{line_id+29}" active="false">a run through</li>
+                                <li changed="0" id="31" parent="2" line_id="#{line_id+30}" active="true">a just to keep track</li>
+                                <li changed="0" id="32" parent="2" line_id="#{line_id+31}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="33" parent="2" line_id="#{line_id+32}" active="false">a run through</li>
+                                <li changed="0" id="34" parent="2" line_id="#{line_id+33}" active="true">a just to keep track</li>
+                                <li changed="0" id="35" parent="2" line_id="#{line_id+34}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="36" parent="2" line_id="#{line_id+35}" active="false">a run through</li>
+                                <li changed="0" id="37" parent="2" line_id="#{line_id+36}" active="true">a just to keep track</li>
+                                <li changed="0" id="38" parent="2" line_id="#{line_id+37}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="39" parent="2" line_id="#{line_id+38}" active="false">a run through</li>
+                                <li changed="0" id="40" parent="2" line_id="#{line_id+39}" active="true">a just to keep track</li>
+                                <li changed="0" id="41" parent="2" line_id="#{line_id+40}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="42" parent="2" line_id="#{line_id+41}" active="false">a run through</li>
+                                <li changed="0" id="43" parent="2" line_id="#{line_id+42}" active="true">a just to keep track</li>
+                                <li changed="0" id="44" parent="2" line_id="#{line_id+43}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="45" parent="2" line_id="#{line_id+44}" active="false">a run through</li>
+                                <li changed="0" id="46" parent="2" line_id="#{line_id+45}" active="true">a just to keep track</li>
+                                <li changed="0" id="47" parent="2" line_id="#{line_id+46}" active="false">a of things that are saved on the first</li>
+                                <li changed="0" id="48" parent="2" line_id="#{line_id+47}" active="false">a run through</li>
                               </ul>
                             </li>
 
-                            <li changed="1" parent="0" id="6" line_id="#{line_id+48}" active="true">a where as items that begin with</li>
+                            <li changed="0" parent="0" id="6" line_id="#{line_id+48}" active="true">a where as items that begin with</li>
 
                           </ul>
 

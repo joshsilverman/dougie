@@ -115,14 +115,13 @@ class Line < ActiveRecord::Base
         end
 
         # existing line epoch updated_at less than incoming line epoch change time
-#        if e_line.updated_at.to_i < line.attr('changed').to_i
+        if line.attr('changed') == "1"
 
           # replace existing line text with incoming line text
-          # updated_at time is automatically set by rails
           text = line.to_s.scan(/>([^<]*)/)[0][0].strip
           e_line.update_attribute(:text,text)
 
-#        end
+        end
       end
     end
   end
