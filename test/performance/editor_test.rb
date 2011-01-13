@@ -5,6 +5,9 @@ class EditorTest < ActionDispatch::PerformanceTest
 
   def test_create_large_doc
 
+    ###################
+    # (1) 1.5, 1.45, 1.37, 1.55, 1.61, 1.59
+
     # login via https
     https!
     get "/users/sign_out"
@@ -32,6 +35,7 @@ class EditorTest < ActionDispatch::PerformanceTest
 
     ###################
     # (1) 3.16, 3.19
+    # (2) 1.42, 1.45, 1.45
 
     # login via https
     https!
