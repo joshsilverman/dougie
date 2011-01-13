@@ -8,7 +8,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     ###################
     # 1.5, 1.45, 1.37, 1.55, 1.61, 1.59, 1.7 - 1.53 (Baseline)
     # 1.27, 1.22 - 1.25 (line_id into document.id during preorder save)
-    # 1.12, 1.14, 1.22 - 1.15
+    # 1.12, 1.14, 1.22 - 1.15 (combing preorder save and update_line queries into two transactions)
 
     # login via https
     https!
@@ -30,6 +30,7 @@ class EditorTest < ActionDispatch::PerformanceTest
       html += '<p id="node_%i" line_id="" changed="1294800081564" class="outline_node" parent="node_0">%i</p>' % [i, i]
     end
     post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    assert_response :success
 
   end
 
@@ -61,6 +62,7 @@ class EditorTest < ActionDispatch::PerformanceTest
       html += '<p id="node_%i" line_id="" changed="1294800081564" class="outline_node" parent="node_0">%i</p>' % [i, i]
     end
     post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    assert_response :success
 
     #augment
     html = Document.find(document_id).html + '<p id="node_81" line_id="" changed="1294800081564" class="outline_node" parent="node_0">81</p>'
