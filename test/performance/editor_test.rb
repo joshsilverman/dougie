@@ -3,6 +3,26 @@ require 'rails/performance_test_help'
 
 class EditorTest < ActionDispatch::PerformanceTest
 
+  def test_create_blank_doc
+
+    ###################
+    # [370] (Baseline)
+
+    # login via https
+    https!
+    get "/users/sign_out"
+    get "/users/sign_in"
+    assert_response :success
+    post_via_redirect "/users/sign_in", { 'user[email]' => users(:one).email, 'user[password]' => 'aaaaaa'}
+    assert_equal '/', path
+
+    # new document
+    https!(false)
+    get_via_redirect "/documents/create/1"
+    assert (path =~ /editor\/\d+/)
+
+  end
+
   def test_create_large_doc
 
     ###################
