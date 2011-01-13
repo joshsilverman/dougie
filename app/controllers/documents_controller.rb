@@ -93,7 +93,7 @@ class DocumentsController < ApplicationController
     document = current_user.documents.find_by_id(id)
     document.delete unless document.blank?
     
-    render :json => current_user.tags.to_json(:include => {:documents => {:only => [:id, :name, :updated_at]}})
+    render :json => Tag.tags_json(current_user)
     
   end
 
@@ -110,7 +110,7 @@ class DocumentsController < ApplicationController
 
     #get lines
     @lines_json = Line.includes(:mems)\
-                 .where("     lines.document_id = ?
+                 .where(" lines.document_id = ?
                           AND lines.text <> 'root'
                           AND mems.review_after < ?", params[:id], Time.now())\
                  .to_json :include => :mems

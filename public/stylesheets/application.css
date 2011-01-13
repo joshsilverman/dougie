@@ -41,3 +41,9 @@ header {
      padding:5px;
      width:100%;
 }
+
+.login {
+     width:100%;
+     padding:5px;
+     background-color:#eee;
+}
