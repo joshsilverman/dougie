@@ -25,8 +25,10 @@ class TagsController < ApplicationController
     end
 
     #create
-    current_user.tags << Tag.create(:name => name)
-    render :json => Tag.tags_json(current_user)
+    Tag.transaction do
+      current_user.tags.create(:name => name)
+      render :json => Tag.tags_json(current_user)
+    end
 
   end
 

@@ -1,14 +1,4 @@
 class MemsController < ApplicationController
-
-  def index
-    render :json => Mem.all
-  end
-  
-  def create
-  end
-  
-  def read
-  end
   
   def update
 
@@ -16,9 +6,6 @@ class MemsController < ApplicationController
     mem.update_reviewed(params[:confidence], params[:importance])
 
     render :nothing => true
-  end
-  
-  def destroy
   end
 
 end
