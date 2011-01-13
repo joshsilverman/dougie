@@ -65,27 +65,26 @@ class DocumentsController < ApplicationController
     
     # pull all existing document line
     existing_lines = @document.lines
-    
-    root = Line.find_or_create_by_document_id( :document_id => @document.id,
-                                               :domid => Line.dom_id(0),
-                                               :text => "root" )
-
-    f.puts('Doc created:' + (Time.now - start_time).to_s + "\n")
 
     Line.transaction do
+      root = Line.find_or_create_by_document_id( :document_id => @document.id,
+                                                 :domid => Line.dom_id(0),
+                                                 :text => "root" )
+
+      f.puts('Doc created:' + (Time.now - start_time).to_s + "\n")
+
       Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
-    end
 
-    f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
+      f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
 
-    Line.document_html = html
-    Line.transaction do
+      Line.document_html = html
       Line.preorder_save(dp.doc,@document.id)
+
+      f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
+
+      @document.update_attributes(:html => Line.document_html, :name => name)
+
     end
-
-    f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
-
-    @document.update_attributes(:html => Line.document_html, :name => name)
 
     f.puts('Doc updated:' + (Time.now - start_time).to_s + "\n")
 
