@@ -134,7 +134,7 @@ var cDirectoryView = Class.create({
         //@todo new_document and delete_directory could be combined for a modest
         //      performance gain
         $$('.new_document').each(function(element) {
-            element.observe('click', this.createDocument.bind(this));
+            element.observe('click', function(e){ console.log("A"); this.createDocument(e); }.bind(this));
         }.bind(this));
 
         //delete directory
@@ -284,7 +284,7 @@ var cDocumentsView = Class.create({
     initialize: function(tag) {
 
         /* tag member */
-        this.tag = tag
+        this.tag = tag;
 
         /* sort (builds html) */
         this.sort('updated_at');
@@ -352,7 +352,7 @@ var cDocumentsView = Class.create({
 
         //new document
         $$('.new_document').each(function(element) {
-            element.observe('click', doc.directoryView.createDocument);
+            element.observe('click', function(e){ doc.directoryView.createDocument(e); });
         });
 
         //remove document

@@ -22,6 +22,7 @@ class Document < ActiveRecord::Base
 
     #@todo i struggled with nokogiri before submitting to a complex regex
     lines = self.html.scan(/(?:<p|<li)[^>]*(?:[^_]id="([^"]*)"[^>]*line_id="([^"]*)"|line_id="([^"]*)"[^>]*[^_]id="([^"]*)")[^>]*>/)
+  
     lines.each do |line|
 
       #check for no line id; check that domid exists

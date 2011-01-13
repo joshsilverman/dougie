@@ -15,7 +15,7 @@ class Line < ActiveRecord::Base
     
     document.lines.each do |line|
       
-    hsh[line.domid] = line.id unless line.domid.blank?
+      hsh[line.domid] = line.id unless line.domid.blank?
     
     end
     hsh
@@ -55,21 +55,20 @@ class Line < ActiveRecord::Base
   end
   
   def self.preorder_save(lines,document_id,saved_parents = {})
-
-    children = lines.children
     
-    children.each do |child|
+    lines.children.each do |child|
 
       parent = child.parent
+      parent_attr = parent.attr('parent')
       
       # check for text node and blank and unsaved lines (blank line_id attributes)
-      if child.class == Nokogiri::XML::Text && !parent.attr('parent').blank? && parent.attr("line_id").blank?
+      if child.class == Nokogiri::XML::Text && !parent_attr.blank? && parent.attr("line_id").blank?
         
         # find line in db where domid equals parent's "parent" attribute
         
-        parent_attr = parent.attr("parent") || nil
-        if saved_parents[parent_attr]
-          existing_parent = saved_parents[parent_attr]
+        saved_parent = saved_parents[parent_attr]
+        unless saved_parent.blank?
+          existing_parent = saved_parent
         else 
           existing_parent = Line.where({ :domid => parent_attr, :document_id => document_id }).first
           saved_parents[parent_attr] = existing_parent
@@ -81,8 +80,8 @@ class Line < ActiveRecord::Base
                                                         :domid => dom_id,
                                                         :document_id => document_id )
 
-        @@document_html = @@document_html.gsub(/((?:<p|<li)[^>]*[^_]id="#{dom_id}"[^>]*line_id=")("[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
-        @@document_html = @@document_html.gsub(/((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
+        @@document_html.gsub!(/((?:<p|<li)[^>]*[^_]id="#{dom_id}"[^>]*line_id=")("[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
+        @@document_html.gsub!(/((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
 
         # pass in hash of properties to be merged when creating a Mem
         Mem.create_standard({ :line_id => created_line.id,
@@ -98,7 +97,7 @@ class Line < ActiveRecord::Base
   
   def self.update_line(lines,existing_lines)
 
-    existing_lines_hash = Hash.new
+    existing_lines_hash = {}
     existing_lines.each do |e_line|
       existing_lines_hash[e_line.id] = e_line
     end
