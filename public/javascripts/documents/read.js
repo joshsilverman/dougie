@@ -46,7 +46,10 @@ var cOutline = Class.create({
     activeSaveTimerId: null,
 
     unsavedChanges: [],  //list of domIds for unsaved changes
-    savingChanges: [],  //list of domIds for changes sent to server
+    savingChanges: [],  //list of domIds for changes sent to server (request in progress)
+
+    deleteNodes: [],  //list of domIds for nodes to be delete
+    deletingNodes: [],  //list of domIds for nodes currently being deleted (request in progress)
 
     initialize: function() {
 
@@ -91,7 +94,7 @@ var cOutline = Class.create({
         this.activeSaveTimerId = null;
 
         /* don't save if nothing changed */
-        if (doc.outline.unsavedChanges.length == 0) return;
+        if (this.unsavedChanges.length == 0) return;
 
         /* sync */
         //@todo this may become unnecessary later on
@@ -107,28 +110,43 @@ var cOutline = Class.create({
             method: 'post',
             parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
                          'id': this.documentId,
-                         'name': $('document_name').value},
+                         'name': $('document_name').value,
+                         'delete_nodes': this.deleteNodes.toString()},
 
             onCreate: function() {
-                doc.outline.unsavedChanges.each(function(domId) {
-                    Element.writeAttribute(doc.outline.iDoc.document.getElementById(domId), {'changed': '0'});
-                });
-                doc.outline.savingChanges = doc.outline.unsavedChanges;
-                doc.outline.unsavedChanges = [];
-            },
+
+                /* track saving changes */
+                this.unsavedChanges.each(function(domId) {
+                    if (this.iDoc.document.getElementById(domId))
+                        Element.writeAttribute(this.iDoc.document.getElementById(domId), {'changed': '0'});
+                }.bind(this));
+                this.savingChanges = this.unsavedChanges;
+                this.unsavedChanges = [];
+
+                /* track nodes being delete, clear nodes to be deleted */
+                this.deletingNodes = this.deleteNodes;
+                this.deleteNodes = [];
+            }.bind(this),
 
             onSuccess: function(transport) {
                 var lineIds = transport.responseText.evalJSON();
                 this.updateIds(lineIds);
+
+                /*  */
             }.bind(this),
 
             onFailure: function() {
+
                 /* add unsuccessfully saved changes back to unsaved changes and set attributes */
-                doc.outline.unsavedChanges.concat(doc.outline.savingChanges).uniq();
-                doc.outline.unsavedChanges.each(function(domId) {
-                    Element.writeAttribute(doc.outline.iDoc.document.getElementById(domId), {'changed': '1'});
-                });
-            },
+                this.unsavedChanges = this.unsavedChanges.concat(this.savingChanges).uniq();
+                this.unsavedChanges.each(function(domId) {
+                    if (this.iDoc.document.getElementById(domId))
+                        Element.writeAttribute(this.iDoc.document.getElementById(domId), {'changed': '1'});
+                }.bind(this));
+
+                /* add unsuccessfully deleted back to deleteNodes */
+                this.deleteNodes = this.deleteNodes.concat(this.deletingNodes);
+            }.bind(this),
 
             onComplete: function() {
 
@@ -137,8 +155,9 @@ var cOutline = Class.create({
                 saveButton.innerHTML = 'Saved';
 
                 /* clear saving changes */
-                doc.outline.savingChanges = []
-            }
+                this.savingChanges = []
+                this.deletingNodes = []
+            }.bind(this)
         });
 
         /* activate card */
@@ -347,7 +366,11 @@ var cOutlineHandlers = Class.create({
                 //first element in body - stop event
                 if (Element.previousSiblings(target).length == 0) Event.stop(event);
                 
-                //not first element
+                //delete node which already has id
+                else if (target.getAttribute('line_id') != '')
+                    doc.outline.deleteNodes.push(target.getAttribute('line_id'));
+
+                //delete node which hadn't yet been saved
                 else {/* normal behavior */}
             }
         }
