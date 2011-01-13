@@ -27,29 +27,6 @@ class Line < ActiveRecord::Base
     "node_#{num}"
   end
 
-  #@deprecate
-  def self.active_cards
-    arr = []
-    Line.all.each do |line|
-      if line.mems.first
-        arr << line if line.mems.first.status
-      end
-    end
-    arr
-  end
-
-  #@deprecate
-  def self.inactive_cards
-    arr = []
-    Line.all.each do |line|
-      if line.mems.first
-        arr << line if !line.mems.first.status
-      end
-    end
-    arr
-  end
-
-  #@deprecate?
   def self.active_mem?(status)
     status.to_s == "true"
   end
