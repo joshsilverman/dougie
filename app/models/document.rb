@@ -5,7 +5,7 @@ class Document < ActiveRecord::Base
   belongs_to :tag
   belongs_to :user
   
-  before_save :document_name, :document_html_line_ids
+  before_save :document_name#, :document_html_line_ids
   
   def document_name
     if self.name.blank?

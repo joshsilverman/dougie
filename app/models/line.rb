@@ -4,7 +4,9 @@ class Line < ActiveRecord::Base
   
   has_many :mems
   belongs_to :document
-  
+
+  cattr_accessor :document_html
+
   def self.id_hash(document)
     
     return nil if document.blank?
@@ -53,7 +55,7 @@ class Line < ActiveRecord::Base
   end
   
   def self.preorder_save(lines,document_id,saved_parents = {})
-    
+
     children = lines.children
     
     children.each do |child|
@@ -74,9 +76,13 @@ class Line < ActiveRecord::Base
         end
 
         # add line to db, save as variable for mem creation
+        dom_id = parent.attr("id")
         created_line = existing_parent.children.create( :text => child.content.strip,
-                                                        :domid => parent.attr("id"),
+                                                        :domid => dom_id,
                                                         :document_id => document_id )
+
+        @@document_html = @@document_html.gsub(/((?:<p|<li)[^>]*[^_]id="#{dom_id}"[^>]*line_id=")("[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
+        @@document_html = @@document_html.gsub(/((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
 
         # pass in hash of properties to be merged when creating a Mem
         Mem.create_standard({ :line_id => created_line.id,
@@ -91,32 +97,32 @@ class Line < ActiveRecord::Base
   end
   
   def self.update_line(lines,existing_lines)
-    
+
+    existing_lines_hash = Hash.new
+    existing_lines.each do |e_line|
+      existing_lines_hash[e_line.id] = e_line
+    end
+
     # find all lines with line_id attribute
-    lines.css("li[line_id]").each do |line|
-      
-      unless id.blank?
-        existing_lines.each do |e_line|
-          
-          #existing line_number equals incoming line number
-          if e_line.id.to_s == line.attr('line_id').to_s
-            
-            #existing line epoch updated_at less than incoming line epoch change time
-            if e_line.updated_at.to_i < line.attr('changed').to_i
-              
-              # debug
-              # p "LINE CHANGED!"
-              # p "ELINE: #{e_line.updated_at.to_i}"
-              # p "LINE: #{line}"
-              # p "TEXT: #{line.text}"
-              
-              # replace existing line text with incoming line text
-              # updated_at time is automatically set by rails
-              e_line.update_attribute(:text,line.text)
-              
-            end
-          end
+    lines.css("li").each do |line|
+
+      unless object_id.blank?
+
+        if existing_lines_hash[line.attr('line_id').to_i].blank?
+          next
+        else
+          e_line = existing_lines_hash[line.attr('line_id').to_i]
         end
+
+        # existing line epoch updated_at less than incoming line epoch change time
+#        if e_line.updated_at.to_i < line.attr('changed').to_i
+
+          # replace existing line text with incoming line text
+          # updated_at time is automatically set by rails
+          text = line.to_s.scan(/>([^<]*)/)[0][0].strip
+          e_line.update_attribute(:text,text)
+
+#        end
       end
     end
   end

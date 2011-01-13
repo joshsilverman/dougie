@@ -6,21 +6,20 @@ class DocumentsController < ApplicationController
   # If exists, use this document, otherwise set document html and construct Line objects
   def create
 
-    #get tag if none provided
+    #attempt to use a provided tag
     tag_id = params[:tag_id]
-    if tag_id.nil?
+    if tag_id
+      @tag = current_user.tags.find_by_id(tag_id)
+    end
+
+    # if not tag look for misc or create misc
+    if @tag.blank?
       @tag = current_user.tags.find_by_misc(true) #@todo should query by user_id too
 
       #generate miscelaneous tag if none
       if @tag.blank?
-        current_user.tags = Tag.create(:misc => true, :name => 'Misc')
+        @tag = current_user.tags.create(:misc => true, :name => 'Misc')
       end
-
-      tag_id = @tag.id
-
-    else
-      #@todo what if tag id is invalid...
-      @tag = current_user.tags.find_by_id(tag_id)
     end
 
     @document = current_user.documents.create(:name => 'untitled', :tag_id => @tag.id)
@@ -50,11 +49,15 @@ class DocumentsController < ApplicationController
   
   def update
 
+    f = open('tmp/benchmarks/doc-update.txt', 'a');
+    f.puts("\n\n*** documents/update ***\n\n")
+    start_time = Time.now
+
     id = params[:id]
     html = params[:html]
     @document = current_user.documents.find_by_id(id)
     return nil if id.blank? || html.blank? || @document.blank?
-    
+
     name = params[:name]
     
     # create new Nokogiri nodeset
@@ -66,15 +69,27 @@ class DocumentsController < ApplicationController
     root = Line.find_or_create_by_document_id( :document_id => @document.id,
                                                :domid => Line.dom_id(0),
                                                :text => "root" )
-    
+
+    f.puts('Doc created:' + (Time.now - start_time).to_s + "\n")
+
     Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
-   
+
+    f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
+
+    Line.document_html = html
     Line.preorder_save(dp.doc,@document.id)
-    @document.update_attributes(:html => html, :name => name)
-    
+
+    f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
+
+    @document.update_attributes(:html => Line.document_html, :name => name)
+
+    f.puts('Doc updated:' + (Time.now - start_time).to_s + "\n")
+
     hsh = Line.id_hash(@document)
     
     render :json => hsh
+
+    f.puts('Controller time:' + (Time.now - start_time).to_s + "\n")
     
   end
   
@@ -113,5 +128,4 @@ class DocumentsController < ApplicationController
                  .to_json :include => :mems
  
   end
-  
 end

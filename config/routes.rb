@@ -61,7 +61,6 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
 
   #editor
-
   match "/editor/:id" => "documents#read" #** public **#
   match "/documents/update" => "documents#update"
   match "/documents/create/:tag_id" => "documents#create"
