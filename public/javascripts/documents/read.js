@@ -240,6 +240,21 @@ var cOutlineHandlers = Class.create({
                 case Event.KEY_BACKSPACE:
                     this.onBackspace(event, target, range);
                     break;
+//                case 86: //v
+//                    if (event.ctrlKey) {
+//                        this.onPaste(event, target, range);
+//                        break;
+//                    }
+                case 88: //x
+                    if (event.ctrlKey) {
+                        this.onCut(event, target, range);
+                        break;
+                    }
+//                case 67: //c
+//                    if (event.ctrlKey) {
+//                        this.onCopy(event, target, range);
+//                        break;
+//                    }
                 default:break;
             }
         }
@@ -377,6 +392,30 @@ var cOutlineHandlers = Class.create({
 
         /* li handling */
         else if (target.tagName == 'LI') doc.editor.execCommand('outdent');
+    },
+
+    onCut: function(event, target, range) {
+
+        console.log("cut");
+        console.log(range);
+    },
+
+    // @note listener set in
+    onPaste: function(event) {
+
+        var html = event.data.html;
+        
+        /* prepare html */
+        //remove line ids
+        html = html.gsub(/line_id="[^"]*"/, 'line_id=""');
+        //set as changed
+        html = html.gsub(/changed="[^"]*"/, 'changed="1"');
+        //clear id
+        html = html.gsub(/id="[^"]*"/, 'id=""');
+        //remove meta tags - necessary?
+        html = html.gsub(/<meta[^>]*>/, '');
+        
+        event.data.html = html;
     }
 });
 
@@ -497,7 +536,7 @@ var cRightRail = Class.create({
             /* parent attribute setter */
             //@todo backend should be able to handle this, in which case sync
             //      would not need to be run before save. the placement of this
-            //      logic here is ontologically flawed!
+            //      logic here is ontologically wrong
             doc.outline.iDoc.document.body.setAttribute("id","node_0"); //@todo can be placed in outline initialization if this strat remains
             var parent = (node.parentNode.tagName != "UL")
                 ? node.parentNode

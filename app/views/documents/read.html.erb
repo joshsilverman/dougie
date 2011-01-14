@@ -30,7 +30,10 @@
   CKEDITOR.replace( 'editor', {
     startupFocus : true,
     //fullPage : true,
-    on: {instanceReady : function( ev ) {Event.fire(document, 'CKEDITOR:ready');}}
+    on: {
+      instanceReady : function(e) {Event.fire(document, 'CKEDITOR:ready');},
+      paste: function(e) {doc.outline.outlineHandlers.onPaste(e)}
+    }
   });
 //]]>
 </script>

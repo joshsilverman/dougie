@@ -57,7 +57,7 @@ class DocumentsController < ApplicationController
     html = params[:html]
     delete_nodes = params[:delete_nodes]
     @document = current_user.documents.find_by_id(id)
-    return nil if id.blank? || html.blank? || @document.blank? || delete_nodes.blank?
+    return nil if id.blank? || html.blank? || @document.blank?
 
     name = params[:name]
     
@@ -88,7 +88,7 @@ class DocumentsController < ApplicationController
       #f.puts('Doc updated:' + (Time.now - start_time).to_s + "\n")
 
       #delete nodes
-      unless delete_nodes == '[]'
+      unless delete_nodes == '[]' || delete_nodes == ''
         Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes, @document.id])
       end
 
