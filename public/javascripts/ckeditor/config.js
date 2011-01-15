@@ -16,11 +16,11 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbar =  [
         
         ['NumberedList','BulletedList','-','Outdent','Indent'],
-        ['Bold','Italic','Underline','Strike'],
-        ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-        ['Undo','Redo'],
-        ['Cut','Copy','Paste','-','Print', 'SpellChecker'],
-        ['Link','Unlink'],
-        ['SpecialChar']
+        ['Bold','Italic','Underline'],//,'Strike'],
+        ['JustifyLeft','JustifyCenter','JustifyRight']//,'JustifyBlock'],
+        //['Undo','Redo'],
+        //['Cut','Copy','Paste','-','Print', 'SpellChecker'],
+        //['Link','Unlink'],
+        //['SpecialChar']
     ];
 };

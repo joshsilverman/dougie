@@ -475,8 +475,16 @@ var cOutlineHandlers = Class.create({
         //don't bother checking if range parent is text
         else if (range.commonAncestorContainer.nodeName != '#text') {
 
+            var count = 0;
             html.scan(/line_id="([^"]*)"/, function(match) {
-                if (match[1]) doc.outline.deleteNodes.push(match[1]);
+
+                /* push match to delete */
+                if (match[1]) {
+                    /* if first node, make sure it's being fully highlighted */
+                    if (count != 0 || range.startOffset == 0)
+                        doc.outline.deleteNodes.push(match[1]);
+                    count++;
+                }
             });
         }
     },

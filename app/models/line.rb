@@ -2,7 +2,7 @@ class Line < ActiveRecord::Base
   
   acts_as_tree
   
-  has_many :mems
+  has_many :mems, :dependent => :destroy
   belongs_to :document
 
   cattr_accessor :document_html, :new_line

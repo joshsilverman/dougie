@@ -54,20 +54,14 @@ class DocumentsController < ApplicationController
     delete_nodes = params[:delete_nodes]
     @document = current_user.documents.find_by_id(id)
 #    @document = Document.includes(:lines).where(:id => id, :user_id => current_user.id).first //@todo combind existing lines query with this one
-#    @document = Document.includes('lines').find(:first, :conditions => {:id => id, :user_id => current_user.id}, :include => 'lines')
-#    @documentt = Document.includes(:lines).find(:first, :conditions => {:id => id, :user_id => current_user.id})
     return nil if id.blank? || html.blank? || @document.blank?
-
-    name = params[:name]
     
     # pull all existing document line
     existing_lines = @document.lines
-    
-    #track whether lines have been deleted
+
+    # group transaction; track whether lines deleted
     deleted_lines = false
-
     Line.transaction do
-
       # look for root in existing lines
       root = nil
       existing_lines.each do |line|
@@ -90,14 +84,15 @@ class DocumentsController < ApplicationController
       Line.new_line = false
       Line.preorder_save(dp.doc,@document.id, {'node_0' => root})
 
-      @document.update_attributes(:html => Line.document_html, :name => name)
+      @document.update_attributes(:html => Line.document_html, :name => params[:name])
 
-      #delete nodes
+      # delete lines/mems (don't use destory_all with dependencies) - half as many queries; track whether deleted
+      deleted_lines = false
       unless delete_nodes == '[]' || delete_nodes.nil? || delete_nodes == ''
         deleted_lines = true
         Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes.split(','), @document.id])
+        Mem.delete_all(["line_id IN (?)", delete_nodes.split(',')]) # belongs in model but I think before_delete would delete mems infividually
       end
-
     end
 
     # refresh existing lines and create hash
@@ -106,10 +101,9 @@ class DocumentsController < ApplicationController
     else
       lines = existing_lines
     end
-    
-    hsh = Hash[*lines.map {|line| [line.domid, line.id]}.flatten]
-    
-    render :json => hsh
+
+    # render {line.domid: line.id} hash
+    render :json => Hash[*lines.map {|line| [line.domid, line.id]}.flatten]
     
   end
   
