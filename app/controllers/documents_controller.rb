@@ -60,9 +60,6 @@ class DocumentsController < ApplicationController
 
     name = params[:name]
     
-    # create new Nokogiri nodeset
-    dp = DocumentParser.new(html)
-    
     # pull all existing document line
     existing_lines = @document.lines
     
@@ -86,6 +83,7 @@ class DocumentsController < ApplicationController
       end
 
       # run update line; store whether anything was changed
+      dp = DocumentParser.new(html)
       Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
 
       Line.document_html = html
