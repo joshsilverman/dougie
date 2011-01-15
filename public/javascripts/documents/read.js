@@ -187,7 +187,16 @@ var cOutline = Class.create({
 
     updateIds: function(lineIds) {
         $H(lineIds).each(function(idArray) {
-            this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
+            
+            /* add id */
+            if (this.iDoc.document.getElementById(idArray[0]))
+                this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
+            
+            /* remove line if no node has the associated node id */
+            else {
+                this.deleteNodes.push(idArray[1]);
+                console.log('deleting ' + idArray[0]);
+            }
         }.bind(this));
     }
 });
@@ -239,6 +248,9 @@ var cOutlineHandlers = Class.create({
                     break;
                 case Event.KEY_BACKSPACE:
                     this.onBackspace(event, target, range);
+                    break;
+                case Event.KEY_DELETE:
+                    this.onDelete(event, target, range);
                     break;
 //                case 86: //v
 //                    if (event.ctrlKey) {
@@ -395,26 +407,67 @@ var cOutlineHandlers = Class.create({
     },
 
     onCut: function(event, target, range) {
-
-        console.log("cut");
-        console.log(range);
+        
+        /* treat as deletion */
+        this.onDelete(event,target, range)
     },
 
-    // @note listener set in
+    onDelete: function(event, target, range) {
+
+
+        /* string representation of deleted text */
+        var html = new XMLSerializer().serializeToString(range.cloneContents());
+        console.log(html);
+
+        /* delete with nothing highlighted */
+        //check target because this may be invoked when pasting on top of something, etc..
+        if (html == '' && target) {
+
+            /* end of node? */
+            if (   target.firstChild.nodeName == '#text' && range.endOffset == target.firstChild.length
+                || target.firstChild.nodeName != '#text' && range.endOffset == 0) {
+
+                //@todo implement delete at end of line - must push deleted node into delete queue
+                Event.stop(event);
+            }
+
+            /* not end of node */
+            else {/* normal behavior */}
+
+        }
+
+        /* push line ids in deleted html indo deleteNodes array */
+        else {
+
+            html.scan(/line_id="([^"]*)"/, function(match) {
+                if (match[1]) doc.outline.deleteNodes.push(match[1]);
+            });
+        }
+    },
+
+    // @note listener set in view on editor creation
     onPaste: function(event) {
 
-        var html = event.data.html;
-        
+        /* if stuff highlighted, fire delete handler */
+        var range;
+        if (this.iDoc.document.selection) range = this.iDoc.document.selection.createRange(); //trident
+        else if (this.iDoc.window.getSelection) range = this.iDoc.window.getSelection().getRangeAt(0); //gecko, webkit, others?
+
+        this.onDelete(event, null, range)
+
         /* prepare html */
+        var html = event.data.html;
+        console.log(html);
         //remove line ids
         html = html.gsub(/line_id="[^"]*"/, 'line_id=""');
         //set as changed
         html = html.gsub(/changed="[^"]*"/, 'changed="1"');
         //clear id
         html = html.gsub(/id="[^"]*"/, 'id=""');
+        //clear parent node id
+        html = html.gsub(/parent="[^"]*"/, 'parent=""');
         //remove meta tags - necessary?
         html = html.gsub(/<meta[^>]*>/, '');
-        
         event.data.html = html;
     }
 });

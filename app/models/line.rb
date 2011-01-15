@@ -5,22 +5,7 @@ class Line < ActiveRecord::Base
   has_many :mems
   belongs_to :document
 
-  cattr_accessor :document_html
-
-  def self.id_hash(document)
-    
-    return nil if document.blank?
-    
-    hsh = {}
-    
-    document.lines.each do |line|
-      
-      hsh[line.domid] = line.id unless line.domid.blank?
-    
-    end
-    hsh
-    
-  end
+  cattr_accessor :document_html, :new_line
   
   def self.dom_id(num)
     return "" if num.blank?
@@ -62,7 +47,9 @@ class Line < ActiveRecord::Base
         Mem.create_standard({ :line_id => created_line.id,
                               :status => Line.active_mem?(parent.attr("active")),
                               :review_after => Time.now})
-                   
+
+        @@new_line = true
+
       elsif child.children.length > 0
           Line.preorder_save(child,document_id,saved_parents)
       end
@@ -94,7 +81,6 @@ class Line < ActiveRecord::Base
           # replace existing line text with incoming line text
           text = line.to_s.scan(/>([^<]*)/)[0][0].strip
           e_line.update_attribute(:text,text)
-
         end
       end
     end
