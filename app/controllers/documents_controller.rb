@@ -65,6 +65,9 @@ class DocumentsController < ApplicationController
     
     # pull all existing document line
     existing_lines = @document.lines
+    
+    #track whether lines have been deleted
+    deleted_lines = false
 
     Line.transaction do
 
@@ -93,13 +96,14 @@ class DocumentsController < ApplicationController
 
       #delete nodes
       unless delete_nodes == '[]' || delete_nodes.nil? || delete_nodes == ''
+        deleted_lines = true
         Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes.split(','), @document.id])
       end
 
     end
 
     # refresh existing lines and create hash
-    if Line.new_line
+    if Line.new_line || deleted_lines
       lines = Line.find_all_by_document_id(id)
     else
       lines = existing_lines

@@ -267,7 +267,27 @@ var cOutlineHandlers = Class.create({
 //                        this.onCopy(event, target, range);
 //                        break;
 //                    }
-                default:break;
+
+                /* handles ranges of keys */
+                default:
+
+                    /* punc */
+                    if (event.keyCode >=188 && event.keyCode <=122)
+                        this.onDelete(event, null, range);
+
+                    /* letters */
+                    else if (event.keyCode >=65 && event.keyCode <=90)
+                        this.onDelete(event, null, range);
+
+                    /* numbers */
+                    else if (event.keyCode >=48 && event.keyCode <= 57)
+                        this.onDelete(event, null, range);
+
+                    /* math */
+                    else if (event.keyCode >=107 && event.keyCode <=111)
+                        this.onDelete(event, null, range);
+
+                    break;
             }
         }
 
@@ -292,7 +312,7 @@ var cOutlineHandlers = Class.create({
                 //case Event.KEY_RETURN:break;
 
                 //all other chars to be treated as letters
-                default:this.onLetter(event, target);
+                default:this.onLetter(event, target, range);
             }
         }
 
@@ -335,10 +355,18 @@ var cOutlineHandlers = Class.create({
         else doc.editor.execCommand('indent');
     },
 
-    onLetter: function(event, target) {
+    onLetter: function(event, target, range) {
 
         /* autosave */
         doc.outline.autosave();
+
+        /* fire onDelete if selection */
+        if (   range.commonAncestorContainer.nodeName != '#text'
+            && range.startOffset != range.endOffset) {
+
+            console.log('letter with selection, delete!');
+            this.onDelete(event, null, range);
+        }
 
         /* card creation, card update, catch invalid targets */
 
@@ -374,10 +402,16 @@ var cOutlineHandlers = Class.create({
 
     onBackspace: function(event, target, range) {
 
-        /* take no action if not at beginning of node or selection */
-        var selection = range.startOffset - range.endOffset != 0;
-        var cursorOffset = range.startOffset;
-        if (selection || cursorOffset != 0) return;
+        /* treat as delete if selection */
+        if (   range.commonAncestorContainer.nodeName != '#text'
+            || range.startOffset != range.endOffset) {
+
+            this.onDelete(event, null, range);
+            return;
+        }
+
+        /* take no action if not at beginning of node */
+        if (range.startOffset != 0) return;
 
         /* indented paragraph handling */
         else if (target.tagName == 'P') {
@@ -403,7 +437,10 @@ var cOutlineHandlers = Class.create({
         }
 
         /* li handling */
-        else if (target.tagName == 'LI') doc.editor.execCommand('outdent');
+        else if (target.tagName == 'LI') {
+            doc.editor.execCommand('outdent');
+            Event.stop(event);
+        }
     },
 
     onCut: function(event, target, range) {
@@ -414,10 +451,8 @@ var cOutlineHandlers = Class.create({
 
     onDelete: function(event, target, range) {
 
-
         /* string representation of deleted text */
         var html = new XMLSerializer().serializeToString(range.cloneContents());
-        console.log(html);
 
         /* delete with nothing highlighted */
         //check target because this may be invoked when pasting on top of something, etc..
@@ -437,7 +472,8 @@ var cOutlineHandlers = Class.create({
         }
 
         /* push line ids in deleted html indo deleteNodes array */
-        else {
+        //don't bother checking if range parent is text
+        else if (range.commonAncestorContainer.nodeName != '#text') {
 
             html.scan(/line_id="([^"]*)"/, function(match) {
                 if (match[1]) doc.outline.deleteNodes.push(match[1]);
@@ -453,11 +489,12 @@ var cOutlineHandlers = Class.create({
         if (this.iDoc.document.selection) range = this.iDoc.document.selection.createRange(); //trident
         else if (this.iDoc.window.getSelection) range = this.iDoc.window.getSelection().getRangeAt(0); //gecko, webkit, others?
 
+        /* run on delete to remove highlighted nodes */
         this.onDelete(event, null, range)
 
         /* prepare html */
         var html = event.data.html;
-        console.log(html);
+        
         //remove line ids
         html = html.gsub(/line_id="[^"]*"/, 'line_id=""');
         //set as changed
