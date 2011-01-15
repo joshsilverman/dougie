@@ -91,7 +91,7 @@ var cUser = Class.create({
         if (this.stopped) return;
 
         $R(1, parseInt($('new_node_count').value)).each(function() {
-            this.html += '<p id="node_'+(this.nodeCount)+'" line_id="" changed="'+new Date().getTime()+'" class="outline_node" parent="node_0">'+(this.nodeCount++)+'</p>'
+            this.html += '<p id="node_'+(this.nodeCount)+'" line_id="" changed="'+new Date().getTime()+'" class="outline_node" parent="node_0">'+(this.nodeCount++)+'Add some average weight to this line. Maybe just a few more words. And we stop</p>'
         }.bind(this));
 
         new Ajax.Request('/documents/test_update', {

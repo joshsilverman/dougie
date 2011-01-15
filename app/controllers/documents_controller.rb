@@ -179,7 +179,11 @@ class DocumentsController < ApplicationController
 
     id = params[:id]
     html = params[:html]
+    delete_nodes = params[:delete_nodes]
     @document = current_user.documents.find_by_id(id)
+#    @document = Document.includes(:lines).where(:id => id, :user_id => current_user.id).first //@todo combind existing lines query with this one
+#    @document = Document.includes('lines').find(:first, :conditions => {:id => id, :user_id => current_user.id}, :include => 'lines')
+#    @documentt = Document.includes(:lines).find(:first, :conditions => {:id => id, :user_id => current_user.id})
     return nil if id.blank? || html.blank? || @document.blank?
 
     name = params[:name]
@@ -190,17 +194,46 @@ class DocumentsController < ApplicationController
     # pull all existing document line
     existing_lines = @document.lines
 
-    root = Line.find_or_create_by_document_id( :document_id => @document.id,
-                                               :domid => Line.dom_id(0),
-                                               :text => "root" )
+    Line.transaction do
 
-    Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
+      # look for root in existing lines
+      root = nil
+      existing_lines.each do |line|
+        if line.domid == "node_0"
+          root = line
+          break
+        end
+      end
 
-    Line.document_html = html
-    Line.preorder_save(dp.doc,@document.id)
-    @document.update_attributes(:html => Line.document_html, :name => name)
+      # create root
+      if root.nil?
+        root = Line.create(:document_id => @document.id,:domid => 'node_0',:text => "root" )
+      end
 
-    hsh = Line.id_hash(@document)
+      # run update line; store whether anything was changed
+      Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
+
+      Line.document_html = html
+      Line.new_line = false
+      Line.preorder_save(dp.doc,@document.id, {'node_0' => root})
+
+      @document.update_attributes(:html => Line.document_html, :name => name)
+
+      #delete nodes
+      unless delete_nodes == '[]' || delete_nodes.nil? || delete_nodes == ''
+        Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes.split(','), @document.id])
+      end
+
+    end
+
+    # refresh existing lines and create hash
+    if Line.new_line
+      lines = Line.find_all_by_document_id(id)
+    else
+      lines = existing_lines
+    end
+
+    hsh = Hash[*lines.map {|line| [line.domid, line.id]}.flatten]
 
     render :json => @document.html
 

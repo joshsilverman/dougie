@@ -66,7 +66,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     # 1.33, 1.33, 1.36 - 1.34 (combing preorder save and update_line queries into two transactions)
     # 1.17, 1.18, 1.15 - 1.17 [3.05] (further combination of line/document transactions)
     # 1.11, 1.11 [2.85] (only updating when changed)
-    # 1.07, 1.03 [2.79, 2.68] (stripped two queries from update)
+    # 1.07, 1.03 [2.79, 2.68] (stripped 2-3 queries from update)
 
     # login via https
     https!
