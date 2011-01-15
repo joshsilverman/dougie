@@ -6,11 +6,6 @@ class Line < ActiveRecord::Base
   belongs_to :document
 
   cattr_accessor :document_html, :new_line
-  
-  def self.dom_id(num)
-    return "" if num.blank?
-    "node_#{num}"
-  end
 
   def self.active_mem?(status)
     status.to_s == "true"

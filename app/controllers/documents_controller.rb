@@ -79,7 +79,7 @@ class DocumentsController < ApplicationController
 
       # create root
       if root.nil?
-        root = Line.create(:document_id => @document.id,:domid => Line.dom_id(0),:text => "root" )
+        root = Line.create(:document_id => @document.id,:domid => "node_0",:text => "root" )
       end
 
       # run update line; store whether anything was changed
@@ -87,7 +87,7 @@ class DocumentsController < ApplicationController
 
       Line.document_html = html
       Line.new_line = false
-      Line.preorder_save(dp.doc,@document.id)
+      Line.preorder_save(dp.doc,@document.id, {'node_0' => root})
 
       @document.update_attributes(:html => Line.document_html, :name => name)
 

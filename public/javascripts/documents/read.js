@@ -40,9 +40,9 @@ var cOutline = Class.create({
 
     documentId: null,
 
-    maxIdle: 1.5,
+    maxIdle: 4,
     idleSaveTimerId: null,
-    maxActive: 5,
+    maxActive: 12,
     activeSaveTimerId: null,
 
     unsavedChanges: [],  //list of domIds for unsaved changes
