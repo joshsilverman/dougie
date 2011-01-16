@@ -351,6 +351,12 @@ var cOutlineHandlers = Class.create({
                     this.onBackspace(event, target, range);
                     break;
 
+                /* incercept save - wait for keyup */
+                case 83:if (event.ctrlKey) {
+                    Event.stop(event);
+                    break;
+                }
+
                 /* treat like letter */
                 case Event.KEY_RETURN:
                     //this.onDelete(event, null, range);
@@ -450,6 +456,14 @@ var cOutlineHandlers = Class.create({
                 case 90:if (event.ctrlKey) {
                     console.log('undo autosave');
                     doc.outline.autosave(true);
+                    break;
+                }
+
+                /* save */
+                case 83:if (event.ctrlKey) {
+                    console.log('ctrl + s autosave');
+                    doc.outline.save();
+                    Event.stop(event);
                     break;
                 }
 
