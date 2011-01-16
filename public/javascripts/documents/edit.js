@@ -26,10 +26,37 @@ var cDoc = Class.create({
                 /* fire editor loaded */
                 document.fire('editor:loaded');
                 }.bind(this)).delay(.1);
+
+                /* resize listener */
+                window.onresize = this.onResize;
+                this.onResize();
+
         }.bind(this));
 
         /* select all in doc name on click */
         $('document_name').observe('click', function(e) {e.target.select();});
+    },
+
+    onResize: function() {
+
+        /* calculations */
+        var bottomMargin = 20;
+        var editorContainer = $('editor_container');
+        var editorContainerHeight = parseInt(editorContainer.getStyle('height'));
+        var editorVerticalSpaceHeight = document.viewport.getDimensions()['height']
+            - editorContainer.cumulativeOffset().top - bottomMargin;
+        var editorWhitespace = $('cke_contents_editor');
+
+        /* set minimums */
+        if (editorVerticalSpaceHeight < 200) editorVerticalSpaceHeight = 200;
+
+        /* set heights */
+        editorWhitespace.setStyle({height: editorVerticalSpaceHeight - 49 + 'px'});
+        $('right_rail').setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
+        $('cke_editor').setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
+//        $('right_rail').setStyle({height: editorVerticalSpaceHeight + 'px !important'});
+
+
     }
 });
 
