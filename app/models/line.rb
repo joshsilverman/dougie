@@ -5,7 +5,7 @@ class Line < ActiveRecord::Base
   has_many :mems, :dependent => :destroy
   belongs_to :document
 
-  cattr_accessor :document_html, :new_line
+  cattr_accessor :document_html
 
   def self.active_mem?(status)
     status.to_s == "true"
@@ -42,8 +42,6 @@ class Line < ActiveRecord::Base
         Mem.create_standard({ :line_id => created_line.id,
                               :status => Line.active_mem?(parent.attr("active")),
                               :review_after => Time.now})
-
-        @@new_line = true
 
       elsif child.children.length > 0
           Line.preorder_save(child,document_id,saved_parents)

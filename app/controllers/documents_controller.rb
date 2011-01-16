@@ -53,6 +53,7 @@ class DocumentsController < ApplicationController
     id = params[:id]
     html = params[:html]
     delete_nodes = params[:delete_nodes]
+    new_nodes = params[:new_nodes] == 'true'
     @document = current_user.documents.find_by_id(id)
 #    @document = Document.includes(:lines).where(:id => id, :user_id => current_user.id).first //@todo combind existing lines query with this one
     return nil if id.blank? || html.blank? || @document.blank?
@@ -82,8 +83,9 @@ class DocumentsController < ApplicationController
       Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
 
       Line.document_html = html
-      Line.new_line = false
-      Line.preorder_save(dp.doc,@document.id, {'node_0' => root})
+      if (new_nodes)
+        Line.preorder_save(dp.doc,@document.id, {'node_0' => root})
+      end
 
       @document.update_attributes(:html => Line.document_html, :name => params[:name])
 
@@ -97,7 +99,7 @@ class DocumentsController < ApplicationController
     end
 
     # refresh existing lines and create hash
-    if Line.new_line || deleted_lines
+    if new_nodes || deleted_lines
       lines = Line.find_all_by_document_id(id)
     else
       lines = existing_lines

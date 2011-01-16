@@ -51,6 +51,8 @@ var cOutline = Class.create({
     deleteNodes: [],  //list of domIds for nodes to be delete
     deletingNodes: [],  //list of domIds for nodes currently being deleted (request in progress)
 
+    newNodes: false, //boolean tracks whether new nodes have been added
+
     lineIds: null,
 
     initialize: function() {
@@ -122,7 +124,8 @@ var cOutline = Class.create({
             parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
                          'id': this.documentId,
                          'name': $('document_name').value,
-                         'delete_nodes': this.deleteNodes.toString()},
+                         'delete_nodes': this.deleteNodes.toString(),
+                         'new_nodes': this.newNodes},
 
             onCreate: function() {
 
@@ -140,10 +143,11 @@ var cOutline = Class.create({
             }.bind(this),
 
             onSuccess: function(transport) {
-                this.lineIds = transport.responseText.evalJSON();
+                this.lineIds = $H(transport.responseText.evalJSON());
                 this.updateIds();
-
-                /*  */
+                
+                /* set new nodes to false */
+                this.newNodes = false;
             }.bind(this),
 
             onFailure: function() {
@@ -199,7 +203,6 @@ var cOutline = Class.create({
     updateIds: function() {
 
         /* don't run if no lineids */
-        console.log(this.lineIds);
         if (!this.lineIds) {
             console.log('cannot update ids');
             return;
@@ -207,13 +210,12 @@ var cOutline = Class.create({
         else console.log('update ids');
 
         /* iterate through id, line_id hash */
-        var lineIdsHash = $H(this.lineIds);
-        lineIdsHash.each(function(idArray) {
-            
+        this.lineIds.each(function(idArray) {
+
             /* add id */
             if (this.iDoc.document.getElementById(idArray[0]))
                 this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
-            
+
             /* remove line if no node has the associated node id */
             else {
                 this.deleteNodes.push(idArray[1]);
@@ -224,12 +226,29 @@ var cOutline = Class.create({
         /* iterate through nodes, make sure line_id is in hash */
         Element.select(doc.outline.iDoc.document, '.outline_node').each(function(node) {
 
+            /* parent attribute setter */
+            doc.outline.iDoc.document.body.setAttribute("id","node_0"); //@todo can be placed in outline initialization if this strat remains
+            var parent = (node.parentNode.tagName != "UL")
+                ? node.parentNode
+                : node.parentNode.parentNode;
+
+            //set parent - if changed, treat node as new
+            if (   node.getAttribute("parent")
+                && node.getAttribute("parent") != parent.id) {
+
+                node.setAttribute("line_id", '');
+            }
+            
+            node.setAttribute("parent", parent.id);
+
             /* treat nodes that aren't in returned hash as new - set doc as changed */
-            if (lineIdsHash.get(node.id) != node.getAttribute('line_id')) {
-                console.log('re-adding ' + node.getAttribute('line_id'));
+            if (this.lineIds.get(node.id) != node.getAttribute('line_id')) {
                 node.setAttribute('line_id', '');
                 this.unsavedChanges.push(node.id);
             }
+
+            /* new nodes */
+            if (!node.getAttribute('line_id')) this.newNodes = true;
         }.bind(this));
     }
 });
@@ -241,11 +260,14 @@ var cOutlineHandlers = Class.create({
     initialize: function(iDoc) {
         //capture iframe keystroke events
         this.iDoc = iDoc;
-        this.iDoc.document.onkeyup = this.delegateHandler.bind(this);
-        this.iDoc.document.onkeydown = this.delegateHandler.bind(this);
+        this.iDoc.document.onkeyup = this.delegateKeystrokeHandler.bind(this);
+        this.iDoc.document.onkeydown = this.delegateKeystrokeHandler.bind(this);
+
+        this.iDoc.document.onmouseup = this.delegateClickHandler.bind(this);
+        this.iDoc.document.onmousedown = this.delegateClickHandler.bind(this);
     },
 
-    delegateHandler: function(event) {
+    getEventDetails: function() {
 
         /* get real target - target in event object is wrong */
 
@@ -271,6 +293,16 @@ var cOutlineHandlers = Class.create({
             else target = rangeGrandParent
         }
 
+        return [range, target];
+    },
+
+    delegateKeystrokeHandler: function(event) {
+
+        /* event details */
+        var eventDetails = this.getEventDetails();
+        var range = eventDetails[0];
+        var target = eventDetails[1];
+
         /* invoke proper handlers */
 
         //keydown events
@@ -285,15 +317,18 @@ var cOutlineHandlers = Class.create({
                 case Event.KEY_DELETE:
                     this.onDelete(event, target, range);
                     break;
-                case 88: //x - cut
-                    if (event.ctrlKey) {
-                        this.onCut(event, target, range);
-                        break;
-                    }
+
+                /*  */
+                case Event.KEY_RETURN:
+                    this.onDelete(event, null, range);
+                    this.onLetter(event, target, range);
+                    break;
 
                 /* intecept certain letters - take no action here */
                 case 67:if (event.ctrlKey) break; //copy
                 case 86:if (event.ctrlKey) break; //paste
+                case 88:if (event.ctrlKey) break; //cut
+                case 89:if (event.ctrlKey) break; //redo
                 case 90:if (event.ctrlKey) break; //undo
 
                 /* handles ranges of keys */
@@ -326,17 +361,18 @@ var cOutlineHandlers = Class.create({
                 //down event caught
                 case Event.KEY_TAB:break;
 
+                /* return keyup target is new node */
+                case Event.KEY_RETURN:
+                    this.onDelete(event, null, range);
+                    this.onLetter(event, target, range);
+                    break;
+
                 case Event.KEY_UP:break;
                 case Event.KEY_DOWN:break;
                 case Event.KEY_LEFT:break;
                 case Event.KEY_RIGHT:break;
                 case 16:break; //shift
                 case 17:break; //ctrl
-//                case 89: //y - redo
-//                    if (event.ctrlKey) {
-//                        this.onUndo(event, target, range);
-//                        break;
-//                    }
 
                 /* intecept certain letters - take no action here */
                 case 67:if (event.ctrlKey) break; //copy
@@ -387,6 +423,24 @@ var cOutlineHandlers = Class.create({
         }
     },
 
+    delegateClickHandler: function(event) {
+
+        /* event details */
+        var eventDetails = this.getEventDetails();
+        var range = eventDetails[0];
+        var target = eventDetails[1];
+
+        /* mouse up events */
+        if (event.type == 'mouseup') {
+            this.onDragNode(event, target, range);
+        }
+
+        /* mouse down events */
+        else {
+            this.onClickNode(event, target, range);
+        }
+    },
+
     onTab: function(event, target, range) {
 
         /* ignore if not at beginning of node */
@@ -400,6 +454,10 @@ var cOutlineHandlers = Class.create({
         /* fire indent/outdent */
         if (event.shiftKey) doc.editor.execCommand('outdent');
         else doc.editor.execCommand('indent');
+
+        /* autosave */
+        console.log('tab autosave');
+        doc.outline.autosave();
     },
 
     onLetter: function(event, target, range) {
@@ -425,6 +483,7 @@ var cOutlineHandlers = Class.create({
 
         /* set outline changed attribute, unsaved changes list */
         Element.writeAttribute(target, {'changed': '1'});
+        doc.outline.unsavedChanges.push(target.id);
 
         /* new/existing card handling */
 
@@ -439,10 +498,6 @@ var cOutlineHandlers = Class.create({
 
         //error
         else console.log('error: node has id but no card exists');
-
-        /* autosave */
-        console.log('letter autosave');
-        doc.outline.autosave();
     },
 
     onBackspace: function(event, target, range) {
@@ -486,12 +541,6 @@ var cOutlineHandlers = Class.create({
         /* autosave */
         console.log('backspace autosave');
         doc.outline.autosave();
-    },
-
-    onCut: function(event, target, range) {
-        
-        /* treat as deletion */
-        this.onDelete(event,target, range)
     },
 
     onDelete: function(event, target, range) {
@@ -546,6 +595,29 @@ var cOutlineHandlers = Class.create({
         //remove meta tags - necessary?
         html = html.gsub(/<meta[^>]*>/, '');
         event.data.html = html;
+    },
+
+    onClickNode: function(event, target, range) {},
+
+    onDragNode: function(event, target, range) {
+
+//        /* check for change in parents */
+//        Element.select(doc.outline.iDoc.document, '.outline_node').each(function(node) {
+//
+//            /* parent attribute setter */
+//            var parent = (node.parentNode.tagName != "UL")
+//                ? node.parentNode
+//                : node.parentNode.parentNode;
+//
+//            //set parent - if changed, treat node as new
+//            if (   node.getAttribute("parent")
+//                && node.getAttribute("parent") != parent.id) {
+//
+//                /* auto save */
+//                console.log('change in parents detected');
+//                doc.outline.autosave(true);
+//            }
+//        });
     }
 });
 
@@ -662,16 +734,6 @@ var cRightRail = Class.create({
                 //update
                 this.cards.get(node.id).update(node, truncate);
             }
-
-            /* parent attribute setter */
-            //@todo backend should be able to handle this, in which case sync
-            //      would not need to be run before save. the placement of this
-            //      logic here is ontologically wrong
-            doc.outline.iDoc.document.body.setAttribute("id","node_0"); //@todo can be placed in outline initialization if this strat remains
-            var parent = (node.parentNode.tagName != "UL")
-                ? node.parentNode
-                : node.parentNode.parentNode;
-            node.setAttribute("parent", parent.id);
         }.bind(this));
 
         /* destroy cards if node no longer exists */
