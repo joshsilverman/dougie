@@ -102,10 +102,16 @@ var cOutline = Class.create({
         doc.outline.updateIds();
 
         /* don't save if nothing changed */
+        var saveButton = $('save_button');
         if (   this.unsavedChanges.length == 0
             && this.deleteNodes.length == 0
             && !force
-            && this.lineIds) return;
+            && this.lineIds) {
+
+            console.log('save canceled');
+            saveButton.innerHTML = 'Saved';
+            return;
+        }
 
         console.log('save');
 
@@ -114,7 +120,6 @@ var cOutline = Class.create({
         doc.rightRail.sync();
 
         /* save button styling */
-        var saveButton = $('save_button');
         saveButton.disabled = true;
         saveButton.innerHTML = 'Saving';
 
@@ -561,8 +566,17 @@ var cOutlineHandlers = Class.create({
             }
 
             /* not end of node */
-            else {/* normal behavior */}
+            else {
+                doc.outline.unsavedChanges.push(target.id);
+                target.setAttribute('changed', 1);
+            }
 
+        }
+
+        /* check for partial delete of first node in range */
+        else {
+            doc.outline.unsavedChanges.push(range.startContainer.parentNode.id);
+            range.startContainer.parentNode.setAttribute('changed', 1);
         }
 
         /* autosave */
