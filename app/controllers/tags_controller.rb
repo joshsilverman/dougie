@@ -45,7 +45,7 @@ class TagsController < ApplicationController
     tag = current_user.tags.find_by_id(id)
 
     #don't delete if Misc, or if nothing's there
-    if tag.misc == true or tag.nil?
+    if tag.nil? || tag.misc == true || tag.nil?
       render :nothing => true, :status => 400
       return
     end

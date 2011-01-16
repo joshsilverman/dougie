@@ -23,11 +23,11 @@ class DocumentsController < ApplicationController
     end
 
     @document = current_user.documents.create(:name => 'untitled', :tag_id => @tag.id)
-    redirect_to :action => 'read', :id => @document.id
+    redirect_to :action => 'edit', :id => @document.id
     
   end
   
-  def read
+  def edit
 
     #check id posted
     id = params[:id]
@@ -56,7 +56,10 @@ class DocumentsController < ApplicationController
     new_nodes = params[:new_nodes] == 'true'
     @document = current_user.documents.find_by_id(id)
 #    @document = Document.includes(:lines).where(:id => id, :user_id => current_user.id).first //@todo combind existing lines query with this one
-    return nil if id.blank? || html.blank? || @document.blank?
+    if id.blank? || html.blank? || @document.blank?
+      render :nothing => true, :status => 400
+      return
+    end
     
     # pull all existing document line
     existing_lines = @document.lines

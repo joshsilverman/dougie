@@ -19,7 +19,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     # new document
     https!(false)
     get_via_redirect "/documents/create/1"
-    assert (path =~ /editor\/\d+/)
+    assert (path =~ /documents\/\d+\/edit/)
 
   end
 
@@ -44,15 +44,15 @@ class EditorTest < ActionDispatch::PerformanceTest
     # new document
     https!(false)
     get_via_redirect "/documents/create/1"
-    assert (path =~ /editor\/\d+/)
-    document_id = path.scan(/editor\/(\d+)/)[0][0]
+    assert (path =~ /documents\/\d+\/edit/)
+    document_id = path.scan(/documents\/(\d+)\/edit/)[0][0]
 
     # initial update document
     html = ''
     (1...80).to_a.each do |i|
       html += '<p id="node_%i" line_id="" changed="" class="outline_node" parent="node_0">%i</p>' % [i, i]
     end
-    post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    put 'documents/%i' % document_id, {:name => 'yo', :html => html, :new_nodes => 'true'}
     assert_response :success
 
   end
@@ -79,20 +79,20 @@ class EditorTest < ActionDispatch::PerformanceTest
     # new document
     https!(false)
     get_via_redirect "/documents/create/1"
-    assert (path =~ /editor\/\d+/)
-    document_id = path.scan(/editor\/(\d+)/)[0][0]
+    assert (path =~ /documents\/\d+\/edit/)
+    document_id = path.scan(/documents\/(\d+)\/edit/)[0][0]
 
     # initial update document
     html = ''
     (1...80).to_a.each do |i|
       html += '<p id="node_%i" line_id="" changed="" class="outline_node" parent="node_0">%i</p>' % [i, i]
     end
-    post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    put 'documents/%i' % document_id, {:name => 'yo', :html => html, :new_nodes => 'true'}
     assert_response :success
 
     #augment
     html = Document.find(document_id).html + '<p id="node_81" line_id="" changed="" class="outline_node" parent="node_0">81</p>'
-    post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    put 'documents/%i' % document_id, {:name => 'yo', :html => html, :new_nodes => 'true'}
     assert_response :success
 
   end

@@ -185,7 +185,7 @@ var cDirectoryView = Class.create({
         var tagName = prompt('What would you like to name the new directory?');
 
         /* request */
-        new Ajax.Request('/tags/create', {
+        new Ajax.Request('/tags', {
             method: 'post',
             parameters: {'name': tagName},
             onSuccess: function(transport) {
@@ -210,9 +210,8 @@ var cDirectoryView = Class.create({
         var tagId = event.target.up('.icon_container').getAttribute('tag_id');
 
         /* request */
-        new Ajax.Request('/tags/destroy', {
-            method: 'post',
-            parameters: {'id': tagId},
+        new Ajax.Request('/tags/' + tagId, {
+            method: 'delete',
             onSuccess: function(transport) {
 
                 /* inject json and rerender document */
@@ -317,14 +316,14 @@ var cDocumentsView = Class.create({
         //document links
         this.tag.documents.each(function(document) {
           this.html += '<div document_id="'+document['id']+'" class="icon_container rounded_border">\
-              <a href="/editor/'+document['id']+'">\
+              <a href="/documents/'+document['id']+'/edit">\
                 <div class="title">'+document['name']+'</div>\
                 <div class="folder">\
                   <img class="folder" alt="" src="/images/organizer/doc-icon.png" />\
                 </div>\
               </a>\
               <div class="folder_options">\
-                <a href="/editor/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>\
+                <a href="/documents/'+document['id']+'/edit"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>\
                 <a href="/review/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/play-icon.png" /></a>\
                 <img class="rounded_border remove_document" alt="" src="/images/organizer/remove-icon.png" />\
               </div>\
@@ -388,9 +387,8 @@ var cDocumentsView = Class.create({
         var documentId = event.target.up('.icon_container').getAttribute('document_id');
 
         /* request */
-        new Ajax.Request('/documents/destroy', {
-            method: 'post',
-            parameters: {'id': documentId},
+        new Ajax.Request('/documents/' + documentId, {
+            method: 'delete',
             onSuccess: function(transport) {
 
                 /* inject json and rerender document */

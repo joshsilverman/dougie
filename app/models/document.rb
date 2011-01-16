@@ -1,6 +1,6 @@
 class Document < ActiveRecord::Base
 
-  has_many :lines
+  has_many :lines, :dependent => :destroy
 
   belongs_to :tag
   belongs_to :user
