@@ -1,7 +1,7 @@
 <% if user_signed_in? %>
 	<div class="login">
-		<span style="float:left;">Welcome, <%= current_user.first_name %></span>
-		<span style="float:right;">
+		<span style="float:left; margin-left: 6px;">Welcome, <%= current_user.first_name %></span>
+		<span style="float:right; margin-right: 6px;">
 			<%= link_to "Edit Account", edit_user_registration_path %>&nbsp;|
 			<%= link_to "Sign Out", destroy_user_session_path %>
 		</span>
