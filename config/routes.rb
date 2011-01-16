@@ -72,6 +72,7 @@ Dougie::Application.routes.draw do
   # organizer
   resources :tags, :only => [:destroy, :create]
   match "/" => "tags#index" #** public **#
+  match "/tags/json" => "tags#json"
 
   # login system
   root :to => "users#index"

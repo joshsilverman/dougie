@@ -15,6 +15,10 @@ class TagsController < ApplicationController
 
   end
 
+  def json
+    render :text => Tag.tags_json(current_user)
+  end
+
   def create
 
     #param check

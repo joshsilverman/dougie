@@ -17,7 +17,12 @@ var cDoc = Class.create({
         /* check for reload cookie */
         var reload = AppUtilities.Cookies.read('reloadOrganizer') == 'true';
         AppUtilities.Cookies.erase('reloadOrganizer')
-        if (reload) self.document.location.reload(true);
+        if (reload) {
+            //self.document.location.reload(true);
+            new Ajax.Request('/tags/json', {
+                asynchronous: false,
+                onSuccess: function(transport) {$('tags_json').innerHTML = transport.responseText;}});
+        }
 
         /* organize and set json member */
         this.tags = [];
