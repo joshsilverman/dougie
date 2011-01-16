@@ -13,11 +13,11 @@
 </head>
 <body>
 
+<%= render 'shared/authentication' %>
+
 <!--flash messages-->
 <% unless flash[:notice].blank? %><p class="notice"><%= flash[:notice] %></p><% end %>
 <% unless flash[:error].blank? %><p class="error"><%= flash[:error] %></p><% end %>
-
-<%= render 'shared/authentication' %>
 
 <div class="contents">
 
