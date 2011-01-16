@@ -290,6 +290,12 @@ var cDocumentsView = Class.create({
         this.tag = tag;
 
         /* sort (builds html) */
+        /* remove old sort listeners/classes; add new classes */
+        $('sort_options').childElements().each(function(element) {
+            element.stopObserving();
+            element.removeClassName('reverse');
+            element.removeClassName('active');
+        });
         this.sort('updated_at');
     },
 
