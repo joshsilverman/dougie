@@ -342,16 +342,18 @@ var cOutlineHandlers = Class.create({
                 case Event.KEY_TAB:
                     this.onTab(event, target, range);
                     break;
-                case Event.KEY_BACKSPACE:
-                    this.onBackspace(event, target, range);
-                    break;
                 case Event.KEY_DELETE:
                     this.onDelete(event, target, range);
                     break;
 
-                /*  */
+                /* special backspace handling for highlighted text and beginning of nodes */
+                case Event.KEY_BACKSPACE:
+                    this.onBackspace(event, target, range);
+                    break;
+
+                /* treat like letter */
                 case Event.KEY_RETURN:
-                    this.onDelete(event, null, range);
+                    //this.onDelete(event, null, range);
                     this.onLetter(event, target, range);
                     break;
 
@@ -362,23 +364,34 @@ var cOutlineHandlers = Class.create({
                 case 89:if (event.ctrlKey) break; //redo
                 case 90:if (event.ctrlKey) break; //undo
 
+                /* hyphen - make bulletedlist */
+                case 189:
+                    if (range.startOffset == 0) {
+                        this.onHyphen(event, target, range);
+                        break;
+                    }
+
                 /* handles ranges of keys */
                 default:
 
+                    /* space */
+                    if (event.keyCode >= 32)
+                        this.onDelete(event, null, range);
+
                     /* punc */
-                    if (event.keyCode >=186 && event.keyCode <=122)
+                    else if (event.keyCode >= 186 && event.keyCode <= 122)
                         this.onDelete(event, null, range);
 
                     /* letters */
-                    else if (event.keyCode >=65 && event.keyCode <=90)
+                    else if (event.keyCode >= 65 && event.keyCode <= 90)
                         this.onDelete(event, null, range);
 
                     /* numbers */
-                    else if (event.keyCode >=48 && event.keyCode <= 57)
+                    else if (event.keyCode >= 48 && event.keyCode <= 57)
                         this.onDelete(event, null, range);
 
                     /* math */
-                    else if (event.keyCode >=107 && event.keyCode <=111)
+                    else if (event.keyCode >= 107 && event.keyCode <= 111)
                         this.onDelete(event, null, range);
 
                     break;
@@ -405,6 +418,22 @@ var cOutlineHandlers = Class.create({
                 case 16:break; //shift
                 case 17:break; //ctrl
 
+                /* ordered list */
+                case 55:
+                    if (event.ctrlKey && event.shiftKey) {
+                        doc.editor.execCommand('numberedlist');
+                        doc.outline.autosave(true);
+                        break;
+                    }
+
+                /* unordered list */
+                case 56:
+                    if (event.ctrlKey && event.shiftKey) {
+                        doc.editor.execCommand('bulletedlist');
+                        doc.outline.autosave(true);
+                        break;
+                    }
+
                 /* intecept certain letters - take no action here */
                 case 67:if (event.ctrlKey) break; //copy
                 case 86:if (event.ctrlKey) break; //paste
@@ -423,18 +452,19 @@ var cOutlineHandlers = Class.create({
                     doc.outline.autosave(true);
                     break;
                 }
-                
-                //normal letter behavior for backspace (rerendering card, etc)
-                //case Event.KEY_BACKSPACE:break;
 
-                //normal behavior for return - allow rerendering when splitting card
-                //case Event.KEY_RETURN:break;
+                /* hyphen - make bulletedlist - cancel keyup event*/
+                case 189:if (range.startOffset == 0) break;
 
                 /* handles ranges of keys */
                 default:
 
+                    /* space */
+                    if (event.keyCode >= 32)
+                        this.onLetter(event, target, range);
+
                     /* punc */
-                    if (event.keyCode >=186 && event.keyCode <=122)
+                    else if (event.keyCode >=186 && event.keyCode <=122)
                         this.onLetter(event, target, range);
 
                     /* letters */
@@ -475,11 +505,11 @@ var cOutlineHandlers = Class.create({
     onTab: function(event, target, range) {
 
         /* ignore if not at beginning of node */
-//        if (range.startOffset != 0) {
-//            Event.stop(event);
-//            event.preventDefault();
-//            return;
-//        }
+        if (range.startOffset != 0) {
+            Event.stop(event);
+            doc.editor.focus();
+            return;
+        }
         //@todo determine how to overide default tab event
 
         /* fire indent/outdent */
@@ -534,7 +564,7 @@ var cOutlineHandlers = Class.create({
     onBackspace: function(event, target, range) {
 
         /* treat as delete if selection */
-        if (   range.commonAncestorContainer.nodeName != '#text'
+        if (   range.startContainer.outerHTML != range.endContainer.outerHTML
             || range.startOffset != range.endOffset) {
 
             this.onDelete(event, null, range);
@@ -658,6 +688,16 @@ var cOutlineHandlers = Class.create({
 //                doc.outline.autosave(true);
 //            }
 //        });
+    },
+
+    /* called when a hypen is pressed at beginning of node */
+    onHyphen: function(event, target, range) {
+
+        /* stop event */
+        Event.stop(event);
+
+        /* exec bulletlist ckeditor command */
+        doc.editor.execCommand('bulletedlist');
     }
 });
 
