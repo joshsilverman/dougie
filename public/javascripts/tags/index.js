@@ -17,7 +17,12 @@ var cDoc = Class.create({
         /* check for reload cookie */
         var reload = AppUtilities.Cookies.read('reloadOrganizer') == 'true';
         AppUtilities.Cookies.erase('reloadOrganizer')
-        if (reload) self.document.location.reload(true);
+        if (reload) {
+            //self.document.location.reload(true);
+            new Ajax.Request('/tags/json', {
+                asynchronous: false,
+                onSuccess: function(transport) {$('tags_json').innerHTML = transport.responseText;}});
+        }
 
         /* organize and set json member */
         this.tags = [];
@@ -185,7 +190,7 @@ var cDirectoryView = Class.create({
         var tagName = prompt('What would you like to name the new directory?');
 
         /* request */
-        new Ajax.Request('/tags/create', {
+        new Ajax.Request('/tags', {
             method: 'post',
             parameters: {'name': tagName},
             onSuccess: function(transport) {
@@ -210,9 +215,8 @@ var cDirectoryView = Class.create({
         var tagId = event.target.up('.icon_container').getAttribute('tag_id');
 
         /* request */
-        new Ajax.Request('/tags/destroy', {
-            method: 'post',
-            parameters: {'id': tagId},
+        new Ajax.Request('/tags/' + tagId, {
+            method: 'delete',
             onSuccess: function(transport) {
 
                 /* inject json and rerender document */
@@ -291,6 +295,12 @@ var cDocumentsView = Class.create({
         this.tag = tag;
 
         /* sort (builds html) */
+        /* remove old sort listeners/classes; add new classes */
+        $('sort_options').childElements().each(function(element) {
+            element.stopObserving();
+            element.removeClassName('reverse');
+            element.removeClassName('active');
+        });
         this.sort('updated_at');
     },
 
@@ -317,14 +327,14 @@ var cDocumentsView = Class.create({
         //document links
         this.tag.documents.each(function(document) {
           this.html += '<div document_id="'+document['id']+'" class="icon_container rounded_border">\
-              <a href="/editor/'+document['id']+'">\
+              <a href="/documents/'+document['id']+'/edit">\
                 <div class="title">'+document['name']+'</div>\
                 <div class="folder">\
                   <img class="folder" alt="" src="/images/organizer/doc-icon.png" />\
                 </div>\
               </a>\
               <div class="folder_options">\
-                <a href="/editor/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>\
+                <a href="/documents/'+document['id']+'/edit"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>\
                 <a href="/review/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/play-icon.png" /></a>\
                 <img class="rounded_border remove_document" alt="" src="/images/organizer/remove-icon.png" />\
               </div>\
@@ -388,9 +398,8 @@ var cDocumentsView = Class.create({
         var documentId = event.target.up('.icon_container').getAttribute('document_id');
 
         /* request */
-        new Ajax.Request('/documents/destroy', {
-            method: 'post',
-            parameters: {'id': documentId},
+        new Ajax.Request('/documents/' + documentId, {
+            method: 'delete',
             onSuccess: function(transport) {
 
                 /* inject json and rerender document */

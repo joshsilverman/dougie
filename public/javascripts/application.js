@@ -9,9 +9,12 @@ var cAppUtilities = Class.create({
 
     Cookies: null,
 
+    Element: null,
+
     initialize: function() {
         
         this.Cookies = new this.cCookies;
+        this.Element = new this.cElement;
     },
 
     /* utility classes */
@@ -42,7 +45,9 @@ var cAppUtilities = Class.create({
         erase: function (name) {
                 this.create(name,"",-1);
         }
-    })
+    }),
+
+    cElement: Class.create({})
 });
 
 /* global vars */

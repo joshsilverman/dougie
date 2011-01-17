@@ -1,5 +1,5 @@
-<% @page_specific_scripts_js = ["ckeditor/ckeditor", "parser", "documents/read"] %>
-<% @page_specific_scripts_css = ["documents/read"] %>
+<% @page_specific_scripts_js = ["ckeditor/ckeditor", "parser", "documents/edit"] %>
+<% @page_specific_scripts_css = ["documents/edit"] %>
 
 <div class="rounded_border doc_options">
   <span>/<%=@tag.name%>/<input id="document_name" value="<%=@document.name%>"></input></span>
@@ -24,13 +24,17 @@
 
 <!-- document vars -->
 <div id="document_id" style="display:none;"><%=@document.id%></div>
+<div id="line_ids" style="display:none;"><%=@line_ids%></div>
 
 <script type="text/javascript">
 //<![CDATA[
   CKEDITOR.replace( 'editor', {
     startupFocus : true,
     //fullPage : true,
-    on: {instanceReady : function( ev ) {Event.fire(document, 'CKEDITOR:ready');}}
+    on: {
+      instanceReady : function(e) {Event.fire(document, 'CKEDITOR:ready');},
+      paste: function(e) {doc.outline.outlineHandlers.onPaste(e)}
+    }
   });
 //]]>
 </script>

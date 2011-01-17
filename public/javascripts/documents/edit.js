@@ -40,9 +40,9 @@ var cOutline = Class.create({
 
     documentId: null,
 
-    maxIdle: 1.5,
+    maxIdle: 4,
     idleSaveTimerId: null,
-    maxActive: 5,
+    maxActive: 12,
     activeSaveTimerId: null,
 
     unsavedChanges: [],  //list of domIds for unsaved changes
@@ -51,10 +51,15 @@ var cOutline = Class.create({
     deleteNodes: [],  //list of domIds for nodes to be delete
     deletingNodes: [],  //list of domIds for nodes currently being deleted (request in progress)
 
+    newNodes: false, //boolean tracks whether new nodes have been added
+
+    lineIds: null,
+
     initialize: function() {
 
         /* document members */
         this.documentId = $('document_id').innerHTML;
+        this.lineIds = $H($('line_ids').innerHTML.evalJSON());
 
         /* iframe doc */
         var iframe = $$('#cke_contents_editor iframe')[0];
@@ -71,21 +76,21 @@ var cOutline = Class.create({
         $("document_name").observe('keypress', this.autosave.bind(this));
     },
 
-    autosave: function() {
-        
+    autosave: function(force) {
+
         /* idle save timer */
         window.clearTimeout(this.idleSaveTimerId);
-        this.idleSaveTimerId = this.save.bind(this).delay(this.maxIdle);
+        this.idleSaveTimerId = this.save.bind(this, force).delay(this.maxIdle);
 
         /* idle save timer */
         if (this.activeSaveTimerId == null)
-            this.activeSaveTimerId = this.save.bind(this).delay(this.maxActive);
+            this.activeSaveTimerId = this.save.bind(this, force).delay(this.maxActive);
 
         /* save button styling */
         $('save_button').innerHTML = 'Save';
     },
 
-    save: function() {
+    save: function(force) {
 
         /* cancel other timers */
         window.clearTimeout(this.idleSaveTimerId);
@@ -93,25 +98,38 @@ var cOutline = Class.create({
         this.idleSaveTimerId = null;
         this.activeSaveTimerId = null;
 
+        /* look for new lines and deleted lines */
+        doc.outline.updateIds();
+
         /* don't save if nothing changed */
-        if (this.unsavedChanges.length == 0) return;
+        var saveButton = $('save_button');
+        if (   this.unsavedChanges.length == 0
+            && this.deleteNodes.length == 0
+            && !force
+            && this.lineIds) {
+
+            console.log('save canceled');
+            saveButton.innerHTML = 'Saved';
+            return;
+        }
+
+        console.log('save');
 
         /* sync */
         //@todo this may become unnecessary later on
         doc.rightRail.sync();
 
         /* save button styling */
-        var saveButton = $('save_button');
         saveButton.disabled = true;
         saveButton.innerHTML = 'Saving';
 
         /* save */
-        new Ajax.Request('/documents/update', {
-            method: 'post',
+        new Ajax.Request('/documents/'+this.documentId, {
+            method: 'put',
             parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
-                         'id': this.documentId,
                          'name': $('document_name').value,
-                         'delete_nodes': this.deleteNodes.toString()},
+                         'delete_nodes': this.deleteNodes.toString(),
+                         'new_nodes': this.newNodes},
 
             onCreate: function() {
 
@@ -129,10 +147,11 @@ var cOutline = Class.create({
             }.bind(this),
 
             onSuccess: function(transport) {
-                var lineIds = transport.responseText.evalJSON();
-                this.updateIds(lineIds);
-
-                /*  */
+                this.lineIds = $H(transport.responseText.evalJSON());
+                this.updateIds();
+                
+                /* set new nodes to false */
+                this.newNodes = false;
             }.bind(this),
 
             onFailure: function() {
@@ -185,9 +204,55 @@ var cOutline = Class.create({
         }
     },
 
-    updateIds: function(lineIds) {
-        $H(lineIds).each(function(idArray) {
-            this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
+    updateIds: function() {
+
+        /* don't run if no lineids */
+        if (!this.lineIds) {
+            console.log('cannot update ids');
+            return;
+        }
+        else console.log('update ids');
+
+        /* iterate through id, line_id hash */
+        this.lineIds.each(function(idArray) {
+
+            /* add id */
+            if (this.iDoc.document.getElementById(idArray[0]))
+                this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
+
+            /* remove line if no node has the associated node id */
+            else {
+                this.deleteNodes.push(idArray[1]);
+                console.log('deleting ' + idArray[1]);
+            }
+        }.bind(this));
+
+        /* iterate through nodes, make sure line_id is in hash */
+        Element.select(doc.outline.iDoc.document, '.outline_node').each(function(node) {
+
+            /* parent attribute setter */
+            doc.outline.iDoc.document.body.setAttribute("id","node_0"); //@todo can be placed in outline initialization if this strat remains
+            var parent = (node.parentNode.tagName != "UL")
+                ? node.parentNode
+                : node.parentNode.parentNode;
+
+            //set parent - if changed, treat node as new
+            if (   node.getAttribute("parent")
+                && node.getAttribute("parent") != parent.id) {
+
+                node.setAttribute("line_id", '');
+            }
+            
+            node.setAttribute("parent", parent.id);
+
+            /* treat nodes that aren't in returned hash as new - set doc as changed */
+            if (this.lineIds.get(node.id) != node.getAttribute('line_id')) {
+                node.setAttribute('line_id', '');
+                this.unsavedChanges.push(node.id);
+            }
+
+            /* new nodes */
+            if (!node.getAttribute('line_id')) this.newNodes = true;
         }.bind(this));
     }
 });
@@ -199,11 +264,14 @@ var cOutlineHandlers = Class.create({
     initialize: function(iDoc) {
         //capture iframe keystroke events
         this.iDoc = iDoc;
-        this.iDoc.document.onkeyup = this.delegateHandler.bind(this);
-        this.iDoc.document.onkeydown = this.delegateHandler.bind(this);
+        this.iDoc.document.onkeyup = this.delegateKeystrokeHandler.bind(this);
+        this.iDoc.document.onkeydown = this.delegateKeystrokeHandler.bind(this);
+
+        this.iDoc.document.onmouseup = this.delegateClickHandler.bind(this);
+        this.iDoc.document.onmousedown = this.delegateClickHandler.bind(this);
     },
 
-    delegateHandler: function(event) {
+    getEventDetails: function() {
 
         /* get real target - target in event object is wrong */
 
@@ -229,6 +297,16 @@ var cOutlineHandlers = Class.create({
             else target = rangeGrandParent
         }
 
+        return [range, target];
+    },
+
+    delegateKeystrokeHandler: function(event) {
+
+        /* event details */
+        var eventDetails = this.getEventDetails();
+        var range = eventDetails[0];
+        var target = eventDetails[1];
+
         /* invoke proper handlers */
 
         //keydown events
@@ -240,7 +318,43 @@ var cOutlineHandlers = Class.create({
                 case Event.KEY_BACKSPACE:
                     this.onBackspace(event, target, range);
                     break;
-                default:break;
+                case Event.KEY_DELETE:
+                    this.onDelete(event, target, range);
+                    break;
+
+                /*  */
+                case Event.KEY_RETURN:
+                    this.onDelete(event, null, range);
+                    this.onLetter(event, target, range);
+                    break;
+
+                /* intecept certain letters - take no action here */
+                case 67:if (event.ctrlKey) break; //copy
+                case 86:if (event.ctrlKey) break; //paste
+                case 88:if (event.ctrlKey) break; //cut
+                case 89:if (event.ctrlKey) break; //redo
+                case 90:if (event.ctrlKey) break; //undo
+
+                /* handles ranges of keys */
+                default:
+
+                    /* punc */
+                    if (event.keyCode >=186 && event.keyCode <=122)
+                        this.onDelete(event, null, range);
+
+                    /* letters */
+                    else if (event.keyCode >=65 && event.keyCode <=90)
+                        this.onDelete(event, null, range);
+
+                    /* numbers */
+                    else if (event.keyCode >=48 && event.keyCode <= 57)
+                        this.onDelete(event, null, range);
+
+                    /* math */
+                    else if (event.keyCode >=107 && event.keyCode <=111)
+                        this.onDelete(event, null, range);
+
+                    break;
             }
         }
 
@@ -251,12 +365,37 @@ var cOutlineHandlers = Class.create({
                 //down event caught
                 case Event.KEY_TAB:break;
 
+                /* return keyup target is new node */
+                case Event.KEY_RETURN:
+                    this.onDelete(event, null, range);
+                    this.onLetter(event, target, range);
+                    break;
+
                 case Event.KEY_UP:break;
                 case Event.KEY_DOWN:break;
                 case Event.KEY_LEFT:break;
                 case Event.KEY_RIGHT:break;
                 case 16:break; //shift
                 case 17:break; //ctrl
+
+                /* intecept certain letters - take no action here */
+                case 67:if (event.ctrlKey) break; //copy
+                case 86:if (event.ctrlKey) break; //paste
+                case 88:if (event.ctrlKey) break; //cut
+
+                /* undo/redo trigger save */
+                //redo
+                case 89:if (event.ctrlKey) {
+                    console.log('redo autosave');
+                    doc.outline.autosave(true);
+                    break;
+                }
+                //undo
+                case 90:if (event.ctrlKey) {
+                    console.log('undo autosave');
+                    doc.outline.autosave(true);
+                    break;
+                }
                 
                 //normal letter behavior for backspace (rerendering card, etc)
                 //case Event.KEY_BACKSPACE:break;
@@ -264,32 +403,45 @@ var cOutlineHandlers = Class.create({
                 //normal behavior for return - allow rerendering when splitting card
                 //case Event.KEY_RETURN:break;
 
-                //all other chars to be treated as letters
-                default:this.onLetter(event, target);
+                /* handles ranges of keys */
+                default:
+
+                    /* punc */
+                    if (event.keyCode >=186 && event.keyCode <=122)
+                        this.onLetter(event, target, range);
+
+                    /* letters */
+                    else if (event.keyCode >=65 && event.keyCode <=90)
+                        this.onLetter(event, target, range);
+
+                    /* numbers */
+                    else if (event.keyCode >=48 && event.keyCode <= 57)
+                        this.onLetter(event, target, range);
+
+                    /* operators */
+                    else if (event.keyCode >=107 && event.keyCode <=111)
+                        this.onLetter(event, target, range);
+
+                    break;
             }
         }
+    },
 
-        /* special handling for re-synchronizing right rail */
+    delegateClickHandler: function(event) {
 
-        //check if multiple nodes are in selection
-        //gecko, webkit, others?
-        if (   range
-            //&& range.endOffset > range.startOffset
-            && range.startContainer != range.endContainer
-            && range.commonAncestorContainer
-            && range.commonAncestorContainer.tagName != 'Text'
-            && range.commonAncestorContainer.tagName != undefined) {
+        /* event details */
+        var eventDetails = this.getEventDetails();
+        var range = eventDetails[0];
+        var target = eventDetails[1];
 
-            //key code check
-            if (   event.keyCode != Event.KEY_UP
-                && event.keyCode != Event.KEY_DOWN
-                && event.keyCode != Event.KEY_LEFT
-                && event.keyCode != Event.KEY_RIGHT
-                && event.keyCode != 16     //shift
-                && event.keyCode != 17) {  //ctrl
-                
-                (function () {doc.rightRail.sync();}).delay(.1);
-            }
+        /* mouse up events */
+        if (event.type == 'mouseup') {
+            this.onDragNode(event, target, range);
+        }
+
+        /* mouse down events */
+        else {
+            this.onClickNode(event, target, range);
         }
     },
 
@@ -306,12 +458,21 @@ var cOutlineHandlers = Class.create({
         /* fire indent/outdent */
         if (event.shiftKey) doc.editor.execCommand('outdent');
         else doc.editor.execCommand('indent');
-    },
-
-    onLetter: function(event, target) {
 
         /* autosave */
+        console.log('tab autosave');
         doc.outline.autosave();
+    },
+
+    onLetter: function(event, target, range) {
+
+        /* fire onDelete if selection */
+        if (   range.commonAncestorContainer.nodeName != '#text'
+            && range.startOffset != range.endOffset) {
+
+            console.log('letter with selection, delete!');
+            this.onDelete(event, null, range);
+        }
 
         /* card creation, card update, catch invalid targets */
 
@@ -325,10 +486,8 @@ var cOutlineHandlers = Class.create({
         }
 
         /* set outline changed attribute, unsaved changes list */
-        if (target.id != '') {
-            Element.writeAttribute(target, {'changed': '1'});
-            doc.outline.unsavedChanges.push(target.id)
-        }
+        Element.writeAttribute(target, {'changed': '1'});
+        doc.outline.unsavedChanges.push(target.id);
 
         /* new/existing card handling */
 
@@ -342,15 +501,21 @@ var cOutlineHandlers = Class.create({
         }
 
         //error
-        else console.log('error: node has id but no card exists')
+        else console.log('error: node has id but no card exists');
     },
 
     onBackspace: function(event, target, range) {
 
-        /* take no action if not at beginning of node or selection */
-        var selection = range.startOffset - range.endOffset != 0;
-        var cursorOffset = range.startOffset;
-        if (selection || cursorOffset != 0) return;
+        /* treat as delete if selection */
+        if (   range.commonAncestorContainer.nodeName != '#text'
+            || range.startOffset != range.endOffset) {
+
+            this.onDelete(event, null, range);
+            return;
+        }
+
+        /* take no action if not at beginning of node */
+        if (range.startOffset != 0) return;
 
         /* indented paragraph handling */
         else if (target.tagName == 'P') {
@@ -365,10 +530,6 @@ var cOutlineHandlers = Class.create({
                 
                 //first element in body - stop event
                 if (Element.previousSiblings(target).length == 0) Event.stop(event);
-                
-                //delete node which already has id
-                else if (target.getAttribute('line_id') != '')
-                    doc.outline.deleteNodes.push(target.getAttribute('line_id'));
 
                 //delete node which hadn't yet been saved
                 else {/* normal behavior */}
@@ -376,7 +537,100 @@ var cOutlineHandlers = Class.create({
         }
 
         /* li handling */
-        else if (target.tagName == 'LI') doc.editor.execCommand('outdent');
+        else if (target.tagName == 'LI') {
+            doc.editor.execCommand('outdent');
+            Event.stop(event);
+        }
+
+        /* autosave */
+        console.log('backspace autosave');
+        doc.outline.autosave();
+    },
+
+    onDelete: function(event, target, range) {
+
+        /* string representation of deleted text */
+        var html = new XMLSerializer().serializeToString(range.cloneContents());
+
+        /* delete with nothing highlighted */
+        //check target because this may be invoked when pasting on top of something, etc..
+        if (html == '' && target) {
+
+            /* end of node? */
+            if (   target.firstChild.nodeName == '#text' && range.endOffset == target.firstChild.length
+                || target.firstChild.nodeName != '#text' && range.endOffset == 0) {
+
+                //@todo implement delete at end of line - must push deleted node into delete queue
+                Event.stop(event);
+            }
+
+            /* not end of node */
+            else {
+                doc.outline.unsavedChanges.push(target.id);
+                target.setAttribute('changed', 1);
+            }
+
+        }
+
+        /* check for partial delete of first node in range */
+        else {
+            doc.outline.unsavedChanges.push(range.startContainer.parentNode.id);
+            range.startContainer.parentNode.setAttribute('changed', 1);
+        }
+
+        /* autosave */
+        console.log('delete autosave');
+        doc.outline.autosave();
+    },
+
+    // @note listener set in view on editor creation
+    onPaste: function(event) {
+
+        /* if stuff highlighted, fire delete handler */
+        var range;
+        if (this.iDoc.document.selection) range = this.iDoc.document.selection.createRange(); //trident
+        else if (this.iDoc.window.getSelection) range = this.iDoc.window.getSelection().getRangeAt(0); //gecko, webkit, others?
+
+        /* run on delete to remove highlighted nodes */
+        this.onDelete(event, null, range)
+
+        /* prepare html */
+        var html = event.data.html;
+        
+        //remove line ids
+        html = html.gsub(/line_id="[^"]*"/, 'line_id=""');
+        //set as changed
+        html = html.gsub(/changed="[^"]*"/, 'changed="1"');
+        //clear id
+        html = html.gsub(/id="[^"]*"/, 'id=""');
+        //clear parent node id
+        html = html.gsub(/parent="[^"]*"/, 'parent=""');
+        //remove meta tags - necessary?
+        html = html.gsub(/<meta[^>]*>/, '');
+        event.data.html = html;
+    },
+
+    onClickNode: function(event, target, range) {},
+
+    onDragNode: function(event, target, range) {
+
+//        /* check for change in parents */
+//        Element.select(doc.outline.iDoc.document, '.outline_node').each(function(node) {
+//
+//            /* parent attribute setter */
+//            var parent = (node.parentNode.tagName != "UL")
+//                ? node.parentNode
+//                : node.parentNode.parentNode;
+//
+//            //set parent - if changed, treat node as new
+//            if (   node.getAttribute("parent")
+//                && node.getAttribute("parent") != parent.id) {
+//
+//                /* auto save */
+//                console.log('change in parents detected');
+//                doc.outline.autosave(true);
+//            }
+//        });
     }
 });
 
@@ -493,16 +747,6 @@ var cRightRail = Class.create({
                 //update
                 this.cards.get(node.id).update(node, truncate);
             }
-
-            /* parent attribute setter */
-            //@todo backend should be able to handle this, in which case sync
-            //      would not need to be run before save. the placement of this
-            //      logic here is ontologically flawed!
-            doc.outline.iDoc.document.body.setAttribute("id","node_0"); //@todo can be placed in outline initialization if this strat remains
-            var parent = (node.parentNode.tagName != "UL")
-                ? node.parentNode
-                : node.parentNode.parentNode;
-            node.setAttribute("parent", parent.id);
         }.bind(this));
 
         /* destroy cards if node no longer exists */
@@ -512,7 +756,6 @@ var cRightRail = Class.create({
             var node = doc.outline.iDoc.document.getElementById(nodeId);
             if (!node) card.destroy();
         });
-
     }
 });
 

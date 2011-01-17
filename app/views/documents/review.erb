@@ -6,7 +6,7 @@
     /<%= link_to @tag.name, '/#' + @tag.id.to_s %>/
   <% else %>
     /<%= link_to @document.tag.name, '/#%i' % @document.tag.id %>/
-    /<%= link_to @document.name, '/editor/%i' % @document.id %>
+    /<%= link_to @document.name, '/documents/%i/edit' % @document.id %>
   <% end %>
 </div>
 

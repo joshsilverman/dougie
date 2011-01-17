@@ -23,11 +23,11 @@ class DocumentsController < ApplicationController
     end
 
     @document = current_user.documents.create(:name => 'untitled', :tag_id => @tag.id)
-    redirect_to :action => 'read', :id => @document.id
+    redirect_to :action => 'edit', :id => @document.id
     
   end
   
-  def read
+  def edit
 
     #check id posted
     id = params[:id]
@@ -44,63 +44,72 @@ class DocumentsController < ApplicationController
     end
 
     @tag = current_user.tags.find_by_id(@document.tag_id)
+    @line_ids = Hash[*@document.lines.map {|line| [line.domid, line.id]}.flatten].to_json
     
   end
   
   def update
 
-    #f = open('tmp/benchmarks/doc-update.txt', 'a');
-    #f.puts("\n\n*** documents/update ***\n\n")
-    #start_time = Time.now
-
     id = params[:id]
     html = params[:html]
     delete_nodes = params[:delete_nodes]
+    new_nodes = params[:new_nodes] == 'true'
     @document = current_user.documents.find_by_id(id)
-    return nil if id.blank? || html.blank? || @document.blank? || delete_nodes.blank?
-
-    name = params[:name]
-    
-    # create new Nokogiri nodeset
-    dp = DocumentParser.new(html)
+#    @document = Document.includes(:lines).where(:id => id, :user_id => current_user.id).first //@todo combind existing lines query with this one
+    if id.blank? || html.blank? || @document.blank?
+      render :nothing => true, :status => 400
+      return
+    end
     
     # pull all existing document line
     existing_lines = @document.lines
 
+    # group transaction; track whether lines deleted
+    deleted_lines = false
     Line.transaction do
-      root = Line.find_or_create_by_document_id( :document_id => @document.id,
-                                                 :domid => Line.dom_id(0),
-                                                 :text => "root" )
-
-      #f.puts('Doc created:' + (Time.now - start_time).to_s + "\n")
-
-      Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
-
-      #f.puts('Lines updated:' + (Time.now - start_time).to_s + "\n")
-
-      Line.document_html = html
-      Line.preorder_save(dp.doc,@document.id)
-
-      #f.puts('Preorder save:' + (Time.now - start_time).to_s + "\n")
-
-      @document.update_attributes(:html => Line.document_html, :name => name)
-
-      #f.puts('Doc updated:' + (Time.now - start_time).to_s + "\n")
-
-      #delete nodes
-      unless delete_nodes == '[]'
-        Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes, @document.id])
+      # look for root in existing lines
+      root = nil
+      existing_lines.each do |line|
+        if line.domid == "node_0"
+          root = line
+          break
+        end
       end
 
-      #f.puts('Nodes delete:' + (Time.now - start_time).to_s + "\n")
+      # create root
+      if root.nil?
+        root = Line.create(:document_id => @document.id,:domid => "node_0",:text => "root" )
+      end
 
+      # run update line; store whether anything was changed
+      dp = DocumentParser.new(html)
+      Line.update_line(dp.doc,existing_lines) unless @document.html.blank?
+
+      Line.document_html = html
+      if (new_nodes)
+        Line.preorder_save(dp.doc,@document.id, {'node_0' => root})
+      end
+
+      @document.update_attributes(:html => Line.document_html, :name => params[:name])
+
+      # delete lines/mems (don't use destory_all with dependencies) - half as many queries; track whether deleted
+      deleted_lines = false
+      unless delete_nodes == '[]' || delete_nodes.nil? || delete_nodes == ''
+        deleted_lines = true
+        Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes.split(','), @document.id])
+        Mem.delete_all(["line_id IN (?)", delete_nodes.split(',')]) # belongs in model but I think before_delete would delete mems infividually
+      end
     end
 
-    hsh = Line.id_hash(@document)
-    
-    render :json => hsh
+    # refresh existing lines and create hash
+    if new_nodes || deleted_lines
+      lines = Line.find_all_by_document_id(id)
+    else
+      lines = existing_lines
+    end
 
-    #f.puts('Controller time:' + (Time.now - start_time).to_s + "\n")
+    # render {line.domid: line.id} hash
+    render :json => Hash[*lines.map {|line| [line.domid, line.id]}.flatten]
     
   end
   

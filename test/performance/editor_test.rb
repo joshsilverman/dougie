@@ -19,7 +19,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     # new document
     https!(false)
     get_via_redirect "/documents/create/1"
-    assert (path =~ /editor\/\d+/)
+    assert (path =~ /documents\/\d+\/edit/)
 
   end
 
@@ -31,6 +31,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     # 1.12, 1.14, 1.22 - 1.15 (combining preorder save and update_line queries into two transactions)
     # 1.05, 1.12, 1.02 -1.06 [2.47] (further combination of line/document transactions)
     # 1.02, 1.03 - [2.46] (only updating when changed)
+    # 963, 959 [2.39, 2.35] (stripped two queries from update)
 
     # login via https
     https!
@@ -43,15 +44,15 @@ class EditorTest < ActionDispatch::PerformanceTest
     # new document
     https!(false)
     get_via_redirect "/documents/create/1"
-    assert (path =~ /editor\/\d+/)
-    document_id = path.scan(/editor\/(\d+)/)[0][0]
+    assert (path =~ /documents\/\d+\/edit/)
+    document_id = path.scan(/documents\/(\d+)\/edit/)[0][0]
 
     # initial update document
     html = ''
     (1...80).to_a.each do |i|
       html += '<p id="node_%i" line_id="" changed="" class="outline_node" parent="node_0">%i</p>' % [i, i]
     end
-    post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    put 'documents/%i' % document_id, {:name => 'yo', :html => html, :new_nodes => 'true'}
     assert_response :success
 
   end
@@ -65,6 +66,7 @@ class EditorTest < ActionDispatch::PerformanceTest
     # 1.33, 1.33, 1.36 - 1.34 (combing preorder save and update_line queries into two transactions)
     # 1.17, 1.18, 1.15 - 1.17 [3.05] (further combination of line/document transactions)
     # 1.11, 1.11 [2.85] (only updating when changed)
+    # 1.07, 1.03 [2.79, 2.68] (stripped two queries from update)
 
     # login via https
     https!
@@ -77,20 +79,20 @@ class EditorTest < ActionDispatch::PerformanceTest
     # new document
     https!(false)
     get_via_redirect "/documents/create/1"
-    assert (path =~ /editor\/\d+/)
-    document_id = path.scan(/editor\/(\d+)/)[0][0]
+    assert (path =~ /documents\/\d+\/edit/)
+    document_id = path.scan(/documents\/(\d+)\/edit/)[0][0]
 
     # initial update document
     html = ''
     (1...80).to_a.each do |i|
       html += '<p id="node_%i" line_id="" changed="" class="outline_node" parent="node_0">%i</p>' % [i, i]
     end
-    post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    put 'documents/%i' % document_id, {:name => 'yo', :html => html, :new_nodes => 'true'}
     assert_response :success
 
     #augment
     html = Document.find(document_id).html + '<p id="node_81" line_id="" changed="" class="outline_node" parent="node_0">81</p>'
-    post 'documents/update', {:name => 'yo', :id => document_id, :html => html}
+    put 'documents/%i' % document_id, {:name => 'yo', :html => html, :new_nodes => 'true'}
     assert_response :success
 
   end

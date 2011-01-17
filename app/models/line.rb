@@ -2,30 +2,10 @@ class Line < ActiveRecord::Base
   
   acts_as_tree
   
-  has_many :mems
+  has_many :mems, :dependent => :destroy
   belongs_to :document
 
   cattr_accessor :document_html
-
-  def self.id_hash(document)
-    
-    return nil if document.blank?
-    
-    hsh = {}
-    
-    document.lines.each do |line|
-      
-      hsh[line.domid] = line.id unless line.domid.blank?
-    
-    end
-    hsh
-    
-  end
-  
-  def self.dom_id(num)
-    return "" if num.blank?
-    "node_#{num}"
-  end
 
   def self.active_mem?(status)
     status.to_s == "true"
@@ -62,7 +42,7 @@ class Line < ActiveRecord::Base
         Mem.create_standard({ :line_id => created_line.id,
                               :status => Line.active_mem?(parent.attr("active")),
                               :review_after => Time.now})
-                   
+
       elsif child.children.length > 0
           Line.preorder_save(child,document_id,saved_parents)
       end
@@ -94,7 +74,6 @@ class Line < ActiveRecord::Base
           # replace existing line text with incoming line text
           text = line.to_s.scan(/>([^<]*)/)[0][0].strip
           e_line.update_attribute(:text,text)
-
         end
       end
     end
