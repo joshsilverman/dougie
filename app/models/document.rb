@@ -26,7 +26,8 @@ class Document < ActiveRecord::Base
     # group transaction; track whether lines deleted
     deleted_lines = false
     Line.transaction do
-      # look for root in existing lines
+
+      # efficient find or create root using previous query
       root = nil
       existing_lines.each do |line|
         if line.domid == "node_0"
@@ -34,8 +35,6 @@ class Document < ActiveRecord::Base
           break
         end
       end
-
-      # create root
       if root.nil?
         root = Line.create(:document_id => document.id,:domid => "node_0",:text => "root" )
       end
@@ -49,6 +48,7 @@ class Document < ActiveRecord::Base
         Line.preorder_save(dp.doc,document.id, {'node_0' => root})
       end
 
+      # update denormalized html and name
       document.update_attributes(:html => Line.document_html, :name => params[:name])
 
       # delete lines/mems (don't use destory_all with dependencies) - half as many queries; tracks whether deleted
