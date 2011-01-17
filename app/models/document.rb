@@ -41,11 +41,11 @@ class Document < ActiveRecord::Base
 
       # run update line; store whether anything was changed
       dp = DocumentParser.new(html)
-      Line.update_line(dp.doc,existing_lines) unless document.html.blank?
+      Line.update_line(dp.doc,existing_lines,current_user) unless document.html.blank?
 
       Line.document_html = html
       if (new_nodes)
-        Line.preorder_save(dp.doc,document.id, {'node_0' => root})
+        Line.preorder_save(dp.doc,document.id, {'node_0' => root}, current_user)
       end
 
       # update denormalized html and name

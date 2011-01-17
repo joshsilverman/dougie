@@ -4,6 +4,7 @@ class CreateMems < ActiveRecord::Migration
       t.float :strength
       t.boolean :status
       t.integer :line_id
+      t.integer :user_id
       t.timestamp :review_after
       t.timestamps
     end

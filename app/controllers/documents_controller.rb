@@ -79,7 +79,7 @@ class DocumentsController < ApplicationController
 
   def review
 
-    #check params and document exists
+    # check params and document exists
     id = params[:id]
     if id.nil?
       render :nothing => true, :status => 400
@@ -88,11 +88,16 @@ class DocumentsController < ApplicationController
 
     @document = current_user.documents.find_by_id(id)
 
-    #get lines
+    # get lines
     @lines_json = Line.includes(:mems)\
                  .where(" lines.document_id = ?
                           AND lines.text <> 'root'
-                          AND mems.review_after < ?", params[:id], Time.now())\
+                          AND mems.status = true
+                          AND mems.user_id = ?
+                          AND mems.review_after < ?",
+                        params[:id],
+                        current_user.id,
+                        Time.now())\
                  .to_json :include => :mems
  
   end
