@@ -6,9 +6,11 @@ class TagsController < ApplicationController
 
     # create Misc tag if not exists
     
-    misc = Tag.find_by_misc(true)
+    misc = current_user.tags.find_by_misc(true)
     if misc.nil?
-      Tag.create(:misc => true, :name => 'Misc.')
+      Tag.create( :misc => true,
+                  :name => 'Misc.',
+                  :user_id => current_user.id)
     end
 
     @tags_json = Tag.tags_json(current_user)
