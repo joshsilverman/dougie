@@ -6,14 +6,6 @@ class Document < ActiveRecord::Base
 
   belongs_to :tag
   belongs_to :user
-  
-  before_save :document_name
-  
-  def document_name
-    if self.name.blank?
-      self.name = "#{Time.now.to_i}"
-    end
-  end
 
   def self.update(params, current_user)
 
@@ -59,7 +51,7 @@ class Document < ActiveRecord::Base
 
       document.update_attributes(:html => Line.document_html, :name => params[:name])
 
-      # delete lines/mems (don't use destory_all with dependencies) - half as many queries; track whether deleted
+      # delete lines/mems (don't use destory_all with dependencies) - half as many queries; tracks whether deleted
       deleted_lines = false
       unless delete_nodes == '[]' || delete_nodes.nil? || delete_nodes == ''
         deleted_lines = true
