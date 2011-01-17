@@ -205,15 +205,11 @@ var cOutline = Class.create({
                 this.deletingNodes = []
             }.bind(this)
         });
-
-        /* activate card */
-        document.observe('click', function(event) {
-           if(event.target.hasClassName('card_activation')) this.activateNode(event.target);
-        }.bind(this));
-
     },
 
     activateNode: function(checkbox) {
+
+        console.log('activate node');
 
         //vars
         var card = checkbox.up('.card');
@@ -229,6 +225,15 @@ var cOutline = Class.create({
             node.setAttribute('active', false);
             doc.rightRail.cards.get(nodeId).deactivate();
         }
+
+        /* autosave */
+        console.log('autosave after node activation');
+        node.setAttribute('changed', '1');
+        this.unsavedChanges.push(node.id);
+        this.autosave();
+
+        /* refocus on editor */
+        doc.editor.focus();
     },
 
     updateIds: function() {
@@ -692,6 +697,11 @@ var cRightRail = Class.create({
 
             /* sync */
             this.sync();
+
+            /* activate card */
+            document.observe('click', function(event) {
+               if(event.target.hasClassName('card_activation')) doc.outline.activateNode(event.target);
+            }.bind(this));
         }.bind(this));
     },
 
@@ -804,7 +814,7 @@ var cCard = Class.create({
 
     active: false,
     elmntCard: null,
-    elmntNode: null,
+    nodeId: null,
     updating: false,
 
     autoActivate: false,
@@ -814,8 +824,9 @@ var cCard = Class.create({
 
     initialize: function(node, cardCount, truncate, attributes) {
 
-        /* set count */
+        /* set count, nodeId */
         this.cardNumber = cardCount;
+        this.nodeId = node.id;
 
         /* set dom node attributes */
         var defaultAttributes = $H({'id': 'node_' + this.cardNumber,
@@ -893,6 +904,7 @@ var cCard = Class.create({
                 this.autoActivate = false;
                 this.activate();
                 this.elmntCard.down('input').checked = 'yes';
+                console.log('activate in render');
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
             }
         }
@@ -907,12 +919,16 @@ var cCard = Class.create({
                 this.autoActivated = false;
                 this.deactivate();
                 this.elmntCard.down('input').checked = '';
+                console.log('activate in render');
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', false);
             }
         }
 
         //no card to update
-        else console.log('error: cannot render - no card in dom to update')
+        else {
+            console.log('error: cannot render - no card in dom to update')
+            return;
+        }
 
     },
 
