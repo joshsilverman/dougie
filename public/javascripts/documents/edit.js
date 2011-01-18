@@ -262,12 +262,8 @@ var cOutline = Class.create({
         this.lineIds.each(function(idArray) {
 
             /* add id */
-            console.log('add id');
             if (this.iDoc.document.getElementById(idArray[1])) {
-                console.log('!');
-                console.log(this.iDoc.document.getElementById(idArray[1]));
                 this.iDoc.document.getElementById(idArray[1]).setAttribute('line_id', idArray[0]);
-                console.log(this.iDoc.document.getElementById(idArray[1]).getAttribute('line_id'));
             }
 
             /* remove line if no node has the associated node id */
@@ -299,8 +295,6 @@ var cOutline = Class.create({
             node.setAttribute("parent", parent.id);
 
             /* treat nodes that aren't in returned hash as new - set doc as changed */
-            console.log(this.lineIds.index(node.id));
-            console.log(node.getAttribute('line_id'));
             if (   this.lineIds.get(node.getAttribute('line_id'))
                 != node.id) {
 
@@ -413,8 +407,8 @@ var cOutlineHandlers = Class.create({
                     this.onHyphen(event, target, range);
 
             /* letter like keys */
-            else if (   event.keyCode >= 32 /* space */
-                     || event.keyCode >= 186 && event.keyCode <= 122 /* punc */
+            else if (   event.keyCode == 32 /* space */
+                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
                      || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
                      || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
                      || event.keyCode >= 107 && event.keyCode <= 111) /* math */
@@ -480,8 +474,8 @@ var cOutlineHandlers = Class.create({
             else if (189 == event.keyCode && range.startOffset == 0) ;
 
             /* letter like keys */
-            else if (   event.keyCode >= 32 /* space */
-                     || event.keyCode >= 186 && event.keyCode <= 122 /* punc */
+            else if (   event.keyCode == 32 /* space */
+                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
                      || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
                      || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
                      || event.keyCode >= 107 && event.keyCode <= 111) /* math */
@@ -630,6 +624,7 @@ var cOutlineHandlers = Class.create({
             /* not end of node */
             else {
                 doc.outline.unsavedChanges.push(target.id);
+                console.log('setting changed. target: ' + target);
                 target.setAttribute('changed', 1);
             }
         }

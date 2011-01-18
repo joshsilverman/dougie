@@ -42,7 +42,7 @@ class DocumentsController < ApplicationController
     end
 
     @tag = current_user.tags.find_by_id(@document.tag_id)
-    @line_ids = Hash[*@document.lines.map {|line| [line.domid, line.id]}.flatten].to_json
+    @line_ids = Hash[*@document.lines.map {|line| [line.id, line.domid]}.flatten].to_json
     
   end
   
