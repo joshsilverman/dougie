@@ -28,7 +28,8 @@ var cReviewer = Class.create({
         }.bind(this));
 
         /* show first */
-        this.cards[0].cue();
+        if (this.cards[0]) this.cards[0].cue();
+        else $('card_front').update("<i>No cards to review</i>");
         
         /* next listeners */
         $('strength_1').observe('click', this.next.bind(this, 1));
