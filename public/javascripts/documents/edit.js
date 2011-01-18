@@ -619,7 +619,6 @@ var cOutlineHandlers = Class.create({
                 doc.outline.unsavedChanges.push(target.id);
                 target.setAttribute('changed', 1);
             }
-
         }
 
         /* check for partial delete of first node in range */
@@ -629,7 +628,7 @@ var cOutlineHandlers = Class.create({
         }
 
         /* autosave */
-        console.log('delete autosave');
+        console.log('delete (or before char) autosave');
         doc.outline.autosave();
     },
 
