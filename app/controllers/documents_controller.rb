@@ -57,7 +57,7 @@ class DocumentsController < ApplicationController
     end
 
     # render {line.domid: line.id} hash
-    render :json => Hash[*@document.lines.map {|line| [line.domid, line.id]}.flatten]
+    render :json => Hash[*@document.lines.map {|line| [line.id, line.domid]}.flatten]
     
   end
   

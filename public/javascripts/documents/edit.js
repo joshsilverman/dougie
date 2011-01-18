@@ -262,14 +262,19 @@ var cOutline = Class.create({
         this.lineIds.each(function(idArray) {
 
             /* add id */
-            if (this.iDoc.document.getElementById(idArray[0]))
-                this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
+            console.log('add id');
+            if (this.iDoc.document.getElementById(idArray[1])) {
+                console.log('!');
+                console.log(this.iDoc.document.getElementById(idArray[1]));
+                this.iDoc.document.getElementById(idArray[1]).setAttribute('line_id', idArray[0]);
+                console.log(this.iDoc.document.getElementById(idArray[1]).getAttribute('line_id'));
+            }
 
             /* remove line if no node has the associated node id */
             else {
 
-                this.deleteNodes.push(idArray[1]);
-                console.log('deleting ' + idArray[1]);
+                this.deleteNodes.push(idArray[0]);
+                console.log('deleting ' + idArray[0]);
             }
         }.bind(this));
 
@@ -286,12 +291,20 @@ var cOutline = Class.create({
             if (   node.getAttribute("parent")
                 && node.getAttribute("parent") != parent.id) {
 
+                console.log('reset line id and id');
+                this.deleteNodes.push(node.getAttribute("line_id"));
                 node.setAttribute("line_id", '');
+                node.setAttribute("id", '');
             }
             node.setAttribute("parent", parent.id);
 
             /* treat nodes that aren't in returned hash as new - set doc as changed */
-            if (this.lineIds.get(node.id) != node.getAttribute('line_id')) {
+            console.log(this.lineIds.index(node.id));
+            console.log(node.getAttribute('line_id'));
+            if (   this.lineIds.get(node.getAttribute('line_id'))
+                != node.id) {
+
+                console.log('node not in hash; removing');
                 node.setAttribute('line_id', '');
                 this.unsavedChanges.push(node.id);
             }

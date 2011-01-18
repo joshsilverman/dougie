@@ -55,6 +55,7 @@ class Document < ActiveRecord::Base
       deleted_lines = false
       unless delete_nodes == '[]' || delete_nodes.nil? || delete_nodes == ''
         deleted_lines = true
+        # @todo delete_all does not need to act as tree here since child id's will be passed - not a big deal
         Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes.split(','), document.id])
         Mem.delete_all(["line_id IN (?)", delete_nodes.split(',')]) # belongs in model but I think before_delete would delete mems infividually
       end
