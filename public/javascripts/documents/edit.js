@@ -155,10 +155,16 @@ var cOutline = Class.create({
         saveButton.disabled = true;
         saveButton.innerHTML = 'Saving';
 
+        /* body outerHTML - workaround for firefox */
+        var body = this.iDoc.document.getElementsByTagName('body')[0];
+        var bodyClone = new Element('body', {'line_id': body.getAttribute('line_id'),
+                                                   'id': 'node_0'});
+        var bodyOuterHTML = bodyClone.update(body.innerHTML).wrap().innerHTML;
+
         /* save */
         new Ajax.Request('/documents/'+this.documentId, {
             method: 'put',
-            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].outerHTML,
+            parameters: {'html': bodyOuterHTML,
                          'name': $('document_name').value,
                          'delete_nodes': this.deleteNodes.toString(),
                          'new_nodes': this.newNodes},

@@ -78,7 +78,7 @@ class Line < ActiveRecord::Base
 
           # update mem status
           # @todo - combine into one query
-          status = (line.attr('active') == nil) ? 1 : 0
+          status = (line.attr('active') == nil) ? 0 : 1
           Mem.find(:first, :conditions => {:user_id => current_user.id, :line_id => e_line.id})\
                 .update_attribute(:status, status)
         end

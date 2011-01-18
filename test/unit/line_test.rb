@@ -901,5 +901,4 @@ class LineTest < ActiveSupport::TestCase
 
   end
 
-
 end
