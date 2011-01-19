@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.float    "strength"
     t.boolean  "status"
     t.integer  "line_id"
+    t.integer  "user_id"
     t.datetime "review_after"
     t.datetime "created_at"
     t.datetime "updated_at"

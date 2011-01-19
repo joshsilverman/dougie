@@ -86,7 +86,11 @@ class TagsController < ApplicationController
     @lines_json = Line.includes(:mems)\
                  .where("     lines.document_id IN (?)
                           AND lines.text <> 'root'
-                          AND mems.review_after < ?", document_ids, Time.now())\
+                          AND mems.user_id = ?
+                          AND mems.review_after < ?",
+                        document_ids, 
+                        current_user.id,
+                        Time.now())\
                  .to_json :include => :mems
 
     render '/documents/review'

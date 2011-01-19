@@ -153,7 +153,7 @@ var cOutline = Class.create({
         /* save */
         new Ajax.Request('/documents/'+this.documentId, {
             method: 'put',
-            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
+            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].outerHTML,
                          'name': $('document_name').value,
                          'delete_nodes': this.deleteNodes.toString(),
                          'new_nodes': this.newNodes},
@@ -205,15 +205,11 @@ var cOutline = Class.create({
                 this.deletingNodes = []
             }.bind(this)
         });
-
-        /* activate card */
-        document.observe('click', function(event) {
-           if(event.target.hasClassName('card_activation')) this.activateNode(event.target);
-        }.bind(this));
-
     },
 
     activateNode: function(checkbox) {
+
+        console.log('activate node');
 
         //vars
         var card = checkbox.up('.card');
@@ -229,6 +225,15 @@ var cOutline = Class.create({
             node.setAttribute('active', false);
             doc.rightRail.cards.get(nodeId).deactivate();
         }
+
+        /* autosave */
+        console.log('autosave after node activation');
+        node.setAttribute('changed', '1');
+        this.unsavedChanges.push(node.id);
+        this.autosave();
+
+        /* refocus on editor */
+        doc.editor.focus();
     },
 
     updateIds: function() {
@@ -249,6 +254,7 @@ var cOutline = Class.create({
 
             /* remove line if no node has the associated node id */
             else {
+
                 this.deleteNodes.push(idArray[1]);
                 console.log('deleting ' + idArray[1]);
             }
@@ -338,163 +344,116 @@ var cOutlineHandlers = Class.create({
 
         //keydown events
         if (event.type == "keydown") {
-            switch (event.keyCode) {
-                case Event.KEY_TAB:
-                    this.onTab(event, target, range);
-                    break;
-                case Event.KEY_DELETE:
-                    this.onDelete(event, target, range);
-                    break;
 
-                /* special backspace handling for highlighted text and beginning of nodes */
-                case Event.KEY_BACKSPACE:
-                    this.onBackspace(event, target, range);
-                    break;
+            if (event.keyCode == Event.KEY_TAB)
+                this.onTab(event, target, range);
 
-                /* incercept save - wait for keyup */
-                case 83:if (event.ctrlKey) {
-                    Event.stop(event);
-                    break;
-                }
+            else if (Event.KEY_DELETE == event.keyCode)
+                this.onDelete(event, target, range);
 
-                /* treat like letter */
-                case Event.KEY_RETURN:
-                    //this.onDelete(event, null, range);
-                    this.onLetter(event, target, range);
-                    break;
+            /* special backspace handling for highlighted text and beginning of nodes */
+            else if (Event.KEY_BACKSPACE == event.keyCode)
+                this.onBackspace(event, target, range);
 
-                /* intecept certain letters - take no action here */
-                case 67:if (event.ctrlKey) break; //copy
-                case 86:if (event.ctrlKey) break; //paste
-                case 88:if (event.ctrlKey) break; //cut
-                case 89:if (event.ctrlKey) break; //redo
-                case 90:if (event.ctrlKey) break; //undo
+            /* incercept save - wait for keyup */
+            else if(83 == event.keyCode && event.ctrlKey) Event.stop(event);
 
-                /* hyphen - make bulletedlist */
-                case 189:
-                    if (range.startOffset == 0) {
-                        this.onHyphen(event, target, range);
-                        break;
-                    }
+            /* intercept arrow events */
+            else if (   Event.KEY_UP == event.keyCode
+                     || Event.KEY_DOWN == event.keyCode
+                     || Event.KEY_LEFT == event.keyCode
+                     || Event.KEY_RIGHT == event.keyCode) ;
 
-                /* handles ranges of keys */
-                default:
+            /* treat like letter */
+            else if (Event.KEY_RETURN == event.keyCode)
+                this.onLetter(event, target, range);
 
-                    /* space */
-                    if (event.keyCode >= 32)
-                        this.onDelete(event, null, range);
+            /* intecept certain letters - take no action here */
+            else if (67 == event.keyCode && event.ctrlKey) ; //copy
+            else if (86 == event.keyCode && event.ctrlKey) ; //paste
+            else if (88 == event.keyCode && event.ctrlKey) ; //cut
+            else if (89 == event.keyCode && event.ctrlKey) ; //redo
+            else if (90 == event.keyCode && event.ctrlKey) ; //undo
 
-                    /* punc */
-                    else if (event.keyCode >= 186 && event.keyCode <= 122)
-                        this.onDelete(event, null, range);
+            /* hyphen - make bulletedlist */
+            else if (189 == event.keyCode && range.startOffset == 0)
+                    this.onHyphen(event, target, range);
 
-                    /* letters */
-                    else if (event.keyCode >= 65 && event.keyCode <= 90)
-                        this.onDelete(event, null, range);
+            /* letter like keys */
+            else if (   event.keyCode >= 32 /* space */
+                     || event.keyCode >= 186 && event.keyCode <= 122 /* punc */
+                     || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
+                     || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
+                     || event.keyCode >= 107 && event.keyCode <= 111) /* math */
 
-                    /* numbers */
-                    else if (event.keyCode >= 48 && event.keyCode <= 57)
-                        this.onDelete(event, null, range);
-
-                    /* math */
-                    else if (event.keyCode >= 107 && event.keyCode <= 111)
-                        this.onDelete(event, null, range);
-
-                    break;
-            }
+                this.onDelete(event, null, range);
         }
 
         //keyup events
         else {
 
-            switch (event.keyCode) {
-                //down event caught
-                case Event.KEY_TAB:break;
+            if (Event.KEY_TAB == event.keyCode) ; /* nothing */
 
-                /* return keyup target is new node */
-                case Event.KEY_RETURN:
-                    this.onDelete(event, null, range);
-                    this.onLetter(event, target, range);
-                    break;
-
-                case Event.KEY_UP:break;
-                case Event.KEY_DOWN:break;
-                case Event.KEY_LEFT:break;
-                case Event.KEY_RIGHT:break;
-                case 16:break; //shift
-                case 17:break; //ctrl
-
-                /* ordered list */
-                case 55:
-                    if (event.ctrlKey && event.shiftKey) {
-                        doc.editor.execCommand('numberedlist');
-                        doc.outline.autosave(true);
-                        break;
-                    }
-
-                /* unordered list */
-                case 56:
-                    if (event.ctrlKey && event.shiftKey) {
-                        doc.editor.execCommand('bulletedlist');
-                        doc.outline.autosave(true);
-                        break;
-                    }
-
-                /* intecept certain letters - take no action here */
-                case 67:if (event.ctrlKey) break; //copy
-                case 86:if (event.ctrlKey) break; //paste
-                case 88:if (event.ctrlKey) break; //cut
-
-                /* undo/redo trigger save */
-                //redo
-                case 89:if (event.ctrlKey) {
-                    console.log('redo autosave');
-                    doc.outline.autosave(true);
-                    break;
-                }
-                //undo
-                case 90:if (event.ctrlKey) {
-                    console.log('undo autosave');
-                    doc.outline.autosave(true);
-                    break;
-                }
-
-                /* save */
-                case 83:if (event.ctrlKey) {
-                    console.log('ctrl + s autosave');
-                    doc.outline.save();
-                    Event.stop(event);
-                    break;
-                }
-
-                /* hyphen - make bulletedlist - cancel keyup event*/
-                case 189:if (range.startOffset == 0) break;
-
-                /* handles ranges of keys */
-                default:
-
-                    /* space */
-                    if (event.keyCode >= 32)
-                        this.onLetter(event, target, range);
-
-                    /* punc */
-                    else if (event.keyCode >=186 && event.keyCode <=122)
-                        this.onLetter(event, target, range);
-
-                    /* letters */
-                    else if (event.keyCode >=65 && event.keyCode <=90)
-                        this.onLetter(event, target, range);
-
-                    /* numbers */
-                    else if (event.keyCode >=48 && event.keyCode <= 57)
-                        this.onLetter(event, target, range);
-
-                    /* operators */
-                    else if (event.keyCode >=107 && event.keyCode <=111)
-                        this.onLetter(event, target, range);
-
-                    break;
+            /* return keyup target is new node */
+            else if (Event.KEY_RETURN == event.keyCode) {
+                this.onDelete(event, null, range);
+                this.onLetter(event, target, range);
             }
+
+            /* intercept arrow events */
+            else if (   Event.KEY_UP == event.keyCode
+                     || Event.KEY_DOWN == event.keyCode
+                     || Event.KEY_LEFT == event.keyCode
+                     || Event.KEY_RIGHT == event.keyCode) ;
+
+            /* ordered list */
+            else if (55 == event.keyCode && event.ctrlKey && event.shiftKey) {
+                doc.editor.execCommand('numberedlist');
+                doc.outline.autosave(true);
+            }
+
+            /* unordered list */
+            else if (56 == event.keyCode && event.ctrlKey && event.shiftKey) {
+                doc.editor.execCommand('bulletedlist');
+                doc.outline.autosave(true);
+            }
+
+            /* intecept certain letters - take no action here */
+            else if (67 == event.keyCode && event.ctrlKey) ; //copy
+            else if (86 == event.keyCode && event.ctrlKey) ; //paste
+            else if (88 == event.keyCode && event.ctrlKey) ; //cut
+
+            /* undo/redo trigger save */
+            //redo
+            else if (89 == event.keyCode && event.ctrlKey) {
+                console.log('redo autosave');
+                doc.outline.autosave(true);
+            }
+
+            //undo
+            else if (90 == event.keyCode && event.ctrlKey) {
+                console.log('undo autosave');
+                doc.outline.autosave(true);
+            }
+
+            /* save */
+            else if (83 == event.keyCode && event.ctrlKey) {
+                console.log('ctrl + s save');
+                doc.outline.save(true);
+                Event.stop(event);
+            }
+
+            /* hyphen - make bulletedlist - cancel keyup event*/
+            else if (189 == event.keyCode && range.startOffset == 0) ;
+
+            /* letter like keys */
+            else if (   event.keyCode >= 32 /* space */
+                     || event.keyCode >= 186 && event.keyCode <= 122 /* punc */
+                     || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
+                     || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
+                     || event.keyCode >= 107 && event.keyCode <= 111) /* math */
+
+                this.onLetter(event, target, range);
         }
     },
 
@@ -738,6 +697,11 @@ var cRightRail = Class.create({
 
             /* sync */
             this.sync();
+
+            /* activate card */
+            document.observe('click', function(event) {
+               if(event.target.hasClassName('card_activation')) doc.outline.activateNode(event.target);
+            }.bind(this));
         }.bind(this));
     },
 
@@ -850,7 +814,7 @@ var cCard = Class.create({
 
     active: false,
     elmntCard: null,
-    elmntNode: null,
+    nodeId: null,
     updating: false,
 
     autoActivate: false,
@@ -860,8 +824,9 @@ var cCard = Class.create({
 
     initialize: function(node, cardCount, truncate, attributes) {
 
-        /* set count */
+        /* set count, nodeId */
         this.cardNumber = cardCount;
+        this.nodeId = node.id;
 
         /* set dom node attributes */
         var defaultAttributes = $H({'id': 'node_' + this.cardNumber,
@@ -939,6 +904,7 @@ var cCard = Class.create({
                 this.autoActivate = false;
                 this.activate();
                 this.elmntCard.down('input').checked = 'yes';
+                console.log('activate in render');
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
             }
         }
@@ -953,12 +919,16 @@ var cCard = Class.create({
                 this.autoActivated = false;
                 this.deactivate();
                 this.elmntCard.down('input').checked = '';
+                console.log('activate in render');
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', false);
             }
         }
 
         //no card to update
-        else console.log('error: cannot render - no card in dom to update')
+        else {
+            console.log('error: cannot render - no card in dom to update')
+            return;
+        }
 
     },
 
