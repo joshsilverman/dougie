@@ -7,13 +7,13 @@ class Document < ActiveRecord::Base
   belongs_to :tag
   belongs_to :user
 
-  def self.update(params, current_user)
+  def self.update(params, user_id)
 
     id = params[:id]
     html = params[:html]
     delete_nodes = params[:delete_nodes]
     new_nodes = params[:new_nodes] == 'true'
-    document = current_user.documents.find_by_id(id)
+    document = Document.find(:first, :conditions => {:id => id, :user_id => user_id})
 #    document = Document.includes(:lines).where(:id => id, :user_id => current_user.id).first //@todo combind existing lines query with this one
 
     if id.blank? || html.blank? || document.blank?
@@ -41,11 +41,11 @@ class Document < ActiveRecord::Base
 
       # run update line; store whether anything was changed
       dp = DocumentParser.new(html)
-      Line.update_line(dp.doc,existing_lines,current_user) unless document.html.blank?
+      Line.update_line(dp.doc,existing_lines,user_id) unless document.html.blank?
 
       Line.document_html = html
       if (new_nodes)
-        Line.preorder_save(dp.doc,document.id, {'node_0' => root}, current_user)
+        Line.preorder_save(dp.doc,document.id, {'node_0' => root}, user_id)
       end
 
       # update denormalized html and name

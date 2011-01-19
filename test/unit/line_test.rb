@@ -32,11 +32,11 @@ class LineTest < ActiveSupport::TestCase
 
     #save
     document = Document.find_or_create_by_name(name)
-    Line.create(:text => "root", :domid => 0, :document_id => document.id)
+    root = Line.create(:text => "root", :domid => 0, :document_id => document.id)
     
     dp = DocumentsHelper::DocumentParser.new(html)
     Line.document_html = html
-    Line.preorder_save(dp.doc, document.id)
+    Line.preorder_save(dp.doc, document.id, {'node_0' => root}, 1)
 
     #get recently saved
     document = Document.find_by_name(name)
@@ -95,11 +95,11 @@ class LineTest < ActiveSupport::TestCase
                           :text => "root" )
 
       unless document[0].html.blank?
-        Line.update_line(dp.doc,existing_lines)
+        Line.update_line(dp.doc,existing_lines,1)
       end
 
       Line.document_html = html[0]
-      Line.preorder_save(dp.doc, document[0].id)
+      Line.preorder_save(dp.doc, document[0].id, {'node_0' => root}, 1)
       document[0].update_attribute(:html, Line.document_html)
 
       line_id = Line.where("text = 'root'").order("created_at DESC").first.id
@@ -130,7 +130,7 @@ class LineTest < ActiveSupport::TestCase
       existing_lines = document[1].lines
 
       unless document[1].html.blank?
-        Line.update_line(dp.doc,existing_lines)
+        Line.update_line(dp.doc,existing_lines,1)
       end 
 
       document[1].update_attribute(:html,html[1])
@@ -180,11 +180,11 @@ class LineTest < ActiveSupport::TestCase
                           :text => "root" )
 
       unless document[0].html.blank?
-        Line.update_line(dp.doc,existing_lines)
+        Line.update_line(dp.doc,existing_lines,1)
       end
 
       Line.document_html = html[0]
-      Line.preorder_save(dp.doc, document[0].id)
+      Line.preorder_save(dp.doc, document[0].id, {'node_0' => root}, 1)
       document[0].update_attribute(:html,Line.document_html)
 
       lines = Line.find_all_by_document_id(document[0].id)
@@ -225,11 +225,11 @@ class LineTest < ActiveSupport::TestCase
       existing_lines = document[1].lines
       
       unless document[1].html.blank?
-        Line.update_line(dp.doc,existing_lines)
+        Line.update_line(dp.doc,existing_lines,1)
       end
 
       Line.document_html = html[1]
-      Line.preorder_save(dp.doc, document[1].id)
+      Line.preorder_save(dp.doc, document[1].id, {'node_0' => root}, 1)
       document[1].update_attribute(:html,Line.document_html)
 
       lines = Line.find_all_by_document_id(document[0].id)
@@ -273,11 +273,11 @@ class LineTest < ActiveSupport::TestCase
                           :text => "root" )
 
       unless document[0].html.blank?
-        Line.update_line(dp.doc,existing_lines)
+        Line.update_line(dp.doc,existing_lines,1)
       end
       
       Line.document_html = html[0]
-      Line.preorder_save(dp[0].doc,document[0].id)
+      Line.preorder_save(dp[0].doc,document[0].id, {'node_0' => root}, 1)
       document[0].update_attribute(:html,Line.document_html)
       
       assert_equal(5,document[0].lines.length)
@@ -315,11 +315,11 @@ class LineTest < ActiveSupport::TestCase
         existing_lines = document[1].lines
 
         unless document[1].html.blank?
-          Line.update_line(dp[1].doc,existing_lines)
+          Line.update_line(dp[1].doc,existing_lines,1)
         end
 
         Line.document_html = html[1]
-        Line.preorder_save(dp[1].doc, document[1].id)
+        Line.preorder_save(dp[1].doc, document[1].id, {'node_0' => root}, 1)
         document[1].update_attribute(:html,Line.document_html)
 
         lines = Line.find_all_by_document_id(document[0].id)
@@ -378,11 +378,11 @@ class LineTest < ActiveSupport::TestCase
                           :text => "root" )
 
       unless document[0].html.blank?
-        Line.update_line(dp.doc,existing_lines)
+        Line.update_line(dp.doc,existing_lines,1)
       end
       
       Line.document_html = html[0]
-      Line.preorder_save(dp[0].doc,document[0].id)
+      Line.preorder_save(dp[0].doc,document[0].id, {'node_0' => root}, 1)
       document[0].update_attribute(:html,Line.document_html)
       
       assert_equal(11,document[0].lines.length)
@@ -442,11 +442,11 @@ class LineTest < ActiveSupport::TestCase
         existing_lines = document[1].lines
 
         unless document[1].html.blank?
-          Line.update_line(dp[1].doc,existing_lines)
+          Line.update_line(dp[1].doc,existing_lines,1)
         end
 
         Line.document_html = html[1]
-        Line.preorder_save(dp[1].doc,document[1].id)
+        Line.preorder_save(dp[1].doc,document[1].id, {'node_0' => root}, 1)
         document[1].update_attribute(:html,Line.document_html)
 
         #cardinality
@@ -515,14 +515,14 @@ class LineTest < ActiveSupport::TestCase
 
     #save
     document = Document.find_or_create_by_name(name)
-    Line.create(:text => "root", :domid => 'node_0', :document_id => document.id)
+    root = Line.create(:text => "root", :domid => 'node_0', :document_id => document.id)
 
 #    unless document.html.blank?
-#      Line.update_line(dp.doc,existing_lines)
+#      Line.update_line(dp.doc,existing_lines,1)
 #    end
 
     dp = DocumentsHelper::DocumentParser.new(html)
-    Line.preorder_save(dp.doc, document.id)
+    Line.preorder_save(dp.doc, document.id, {'node_0' => root}, 1)
 
     #get recently saved
     document = Document.find_by_name(name)
@@ -588,10 +588,10 @@ class LineTest < ActiveSupport::TestCase
 
     #save
     document = Document.find_or_create_by_name(name)
-    Line.create(:text => "root", :domid => 0, :document_id => document.id)
+    root = Line.create(:text => "root", :domid => 0, :document_id => document.id)
 
     dp = DocumentsHelper::DocumentParser.new(html)
-    Line.preorder_save(dp.doc, document.id)
+    Line.preorder_save(dp.doc, document.id, {'node_0' => root}, 1)
 
     #get recently saved
     document = Document.find_by_name(name)
@@ -648,10 +648,10 @@ class LineTest < ActiveSupport::TestCase
 
     #save
     document = Document.find_or_create_by_name(name)
-    Line.create(:text => "root", :domid => 0, :document_id => document.id)
+    root = Line.create(:text => "root", :domid => 0, :document_id => document.id)
 
     dp = DocumentsHelper::DocumentParser.new(html)
-    Line.preorder_save(dp.doc, document.id)
+    Line.preorder_save(dp.doc, document.id, {'node_0' => root}, 1)
 
     #get recently saved
     document = Document.find_by_name(name)
@@ -694,12 +694,12 @@ class LineTest < ActiveSupport::TestCase
 
     #save
     document = Document.find_or_create_by_name(name)
-    Line.create(:text => "root", :domid => 0, :document_id => document.id)
+    root = Line.create(:text => "root", :domid => 0, :document_id => document.id)
 
     dp = DocumentsHelper::DocumentParser.new(html)
 
     Line.document_html = html
-    Line.preorder_save(dp.doc,document.id)
+    Line.preorder_save(dp.doc,document.id, {'node_0' => root}, 1)
     document.update_attribute(:html,Line.document_html)
 
     #get recently saved
@@ -812,11 +812,11 @@ class LineTest < ActiveSupport::TestCase
                           :text => "root" )
 
       unless document[0].html.blank?
-        Line.update_line(dp.doc,existing_lines)
+        Line.update_line(dp.doc,existing_lines,1)
       end
 
       Line.document_html = html[0]
-      Line.preorder_save(dp.doc, document[0].id)
+      Line.preorder_save(dp.doc, document[0].id, {'node_0' => root}, 1)
       document[0].update_attribute(:html,Line.document_html)
 
       line_id = Line.first.id
@@ -891,7 +891,7 @@ class LineTest < ActiveSupport::TestCase
       existing_lines = document[1].lines
 
       unless document[1].html.blank?
-        Line.update_line(dp.doc,existing_lines)
+        Line.update_line(dp.doc,existing_lines,1)
       end
 
 #      document[1].update_attribute(:html,html[1])
