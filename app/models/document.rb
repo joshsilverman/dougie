@@ -9,13 +9,13 @@ class Document < ActiveRecord::Base
   belongs_to :tag
   belongs_to :user
 
-  def self.update(params, current_user)
+  def self.update(params, user_id)
 
     id = params[:id]
     html = params[:html]
     delete_nodes = params[:delete_nodes]
     new_nodes = params[:new_nodes] == 'true'
-    document = current_user.documents.find_by_id(id)
+    document = Document.find(:first, :conditions => {:id => id, :user_id => user_id})
 #    document = Document.includes(:lines).where(:id => id, :user_id => current_user.id).first //@todo combind existing lines query with this one
 
     if id.blank? || html.blank? || document.blank?
@@ -43,11 +43,11 @@ class Document < ActiveRecord::Base
 
       # run update line; store whether anything was changed
       dp = DocumentParser.new(html)
-      Line.update_line(dp.doc,existing_lines,current_user) unless document.html.blank?
+      Line.update_line(dp.doc,existing_lines,user_id) unless document.html.blank?
 
       Line.document_html = html
       if (new_nodes)
-        Line.preorder_save(dp.doc,document.id, {'node_0' => root}, current_user)
+        Line.preorder_save(dp.doc,document.id, {'node_0' => root}, user_id)
       end
 
       # update denormalized html and name
@@ -57,6 +57,7 @@ class Document < ActiveRecord::Base
       deleted_lines = false
       unless delete_nodes == '[]' || delete_nodes.nil? || delete_nodes == ''
         deleted_lines = true
+        # @todo delete_all does not need to act as tree here since child id's will be passed - not a big deal
         Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes.split(','), document.id])
         Mem.delete_all(["line_id IN (?)", delete_nodes.split(',')]) # belongs in model but I think before_delete would delete mems infividually
       end

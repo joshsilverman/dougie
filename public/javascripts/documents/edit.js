@@ -115,6 +115,11 @@ var cOutline = Class.create({
 
         /* save button styling */
         $('save_button').innerHTML = 'Save';
+
+        /* navigate away while saving warning */
+        window.onbeforeunload = function(e){
+            return 'There is unsaved information on this page.';
+        }
     },
 
     save: function(force) {
@@ -128,7 +133,7 @@ var cOutline = Class.create({
         /* look for new lines and deleted lines */
         doc.outline.updateIds();
 
-        /* don't save if nothing changed */
+        /* don't save if nothing changed or save not being forced */
         var saveButton = $('save_button');
         if (   this.unsavedChanges.length == 0
             && this.deleteNodes.length == 0
@@ -150,10 +155,16 @@ var cOutline = Class.create({
         saveButton.disabled = true;
         saveButton.innerHTML = 'Saving';
 
+        /* body outerHTML - workaround for firefox */
+        var body = this.iDoc.document.getElementsByTagName('body')[0];
+        var bodyClone = new Element('body', {'line_id': body.getAttribute('line_id'),
+                                                   'id': 'node_0'});
+        var bodyOuterHTML = bodyClone.update(body.innerHTML).wrap().innerHTML;
+
         /* save */
         new Ajax.Request('/documents/'+this.documentId, {
             method: 'put',
-            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].outerHTML,
+            parameters: {'html': bodyOuterHTML,
                          'name': $('document_name').value,
                          'delete_nodes': this.deleteNodes.toString(),
                          'new_nodes': this.newNodes},
@@ -171,6 +182,7 @@ var cOutline = Class.create({
                 /* track nodes being delete, clear nodes to be deleted */
                 this.deletingNodes = this.deleteNodes;
                 this.deleteNodes = [];
+
             }.bind(this),
 
             onSuccess: function(transport) {
@@ -179,6 +191,13 @@ var cOutline = Class.create({
                 
                 /* set new nodes to false */
                 this.newNodes = false;
+
+                /* save button styling */
+                saveButton.disabled = false;
+                saveButton.innerHTML = 'Saved';
+
+                /* cancel navigate away while saving warning */
+                window.onbeforeunload = null;
             }.bind(this),
 
             onFailure: function() {
@@ -192,13 +211,16 @@ var cOutline = Class.create({
 
                 /* add unsuccessfully deleted back to deleteNodes */
                 this.deleteNodes = this.deleteNodes.concat(this.deletingNodes);
-            }.bind(this),
-
-            onComplete: function() {
 
                 /* save button styling */
                 saveButton.disabled = false;
-                saveButton.innerHTML = 'Saved';
+                saveButton.innerHTML = 'Save';
+                this.autosave();
+
+                console.log('error: unable to save');
+            }.bind(this),
+
+            onComplete: function() {
 
                 /* clear saving changes */
                 this.savingChanges = []
@@ -208,8 +230,6 @@ var cOutline = Class.create({
     },
 
     activateNode: function(checkbox) {
-
-        console.log('activate node');
 
         //vars
         var card = checkbox.up('.card');
@@ -227,7 +247,6 @@ var cOutline = Class.create({
         }
 
         /* autosave */
-        console.log('autosave after node activation');
         node.setAttribute('changed', '1');
         this.unsavedChanges.push(node.id);
         this.autosave();
@@ -249,14 +268,15 @@ var cOutline = Class.create({
         this.lineIds.each(function(idArray) {
 
             /* add id */
-            if (this.iDoc.document.getElementById(idArray[0]))
-                this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
+            if (this.iDoc.document.getElementById(idArray[1])) {
+                this.iDoc.document.getElementById(idArray[1]).setAttribute('line_id', idArray[0]);
+            }
 
             /* remove line if no node has the associated node id */
             else {
 
-                this.deleteNodes.push(idArray[1]);
-                console.log('deleting ' + idArray[1]);
+                this.deleteNodes.push(idArray[0]);
+                console.log('deleting ' + idArray[0]);
             }
         }.bind(this));
 
@@ -273,14 +293,27 @@ var cOutline = Class.create({
             if (   node.getAttribute("parent")
                 && node.getAttribute("parent") != parent.id) {
 
+                console.log('reset line id and id');
+                this.deleteNodes.push(node.getAttribute("line_id"));
                 node.setAttribute("line_id", '');
+                node.setAttribute("id", '');
             }
-            
             node.setAttribute("parent", parent.id);
 
             /* treat nodes that aren't in returned hash as new - set doc as changed */
-            if (this.lineIds.get(node.id) != node.getAttribute('line_id')) {
+            if (   this.lineIds.get(node.getAttribute('line_id'))
+                != node.id) {
+
+                console.log('node not in hash; removing');
                 node.setAttribute('line_id', '');
+                this.unsavedChanges.push(node.id);
+            }
+
+            /* assure all changed nodes in unsavedChanges - shouldn't be necessary */
+            if (   node.getAttribute('changed') == '1'
+                && this.unsavedChanges.indexOf(node.id) == -1) {
+
+                console.log('adding node to unsavedChanges: ' + node.id);
                 this.unsavedChanges.push(node.id);
             }
 
@@ -380,8 +413,8 @@ var cOutlineHandlers = Class.create({
                     this.onHyphen(event, target, range);
 
             /* letter like keys */
-            else if (   event.keyCode >= 32 /* space */
-                     || event.keyCode >= 186 && event.keyCode <= 122 /* punc */
+            else if (   event.keyCode == 32 /* space */
+                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
                      || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
                      || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
                      || event.keyCode >= 107 && event.keyCode <= 111) /* math */
@@ -447,8 +480,8 @@ var cOutlineHandlers = Class.create({
             else if (189 == event.keyCode && range.startOffset == 0) ;
 
             /* letter like keys */
-            else if (   event.keyCode >= 32 /* space */
-                     || event.keyCode >= 186 && event.keyCode <= 122 /* punc */
+            else if (   event.keyCode == 32 /* space */
+                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
                      || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
                      || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
                      || event.keyCode >= 107 && event.keyCode <= 111) /* math */
@@ -597,9 +630,9 @@ var cOutlineHandlers = Class.create({
             /* not end of node */
             else {
                 doc.outline.unsavedChanges.push(target.id);
+                console.log('setting changed. target: ' + target);
                 target.setAttribute('changed', 1);
             }
-
         }
 
         /* check for partial delete of first node in range */
@@ -609,7 +642,7 @@ var cOutlineHandlers = Class.create({
         }
 
         /* autosave */
-        console.log('delete autosave');
+        console.log('delete (or before char) autosave');
         doc.outline.autosave();
     },
 

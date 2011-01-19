@@ -11,7 +11,7 @@ class Line < ActiveRecord::Base
     status.to_s == "true"
   end
   
-  def self.preorder_save(lines,document_id,saved_parents,current_user)
+  def self.preorder_save(lines,document_id,saved_parents,user_id)
     
     lines.children.each do |child|
 
@@ -39,19 +39,19 @@ class Line < ActiveRecord::Base
         @@document_html.gsub!(/((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
 
         # pass in hash of properties to be merged when creating a Mem
-        Mem.create_standard({ :user_id => current_user.id,
+        Mem.create_standard({ :user_id => user_id,
                               :line_id => created_line.id,
                               :status => parent.attr("active") == 'true',
                               :review_after => Time.now})
 
       elsif child.children.length > 0
-          Line.preorder_save(child,document_id,saved_parents,current_user)
+          Line.preorder_save(child,document_id,saved_parents,user_id)
       end
     end
     
   end
   
-  def self.update_line(lines,existing_lines, current_user)
+  def self.update_line(lines,existing_lines,user_id)
 
     existing_lines_hash = {}
     existing_lines.each do |e_line|
@@ -78,9 +78,9 @@ class Line < ActiveRecord::Base
 
           # update mem status
           # @todo - combine into one query
-          Mem.where(:user_id => current_user.id, :line_id => e_line.id)\
-                .first\
-                .update_attribute(:status, line.attr('active'))
+          status = (line.attr('active') == nil) ? 0 : 1
+          Mem.find(:first, :conditions => {:user_id => user_id, :line_id => e_line.id})\
+                .update_attribute(:status, status)
         end
       end
     end
