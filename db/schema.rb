@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.datetime "updated_at"
   end
 
+  add_index "documents", ["tag_id"], :name => "index_documents_on_tag_id"
+  add_index "documents", ["user_id"], :name => "index_documents_on_user_id"
+
   create_table "lines", :force => true do |t|
     t.text     "text"
     t.string   "domid"
@@ -29,6 +32,9 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "lines", ["document_id"], :name => "index_lines_on_document_id"
+  add_index "lines", ["parent_id"], :name => "index_lines_on_parent_id"
 
   create_table "mems", :force => true do |t|
     t.float    "strength"
@@ -40,6 +46,9 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.datetime "updated_at"
   end
 
+  add_index "mems", ["line_id"], :name => "index_mems_on_line_id"
+  add_index "mems", ["user_id"], :name => "index_mems_on_user_id"
+
   create_table "tags", :force => true do |t|
     t.string   "name"
     t.boolean  "misc"
@@ -47,6 +56,8 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "tags", ["user_id"], :name => "index_tags_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -62,13 +73,22 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.string   "last_sign_in_ip"
     t.string   "first_name"
     t.string   "last_name"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.integer  "failed_attempts",                     :default => 0
+    t.string   "unlock_token"
+    t.datetime "locked_at"
+    t.string   "authentication_token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["first_name"], :name => "index_users_on_first_name"
   add_index "users", ["last_name"], :name => "index_users_on_last_name"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+  add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
 
 end
