@@ -229,6 +229,6 @@ var cProgressBar = Class.create({
 
 /* global objects */
 document.observe('dom:loaded', function() {
-    parser = new cParser();
+    parser = new cParser(); //@todo move to doc object
     doc = new cDoc();
 });
