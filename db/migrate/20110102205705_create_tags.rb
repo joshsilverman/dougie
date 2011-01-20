@@ -6,6 +6,8 @@ class CreateTags < ActiveRecord::Migration
       t.integer :user_id
       t.timestamps
     end
+
+    add_index :tags, :user_id
   end
 
   def self.down

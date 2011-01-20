@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.datetime "updated_at"
   end
 
+  add_index "documents", ["tag_id"], :name => "index_documents_on_tag_id"
+  add_index "documents", ["user_id"], :name => "index_documents_on_user_id"
+
   create_table "lines", :force => true do |t|
     t.text     "text"
     t.string   "domid"
@@ -29,6 +32,9 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "lines", ["document_id"], :name => "index_lines_on_document_id"
+  add_index "lines", ["parent_id"], :name => "index_lines_on_parent_id"
 
   create_table "mems", :force => true do |t|
     t.float    "strength"
@@ -40,6 +46,8 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.datetime "updated_at"
   end
 
+  add_index "mems", ["line_id"], :name => "index_mems_on_line_id"
+
   create_table "tags", :force => true do |t|
     t.string   "name"
     t.boolean  "misc"
@@ -47,6 +55,8 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "tags", ["user_id"], :name => "index_tags_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false

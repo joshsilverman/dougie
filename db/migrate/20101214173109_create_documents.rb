@@ -7,6 +7,9 @@ class CreateDocuments < ActiveRecord::Migration
       t.integer :user_id
       t.timestamps
     end
+
+    add_index :documents, :tag_id
+    add_index :documents, :user_id
   end
 
   def self.down
