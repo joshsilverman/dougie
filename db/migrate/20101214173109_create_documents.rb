@@ -5,7 +5,7 @@ class CreateDocuments < ActiveRecord::Migration
       t.text :html
       t.integer :tag_id
       t.integer :user_id
-      t.timestamps
+      t.timestamps  
     end
 
     add_index :documents, :tag_id

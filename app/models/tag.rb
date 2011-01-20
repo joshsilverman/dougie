@@ -1,5 +1,7 @@
 class Tag < ActiveRecord::Base
-
+  
+  validates_length_of :name, :minimum => 1, :message => "Name cannot be blank."
+  
   has_many :documents, :dependent => :destroy
   belongs_to :user
 

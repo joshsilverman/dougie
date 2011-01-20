@@ -1,5 +1,7 @@
 class Document < ActiveRecord::Base
 
+  validates_length_of :name, :minimum => 1, :message => "Name cannot be blank."
+
   include DocumentsHelper
 
   has_many :lines, :dependent => :destroy
