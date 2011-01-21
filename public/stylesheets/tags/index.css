@@ -75,3 +75,15 @@
     background-image: url(/images/shared/up-arrow.gif);
     background-position: 0 1px;
 }
+
+#edit_directory_name {
+    font-size:80%;
+    text-decoration:underline;
+    color:blue;
+}
+
+#edit_directory_name:hover {
+    font-size:80%;
+    text-decoration:underline;
+    cursor:pointer;
+}

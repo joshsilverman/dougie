@@ -188,6 +188,7 @@ var cDirectoryView = Class.create({
 
         /* request params */
         var tagName = prompt('What would you like to name the new directory?');
+        if (!tagName) return;
 
         /* request */
         new Ajax.Request('/tags', {
@@ -345,7 +346,8 @@ var cDocumentsView = Class.create({
     render: function() {
         
         /* render view and title*/
-        $('directory_name').update('/' + this.tag.name + '/');
+        var dirInput = this.tag.name + " <span id='edit_directory_name'>[Edit Name]</span>"
+        $('directory_name').update('/' + dirInput + '/');
         $('icons').update(this.html);
 
         /* remove old sort listeners/classes; add new classes */
@@ -356,6 +358,7 @@ var cDocumentsView = Class.create({
         });
         $('sort_by_' + this.sortBy).addClassName('active');
         if (this.reverse) $('sort_by_' + this.sortBy).addClassName('reverse');
+        $('edit_directory_name').stopObserving();
 
         /* listeners */
 
@@ -373,6 +376,9 @@ var cDocumentsView = Class.create({
         $$('.remove_document').each(function(element) {
             element.observe('click', this.destroyDocument.bind(this));
         }.bind(this));
+
+        //edit dir name listeners
+        $('edit_directory_name').observe('click', this.editDirName.bind(this));
 
         /* sort listeners */
         $('sort_by_updated_at').observe('click', function() {
@@ -412,6 +418,31 @@ var cDocumentsView = Class.create({
             }.bind(this),
             onFailure: function(transport) {
                 alert('There was an error removing the directory.');
+            }
+        });
+    },
+
+    editDirName: function() {
+
+        /* request params */
+        var tagName = prompt('What would you like to rename the directory?');
+        if (!tagName) return;
+        
+        /* request */
+        new Ajax.Request('/tags/' + doc.currentView, {
+            method: 'put',
+            parameters: {'name': tagName,
+                         'id': doc.currentView},
+            onSuccess: function(transport) {
+
+                /* inject json and rerender document */
+                // @todo clear area for optimization at if latency becomes a problem
+                $('tags_json').update(Object.toJSON(transport.responseJSON));
+                doc = new cDoc;
+                doc.onChange();
+            },
+            onFailure: function(transport) {
+                alert('There was an error updating the directory name.');
             }
         });
     },
