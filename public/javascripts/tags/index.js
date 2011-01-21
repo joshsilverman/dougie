@@ -346,8 +346,11 @@ var cDocumentsView = Class.create({
     render: function() {
         
         /* render view and title*/
-        var dirInput = this.tag.name + " <span id='edit_directory_name'>[Edit Name]</span>"
-        $('directory_name').update('/' + dirInput + '/');
+        console.log(this.tag);
+        var dirName;
+        if (this.tag.misc) dirName = this.tag.name
+        else dirName = this.tag.name + " <span id='edit_directory_name'>[Edit Name]</span>"
+        $('directory_name').update('/' + dirName + '/');
         $('icons').update(this.html);
 
         /* remove old sort listeners/classes; add new classes */
@@ -358,7 +361,8 @@ var cDocumentsView = Class.create({
         });
         $('sort_by_' + this.sortBy).addClassName('active');
         if (this.reverse) $('sort_by_' + this.sortBy).addClassName('reverse');
-        $('edit_directory_name').stopObserving();
+        var edit_directory_name = $('edit_directory_name');
+        if (edit_directory_name) edit_directory_name.stopObserving();
 
         /* listeners */
 
@@ -378,7 +382,7 @@ var cDocumentsView = Class.create({
         }.bind(this));
 
         //edit dir name listeners
-        $('edit_directory_name').observe('click', this.editDirName.bind(this));
+        if (edit_directory_name) edit_directory_name.observe('click', this.editDirName.bind(this));
 
         /* sort listeners */
         $('sort_by_updated_at').observe('click', function() {
