@@ -1,6 +1,9 @@
 class Tag < ActiveRecord::Base
   
-  validates_length_of :name, :minimum => 1, :message => "Name cannot be blank."
+  validates :name, :length => {:within => [1,30],
+                               :message => "Name must be between 1-30 characters"},
+                   :format => {:with => /[a-zA-Z0-9-&%$\#+\(\)*^@!.]/,
+                               :message => "Pleas use only letters numbers and (!@#\$%^&*-+)"}
   
   has_many :documents, :dependent => :destroy
   belongs_to :user

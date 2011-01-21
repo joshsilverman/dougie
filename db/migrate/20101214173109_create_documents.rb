@@ -1,7 +1,7 @@
 class CreateDocuments < ActiveRecord::Migration
   def self.up
     create_table :documents do |t|
-      t.string :name
+      t.string :name, :limit => 45
       t.text :html
       t.integer :tag_id
       t.integer :user_id

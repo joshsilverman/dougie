@@ -23,17 +23,19 @@ class TagsController < ApplicationController
 
   def create
 
-    #param check
+    #params
     name = params[:name]
-    if name.nil?
-      render :nothing => true, :status => 400
-      return
-    end
 
     #create
     Tag.transaction do
-      current_user.tags.create(:name => name)
-      render :json => Tag.tags_json(current_user)
+      tag = current_user.tags.create(:name => params[:name])
+
+      if tag.nil?
+        render :nothing => true, :status => 400
+        return
+      else
+        render :json => Tag.tags_json(current_user)
+      end
     end
 
   end

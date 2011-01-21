@@ -346,7 +346,6 @@ var cDocumentsView = Class.create({
     render: function() {
         
         /* render view and title*/
-        console.log(this.tag);
         var dirName;
         if (this.tag.misc) dirName = this.tag.name
         else dirName = this.tag.name + " <span id='edit_directory_name'>[Edit Name]</span>"

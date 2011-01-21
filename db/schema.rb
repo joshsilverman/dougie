@@ -13,7 +13,7 @@
 ActiveRecord::Schema.define(:version => 20110106193056) do
 
   create_table "documents", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 45
     t.text     "html"
     t.integer  "tag_id"
     t.integer  "user_id"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
   add_index "mems", ["line_id"], :name => "index_mems_on_line_id"
 
   create_table "tags", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 45
     t.boolean  "misc"
     t.integer  "user_id"
     t.datetime "created_at"
