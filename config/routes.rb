@@ -70,7 +70,7 @@ Dougie::Application.routes.draw do
   match "/mems/update/:id/:confidence/:importance" => "mems#update"
   
   # organizer
-  resources :tags, :only => [:destroy, :create]
+  resources :tags, :only => [:destroy, :create, :update]
   match "/" => "tags#index" #** public **#
   match "/tags/json" => "tags#json"
 

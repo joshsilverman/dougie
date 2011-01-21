@@ -38,6 +38,27 @@ class TagsController < ApplicationController
 
   end
 
+  def update
+
+    #param check
+    if params[:name].nil?
+      render :nothing => true, :status => 400
+      return
+    end
+
+    #create
+    Tag.transaction do
+      tag = current_user.tags.where('misc IS NULL AND id = ?', params[:id]).first
+      if tag.nil?
+        render :nothing => true, :status => 403
+      else
+        tag.update_attribute(:name, params[:name])
+        render :json => Tag.tags_json(current_user)
+      end
+    end
+
+  end
+
   def destroy
 
     #param check
