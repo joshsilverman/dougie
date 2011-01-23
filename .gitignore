@@ -6,3 +6,4 @@ nbproject/*
 Gemfile.lock
 test/tmp/*
 .bundle/config
+config/environments/development.rb
