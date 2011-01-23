@@ -138,8 +138,6 @@ var cCard = Class.create({
 
     grade: function(grade) {
 
-        console.log(grade);
-
         /* set confidence and importance */
         switch (grade) {
             case this.GRADE_KNOW:
@@ -207,9 +205,9 @@ var cCard = Class.create({
         var text = $('input_front').value + ' - ' + $('input_back').value;
 
         /* save */
-        var requestUrl = '/lines/update/'+this.lineId;
+        var requestUrl = '/lines/'+this.lineId;
         new Ajax.Request(requestUrl, {
-            method: 'post',
+            method: 'put',
             parameters: {"line[text]": text, "line[id]": this.lineId},
             
             onSuccess: function(transport) {

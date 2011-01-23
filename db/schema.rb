@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
     t.string   "domid"
     t.integer  "document_id"
     t.integer  "parent_id"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

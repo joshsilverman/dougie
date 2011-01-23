@@ -71,6 +71,7 @@ Dougie::Application.routes.draw do
   match "/review/:id" => "documents#review" #** public **#
   match "/review/dir/:id" => "tags#review" #** public **#
   match "/mems/update/:id/:confidence/:importance" => "mems#update"
+  resources :lines, :only => [:update]
   
   # organizer
   resources :tags, :only => [:destroy, :create, :update]
