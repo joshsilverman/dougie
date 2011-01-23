@@ -5,6 +5,13 @@ body {
      margin:0;
 }
 
+a {
+    color:darkblue;
+}
+a:hover {
+    cursor:pointer;
+}
+
 img {
     border: none;
 }

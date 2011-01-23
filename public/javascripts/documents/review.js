@@ -37,6 +37,10 @@ var cReviewer = Class.create({
         $('strength_3').observe('click', this.next.bind(this, 3));
         $('strength_4').observe('click', this.next.bind(this, 4));
 
+        /* nav listeners */
+        $('back_button').observe('click', this.back.bind(this, false));
+        $('next_button').observe('click', this.next.bind(this, false));
+
         /* progress bar */
         this.progressBar = new cProgressBar();
         $('progress_fraction').update("0/"+this.cards.length);
@@ -45,7 +49,7 @@ var cReviewer = Class.create({
     next: function(grade) {
 
         /* grade current */
-        this.cards[this.currentCardIndex].grade(grade);
+        if (grade) this.cards[this.currentCardIndex].grade(grade);
         this.currentCardIndex++;
 
         /* advance */
@@ -53,6 +57,19 @@ var cReviewer = Class.create({
             this.cards[this.currentCardIndex].cue();
         }
         else alert('No more cards for this document');
+
+        /* update progress bar */
+        this.progressBar.update((this.currentCardIndex)/this.cards.length);
+        $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+    },
+
+    back: function(grade) {
+
+        /* back */
+        this.currentCardIndex--;
+        if (this.cards[this.currentCardIndex]) {
+            this.cards[this.currentCardIndex].cue();
+        }
 
         /* update progress bar */
         this.progressBar.update((this.currentCardIndex)/this.cards.length);
@@ -121,6 +138,8 @@ var cCard = Class.create({
 
     grade: function(grade) {
 
+        console.log(grade);
+
         /* set confidence and importance */
         switch (grade) {
             case this.GRADE_KNOW:
@@ -138,6 +157,11 @@ var cCard = Class.create({
             case this.GRADE_DONTCARE:
                 this.confidence = 2;
                 this.importance = 2;
+                break;
+
+            /* catch if not a grade - ie person has pressed next button */
+            default:
+                return;
                 break;
         }
 
