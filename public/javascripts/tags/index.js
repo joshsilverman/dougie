@@ -16,7 +16,7 @@ var cDoc = Class.create({
 
         /* check for reload cookie */
         var reload = AppUtilities.Cookies.read('reloadOrganizer') == 'true';
-        AppUtilities.Cookies.erase('reloadOrganizer')
+//        AppUtilities.Cookies.erase('reloadOrganizer')
         if (reload) {
             //self.document.location.reload(true);
             new Ajax.Request('/tags/json', {
