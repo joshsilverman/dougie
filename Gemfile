@@ -8,7 +8,8 @@ gem 'rails', '3.0.3'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 
 # Use unicorn as the web server
-gem 'unicorn'
+# gem 'unicorn'
+gem 'heroku_s3_backup'
 gem 'mysql'
 gem 'nokogiri'
 gem 'acts_as_tree'
