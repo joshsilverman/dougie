@@ -17,12 +17,12 @@
   <!--auto-include css if exists-->
   <% auto_js_full =  RAILS_ROOT + '/public/stylesheets/' + controller.controller_name + '/' + controller.action_name + '.css'  %>
   <% if  File.file?(auto_js_full) %>
-    <%= stylesheet_link_tag auto_js_css %>
+    <%= stylesheet_link_tag auto_js_css, :cache => true %>
   <% end %>
 
   <!--load page specific scripts in head-->
   <% if @page_specific_scripts_js %> <%= javascript_include_tag @page_specific_scripts_js %> <% end %>
-  <% if @page_specific_scripts_css %> <%= stylesheet_link_tag @page_specific_scripts_css %> <% end %>
+  <% if @page_specific_scripts_css %> <%= stylesheet_link_tag @page_specific_scripts_css, :cache => true %> <% end %>
 
 </head>
 <body>
