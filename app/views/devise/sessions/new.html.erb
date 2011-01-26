@@ -1,5 +1,25 @@
-<h2>Sign in</h2>
+<div class="headline" id="headline">
+  <h1><span style="color:#009CFF;">Zendo</span> makes learning easy and more effective</h1>
+  <h5>Roll over the images below to see how</h5>
+</div>
 
+<div class="splash-wrapper">
+        <div class="splash"><img src="/images/home/learn.png" onmouseover="document.getElementById('headline').innerHTML = '<h1><span style=\'color:#009CFF;\'>Learn</span> by taking notes like you normally would</h1><h5>We\'ll take care of turning into study material for you!</h5>';"/></div>
+        <div class="splash"><img src="/images/home/study.png" onmouseover="document.getElementById('headline').innerHTML = '<h1><span style=\'color:#009CFF;\'>Study</span> using the flashcards we make from your notes</h1><h5>We\'ll also track how well you know the material so you don\'t waste your time with stuff you already know!</h5>';"/></div>
+        <div class="splash"><img src="/images/home/know.png" onmouseover="document.getElementById('headline').innerHTML = '<h1><span style=\'color:#009CFF;\'>Know</span> all of your material cold</h1><h5>No more cramming! Using a method called spaced repetition Zendo will improve your retention and make your study time more efficient!</h5>';"/></div>
+
+<div class="clr"></div>
+<div class="register">
+  <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+  <%= link_to "", new_registration_path(resource_name), :class => "register_button"%><br />
+<% end -%>
+</div>
+
+<div class="clr"></div>
+
+<h2>Already Registered? Sign in here!</h2>
+<div style="width:550px; height: 175px; margin:0 auto; padding:5px;" class="rounded_border">
+  <div style="width:300px; float: left;">
 <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
   <p><%= f.label :email %><br />
   <%= f.text_field :email %></p>
@@ -8,10 +28,13 @@
   <%= f.password_field :password %></p>
 
   <% if devise_mapping.rememberable? -%>
-    <p><%= f.check_box :remember_me %> <%= f.label :remember_me %></p>
+    <p><%= f.check_box :remember_me %> <%= f.label :remember_me %>
   <% end -%>
 
-  <p><%= f.submit "Sign in" %></p>
+  <%= f.submit "Sign in" %></p>
 <% end %>
-
+</div>
+<div style="width:250px; float: left; margin-top: 50px;">
 <%= render :partial => "devise/shared/links" %>
+</div>
+</div>

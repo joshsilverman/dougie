@@ -3,6 +3,8 @@ body {
      font-size:13px;
      padding:0;
      margin:0;
+     background-image: url("/images/home/black_bar.gif");
+     background-repeat: repeat-x;
 }
 
 a {
@@ -30,6 +32,23 @@ img.home {
     border-top-left-radius: 5px 5px;
     border-top-right-radius: 5px 5px;
     -moz-border-radius:5px 5px 5px 5px;
+}
+
+.wrapper {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.header {
+    height: 50px;
+    color:white;
+}
+
+.footer {
+    height: 50px;
+    color:grey;
+    padding:5px;
+    text-align: center;
 }
 
 header {
@@ -61,4 +80,44 @@ header {
      width:100%;
      padding:3px 0;
      border-bottom: 1px solid lightGrey;
+}
+
+
+.splash{
+	width:200px;
+	height:250px;
+	float:left;
+	margin:0 35px 0 35px;
+	background-color:#CCC;
+}
+
+.splash-wrapper{
+	width:810px;
+	margin:0 auto;
+	display:block;
+}
+
+.headline{
+    text-align: center;
+}
+
+.headline h1{
+    font:"";
+    font-size: 36px;
+}
+.headline h5{
+    font-size: 14px;
+    font-weight: none;
+}
+
+.register_button{
+    display:block;
+    height: 67px;
+    width: 291px;
+    margin:0 auto;
+    background-image: url("/images/home/register_button.png");
+}
+
+.register{
+    margin:40px 0 0 0;
 }

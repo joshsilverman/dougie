@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dougie</title>
+  <title>Zendo | Learn. Study. Know.</title>
 
   <%= stylesheet_link_tag 'application' %>
   <%= javascript_include_tag :defaults %>
@@ -26,7 +26,10 @@
 
 </head>
 <body>
-
+  <div class="wrapper">
+    <div class="header">
+      <a href="/"><img src="/images/home/zendo_logo.png" /></a>
+    </div>
 <%= render 'shared/authentication' %>
 
 <!--flash messages-->
@@ -38,6 +41,10 @@
   <%= yield %>
 
 </div>
-
+<div class="clr"></div>
+<div class="footer">
+  <h6>Copyright Zendo 2011</h6>
+</div>
+  </div>
 </body>
 </html>
