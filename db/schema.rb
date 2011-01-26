@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110106193056) do
+ActiveRecord::Schema.define(:version => 20110126172901) do
 
   create_table "documents", :force => true do |t|
     t.string   "name",       :limit => 45
@@ -48,6 +48,15 @@ ActiveRecord::Schema.define(:version => 20110106193056) do
   end
 
   add_index "mems", ["line_id"], :name => "index_mems_on_line_id"
+
+  create_table "reps", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "mem_id"
+    t.float    "strength"
+    t.float    "confidence"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "tags", :force => true do |t|
     t.string   "name",       :limit => 45
