@@ -170,7 +170,7 @@ var cCard = Class.create({
             
             onFailure: function() {},
 
-            onComplete: function(transport) {$('log').update(transport.responseText);}
+            onComplete: function(transport) {}//$('log').update(transport.responseText);}
         });
     },
 

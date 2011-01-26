@@ -87,14 +87,22 @@ header {
 	width:200px;
 	height:250px;
 	float:left;
-	margin:0 35px 0 35px;
+	margin:0 30px 0 30px;
 	background-color:#CCC;
 }
 
 .splash-wrapper{
-	width:810px;
-	margin:0 auto;
-	display:block;
+    display:block;
+    text-align:center;
+
+    margin:50px 0;
+    border-top:1px lightgrey solid;
+    border-bottom:1px lightgrey solid;
+}
+
+.splash-img-wrapper{
+    width:790px;
+    margin:0 auto;
 }
 
 .headline{
@@ -112,12 +120,14 @@ header {
 
 .register_button{
     display:block;
-    height: 67px;
-    width: 291px;
-    margin:0 auto;
-    background-image: url("/images/home/register_button.png");
+    height: 64px;
+    width: 282px;
+    margin:20px auto;
+    background-image: url("/images/home/register_button_rounded.png");
+    background-repeat:no-repeat;
 }
 
 .register{
-    margin:40px 0 0 0;
+    margin:290px 0 0;
+    clear:both;
 }
