@@ -1,3 +1,7 @@
+.contents {
+    min-height: 350px;
+}
+
 .icon_container {
     float:left;
     padding:2px 2px;

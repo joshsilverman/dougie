@@ -5,6 +5,11 @@
 .contents {
     margin-top:0;
     width:100%;
+    min-width: 960px;
+}
+
+.header {
+    height: 50px;
 }
 
 .splash{

@@ -27,24 +27,21 @@
 </head>
 <body>
   <div class="wrapper">
-    <div class="header">
-      <a href="/"><img src="/images/home/zendo_logo.png" /></a>
+
+    <div class="header_container">
+      <div class="header">
+        <%= render 'shared/authentication' %>
+      </div>
     </div>
-<%= render 'shared/authentication' %>
 
-<!--flash messages-->
-<% unless flash[:notice].blank? %><p class="notice"><%= flash[:notice] %></p><% end %>
-<% unless flash[:error].blank? %><p class="error"><%= flash[:error] %></p><% end %>
+    <!--flash messages-->
+    <% unless flash[:notice].blank? %><p class="notice"><%= flash[:notice] %></p><% end %>
+    <% unless flash[:error].blank? %><p class="error"><%= flash[:error] %></p><% end %>
 
-<div class="contents">
+    <div class="contents"><%= yield %></div>
 
-  <%= yield %>
-
-</div>
-<div class="clr"></div>
-<div class="footer">
-  <h6>Copyright Zendo 2011</h6>
-</div>
+    <div class="clr"></div>
+    <div class="footer"><h6>Copyright Zendo 2011</h6></div>
   </div>
 </body>
 </html>
