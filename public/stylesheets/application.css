@@ -87,7 +87,7 @@ header {
 	width:200px;
 	height:250px;
 	float:left;
-	margin:0 30px 0 30px;
+	margin:0 20px 0 20px;
 	background-color:#CCC;
 }
 
@@ -95,13 +95,13 @@ header {
     display:block;
     text-align:center;
 
-    margin:50px 0;
+    margin:20px 0 20px;
     border-top:1px lightgrey solid;
     border-bottom:1px lightgrey solid;
 }
 
 .splash-img-wrapper{
-    width:790px;
+    width:730px;
     margin:0 auto;
 }
 
@@ -112,6 +112,7 @@ header {
 .headline h1{
     font:"";
     font-size: 36px;
+    margin:8px 0 0;
 }
 .headline h5{
     font-size: 14px;
