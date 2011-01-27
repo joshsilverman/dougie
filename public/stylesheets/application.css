@@ -70,16 +70,18 @@ header {
      margin:10px auto;
 }
 
+.flash_container {
+    margin: 5px 0;
+    text-align: center;
+}
+
 .notice {
-     background-color:#eee;
-     border:1px solid #0e0;
-     padding:5px;
-     width:100%;
+    background-color:#4DD64D;
+    padding:1px;
 }
 
 .error {
-     background-color:#eee;
-     border:1px solid #e00;
-     padding:5px;
-     width:100%;
+    margin: 40px auto;
+    background-color:#FF734D;
+    padding:1px;
 }

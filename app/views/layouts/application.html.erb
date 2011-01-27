@@ -35,8 +35,12 @@
     </div>
 
     <!--flash messages-->
-    <% unless flash[:notice].blank? %><p class="notice"><%= flash[:notice] %></p><% end %>
-    <% unless flash[:error].blank? %><p class="error"><%= flash[:error] %></p><% end %>
+    <% unless flash[:notice].blank? && flash[:error].blank? %>
+      <div class="flash_container">
+        <% unless flash[:notice].blank? %><span class="notice rounded_border"><%= flash[:notice] %></span><% end %>
+        <% unless flash[:error].blank? %><span class="error rounded_border"><%= flash[:error] %></span><% end %>
+      </div>
+    <% end %>
 
     <div class="contents"><%= yield %></div>
 
