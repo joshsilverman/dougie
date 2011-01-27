@@ -41,34 +41,24 @@ var cDoc = Class.create({
         window.onhashchange = this.onChange.bind(this);
 
         /* resize listener */
-        window.onresize = this.onResize;
-        this.onResize();
+        window.onresize = AppUtilities.resizeContents;
     },
 
     onChange: function() {
 
-            /* rerender? browser navigation used? */
-            var hashValue = self.document.location.hash.substring(1)
-            var rerender = hashValue != this.currentView;
+        /* rerender? browser navigation used? */
+        var hashValue = self.document.location.hash.substring(1)
+        var rerender = hashValue != this.currentView;
 
-            /* rerender */
-            if (rerender) {
-                if (hashValue == '') this.directoryView.render();
-                else this.directoryView.openDirectory(hashValue);
-            }
-        },
+        /* rerender */
+        if (rerender) {
+            if (hashValue == '') this.directoryView.render();
+            else this.directoryView.openDirectory(hashValue);
+        }
 
-    onResize: function() {
-
-        /* calculations */
-        var footerY = $$('.footer')[0].getHeight() + 40;
-        var contents = $$('.contents')[0];
-        var contentsOffsetY = contents.cumulativeOffset()[1];
-        var viewportY = document.viewport.getHeight();
-        var newContentsHeight = viewportY - footerY - contentsOffsetY
-
-        /* set min height */
-        contents.setStyle({'min-height': newContentsHeight + 'px'})
+        /* fire resize */
+        AppUtilities.resizeContents();
+        AppUtilities.resizeContents.delay(.01);
     }
 });
 

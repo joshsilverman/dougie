@@ -10,6 +10,11 @@ var cDoc = Class.create({
         /* new reviewer */
         var data = $('card_json').innerHTML.evalJSON();
         this.reviewer = new cReviewer(data);
+
+        /* resize listener - fire after dom:loaded */
+        window.onresize = AppUtilities.resizeContents;
+        AppUtilities.resizeContents();
+        AppUtilities.resizeContents.delay(.01);
     }
 });
 

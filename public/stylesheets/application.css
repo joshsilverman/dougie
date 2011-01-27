@@ -39,6 +39,7 @@ img.home {
 .header_container {
     background-color: black;
     width:100%;
+    min-width:960px;
 }
 
 .header {
@@ -53,10 +54,16 @@ img.home {
 }
 
 .footer {
-    height: 50px;
-    color:grey;
-    padding:5px;
+    min-width:960px;
+    color:#404040;
+    padding:0;
     text-align: center;
+    background-color: lightgrey;
+}
+
+.footer h6 {
+    padding:15px 0;
+    margin: 0;
 }
 
 header {

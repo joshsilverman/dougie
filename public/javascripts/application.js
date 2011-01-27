@@ -9,12 +9,28 @@ var cAppUtilities = Class.create({
 
     Cookies: null,
 
-    Element: null,
-
     initialize: function() {
         
         this.Cookies = new this.cCookies;
-        this.Element = new this.cElement;
+    },
+
+    resizeContents: function() {
+
+        /* calculations */
+        var footer = $$('.footer')[0];
+        var footerY = footer.getHeight();
+        var viewportY = document.viewport.getHeight();
+        var footerOffsetY = footer.cumulativeOffset()[1];
+
+        var contents = $$('.contents')[0];
+        var contentsY = contents.getHeight();
+
+        var difference = viewportY - footerOffsetY - footerY;
+
+        var newContentsY = contentsY + difference;
+
+        /* set min height */
+        contents.setStyle({'minHeight': newContentsY + 'px'});
     },
 
     /* utility classes */
@@ -45,9 +61,7 @@ var cAppUtilities = Class.create({
         erase: function (name) {
                 this.create(name,"",-1);
         }
-    }),
-
-    cElement: Class.create({})
+    })
 });
 
 /* global vars */
