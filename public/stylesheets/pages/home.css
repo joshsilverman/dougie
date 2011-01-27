@@ -1,0 +1,60 @@
+.wrapper {
+    width:100%;
+}
+
+.contents {
+    margin-top:0;
+    width:100%;
+}
+
+.splash{
+    width:200px;
+    height:250px;
+    float:left;
+    margin:0 30px 0 30px;
+}
+
+.splash-wrapper{
+    display:block;
+    text-align:center;
+
+    margin:0 0 20px;
+
+    background-image:url(/images/home/splash_bg.png);
+    background-repeat:repeat-x;
+    background-position:0 275px;
+}
+
+.splash-img-wrapper{
+    width:790px;
+    margin:0 auto;
+}
+
+.headline{
+    text-align: center;
+}
+
+.headline h1{
+    font:"";
+    font-size: 36px;
+    margin:8px 0 0;
+}
+.headline h5{
+    font-size: 14px;
+    font-weight: none;
+    margin:5px 0;
+}
+
+.register_button{
+    display:block;
+    height: 64px;
+    width: 282px;
+    margin:15px auto;
+    background-image: url("/images/home/register_button_rounded.png");
+    background-repeat:no-repeat;
+}
+
+.register{
+    margin:265px 0 0;
+    clear:both;
+}

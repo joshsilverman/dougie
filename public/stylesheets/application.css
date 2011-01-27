@@ -40,6 +40,8 @@ img.home {
 }
 
 .header {
+    width:960px;
+    margin: 0 auto;
     height: 50px;
     color:white;
 }
@@ -80,55 +82,4 @@ header {
      width:100%;
      padding:3px 0;
      border-bottom: 1px solid lightGrey;
-}
-
-
-.splash{
-	width:200px;
-	height:250px;
-	float:left;
-	margin:0 20px 0 20px;
-	background-color:#CCC;
-}
-
-.splash-wrapper{
-    display:block;
-    text-align:center;
-
-    margin:20px 0 20px;
-    border-top:1px lightgrey solid;
-    border-bottom:1px lightgrey solid;
-}
-
-.splash-img-wrapper{
-    width:730px;
-    margin:0 auto;
-}
-
-.headline{
-    text-align: center;
-}
-
-.headline h1{
-    font:"";
-    font-size: 36px;
-    margin:8px 0 0;
-}
-.headline h5{
-    font-size: 14px;
-    font-weight: none;
-}
-
-.register_button{
-    display:block;
-    height: 64px;
-    width: 282px;
-    margin:20px auto;
-    background-image: url("/images/home/register_button_rounded.png");
-    background-repeat:no-repeat;
-}
-
-.register{
-    margin:290px 0 0;
-    clear:both;
 }
