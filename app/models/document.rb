@@ -43,6 +43,11 @@ class Document < ActiveRecord::Base
       end
       if root.nil?
         root = Line.create(:document_id => document.id,:domid => "node_0",:text => "root" )
+        mem = Mem.create({:strength => 0.5,
+                          :user_id => user_id,
+                          :line_id => root.id,
+                          :status => false,
+                          :review_after => Time.now})
       end
 
       # run update line; store whether anything was changed
