@@ -9,10 +9,12 @@ var cDoc = Class.create({
        'know': '<h1><span style=\'color:#009CFF;\'>Know</span> all of your material cold</h1><h5>Study what matters at the right time for improved retention in less time!</h5>'
     }),
 
+    defaultMessage: null,
+
     initialize:function() {
 
         /* store current value of headline */
-        this.mouseoverTargets.set('default', document.getElementById('headline').innerHTML);
+        this.defaultMessage = document.getElementById('headline').innerHTML;
 
         /* splash listeners */
         this.mouseoverTargets.each(function(keyValue) {
@@ -31,14 +33,14 @@ var cDoc = Class.create({
             $('img_' + keyValue[0]).observe('mouseout', function(event) {
                 event.target.src = src;
                 this.restoreDefaultTimer
-                    = this.restoreDefault.bind(this).delay(1, this.mouseoverTargets.get('default'));
+                    = this.restoreDefault.bind(this).delay(1);
             }.bind(this));
          }.bind(this));
     },
 
     restoreDefault: function() {
         document.getElementById('headline').innerHTML
-            = this.mouseoverTargets.get('default');
+            = this.defaultMessage;
     }
 });
 
