@@ -58,7 +58,9 @@ img.home {
     color:#404040;
     padding:0;
     text-align: center;
-    background-color: lightgrey;
+    background-color: #edebdd;
+    background-image: url(/images/shared/footer_border.gif);
+    background-repeat:repeat-x;
 }
 
 .footer h6 {
