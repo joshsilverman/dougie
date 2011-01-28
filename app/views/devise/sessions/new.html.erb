@@ -40,14 +40,14 @@
       <%= f.password_field :password %>
 
       <% if devise_mapping.rememberable? -%>
-        <span><%= f.check_box :remember_me %> <%= f.label :remember_me %></span>
+        <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
       <% end -%>
 
       <%= f.submit "Sign in" %>
     <% end %>
 
-    <a href="/users/password/new">Forgot your password?</a><br>
-    <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a><br>
+    <a href="/users/password/new">Forgot your password?</a>
+    <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a>
 
   </div>
 </div>
