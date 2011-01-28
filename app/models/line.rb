@@ -46,7 +46,7 @@ class Line < ActiveRecord::Base
                           :status => parent.attr("active") == 'true',
                           :review_after => Time.now})
 
-        logger.info mem.to_yaml
+        Rails.logger.info mem.to_yaml
 
       elsif child.children.length > 0
           Line.preorder_save(child,document_id,saved_parents,user_id)
