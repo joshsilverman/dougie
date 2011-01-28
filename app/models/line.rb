@@ -46,8 +46,6 @@ class Line < ActiveRecord::Base
                           :status => parent.attr("active") == 'true',
                           :review_after => Time.now})
 
-        Rails.logger.info mem.to_yaml
-
       elsif child.children.length > 0
           Line.preorder_save(child,document_id,saved_parents,user_id)
       end
@@ -83,10 +81,6 @@ class Line < ActiveRecord::Base
           # update mem status
           # @todo - combine into one query
           status = (line.attr('active') == nil) ? 0 : 1
-
-          find_conditions = {:line_id => e_line.id, :user_id => user_id}
-          Rails.logger.info find_conditions.to_yaml
-
           Mem.find(:first, :conditions => {:line_id => e_line.id, :user_id => user_id})\
                 .update_attribute(:status, status)
         end
