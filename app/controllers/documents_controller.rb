@@ -49,7 +49,7 @@ class DocumentsController < ApplicationController
   def update
 
     # update document
-    @document = Document.update(params, current_user)
+    @document = Document.update(params, current_user.id)
 
     if @document.nil?
         render :nothing => true, :status => 400
