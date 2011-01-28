@@ -63,3 +63,36 @@
     margin:265px 0 0;
     clear:both;
 }
+
+.box_container {
+    width:960px;
+    margin:60px auto 0;
+}
+
+.box_header {
+    color: grey;
+    font-size: 19px;
+    text-align:center;
+}
+
+.box {
+    width: 298px;
+    margin: 10px;
+    float:left;
+    border-right: solid 1px #lightgrey;
+    line-height: 30px;
+    min-height:210px;
+}
+
+.box input[type=text], .box input[type=password] {
+    border:#9e943a solid 1px;
+}
+
+.box:last-child {
+    border:none;
+}
+
+.box_title {
+    font-size: 24px;
+    color: #9e943a;
+}

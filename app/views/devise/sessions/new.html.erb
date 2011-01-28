@@ -16,30 +16,38 @@
 
   <div class="register">
     <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-    <%= link_to "", new_registration_path(resource_name), :class => "register_button"%>
-  <% end %>
-</div>
+      <%= link_to "", new_registration_path(resource_name), :class => "register_button"%>
+    <% end %>
+  </div>
 
 </div>
 
-<h2 style="width:960px; margin:50px auto 5px;">Already Registered? Sign in here!</h2>
-<div style="width:960px; height: 175px; margin:0 auto; padding:5px;" class="rounded_border">
-  <div style="width:300px; float: left;">
-<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-  <p><%= f.label :email %><br />
-  <%= f.text_field :email %></p>
+<div class="box_container">
+  <div class="box mission">
+    We are students and <span class="box_title">our Mission</span> is to become more efficient learners. We want to spend less time studying and know our material much better. And, we want commit the most essential information we come across to long-term memory.
+  </div>
 
-  <p><%= f.label :password %><br />
-  <%= f.password_field :password %></p>
+  <div class="box">
+    Zen.do is in <span class="box_title">Beta</span> and we hope to find out from our users what works, what does't and where we should go next. Please send us your comments and suggestions!
+  </div>
 
-  <% if devise_mapping.rememberable? -%>
-    <p><%= f.check_box :remember_me %> <%= f.label :remember_me %>
-  <% end -%>
+  <div class="box">
+    <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+      <%= f.label :email %><br />
+      <%= f.text_field :email %>
 
-  <%= f.submit "Sign in" %></p>
-<% end %>
-</div>
-<div style="width:250px; float: left; margin-top: 50px;">
-<%= render :partial => "devise/shared/links" %>
-</div>
+      <%= f.label :password %><br />
+      <%= f.password_field :password %>
+
+      <% if devise_mapping.rememberable? -%>
+        <span><%= f.check_box :remember_me %> <%= f.label :remember_me %></span>
+      <% end -%>
+
+      <%= f.submit "Sign in" %>
+    <% end %>
+
+    <a href="/users/password/new">Forgot your password?</a><br>
+    <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a><br>
+
+  </div>
 </div>
