@@ -21,6 +21,7 @@
   <% end %>
 
   <!--load page specific scripts in head-->
+  <% @page_specific_scripts_js = "/javascripts/pages/feedback" %>
   <% if @page_specific_scripts_js %> <%= javascript_include_tag @page_specific_scripts_js %> <% end %>
   <% if @page_specific_scripts_css %> <%= stylesheet_link_tag @page_specific_scripts_css %> <% end %>
 
