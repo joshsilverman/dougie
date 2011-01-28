@@ -5,16 +5,6 @@ class Mem < ActiveRecord::Base
 
   has_many :reps
 
-  def self.create_standard(opts = {})
-    
-    default_opts = { :strength => 0.5 }
-    opts.merge!(default_opts)
-    
-    mem = Mem.new(opts)
-    mem.save
-    
-  end
-
   def update_reviewed(confidence, importance)
 
     # calculate time delta

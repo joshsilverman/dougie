@@ -40,10 +40,13 @@ class Line < ActiveRecord::Base
         @@document_html.gsub!(/((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
 
         # pass in hash of properties to be merged when creating a Mem
-        Mem.create_standard({ :user_id => user_id,
-                              :line_id => created_line.id,
-                              :status => parent.attr("active") == 'true',
-                              :review_after => Time.now})
+        mem = Mem.create({:strength => 0.5,
+                          :user_id => user_id,
+                          :line_id => created_line.id,
+                          :status => parent.attr("active") == 'true',
+                          :review_after => Time.now})
+
+        logger.info mem.to_yaml
 
       elsif child.children.length > 0
           Line.preorder_save(child,document_id,saved_parents,user_id)
