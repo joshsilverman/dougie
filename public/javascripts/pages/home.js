@@ -1,6 +1,8 @@
 
 var cDoc = Class.create({
 
+    restoreDefaultTimer: null,
+
     mouseoverTargets: $H({
        'learn': '<h1><span style=\'color:#009CFF;\'>Learn</span> by taking notes as usual</h1><h5>We\'ll turn it into study material for you!</h5>',
        'study': '<h1><span style=\'color:#009CFF;\'>Study</span> using flashcards made from your notes</h1><h5>We\'ll track what\'s important to you and how well you know it!</h5>',
@@ -8,6 +10,9 @@ var cDoc = Class.create({
     }),
 
     initialize:function() {
+
+        /* store current value of headline */
+        this.mouseoverTargets.set('default', document.getElementById('headline').innerHTML);
 
         /* splash listeners */
         this.mouseoverTargets.each(function(keyValue) {
@@ -18,12 +23,22 @@ var cDoc = Class.create({
             /* over */
             $('img_' + keyValue[0]).observe('mouseover', function(event) {
                 event.target.src = srcUnderlined;
+                window.clearTimeout(this.restoreDefaultTimer);
                 document.getElementById('headline').innerHTML = keyValue[1];
             }.bind(this));
 
             /* out */
-            $('img_' + keyValue[0]).observe('mouseout', function(event) {event.target.src = src;}.bind(this));
-         });
+            $('img_' + keyValue[0]).observe('mouseout', function(event) {
+                event.target.src = src;
+                this.restoreDefaultTimer
+                    = this.restoreDefault.bind(this).delay(1, this.mouseoverTargets.get('default'));
+            }.bind(this));
+         }.bind(this));
+    },
+
+    restoreDefault: function() {
+        document.getElementById('headline').innerHTML
+            = this.mouseoverTargets.get('default');
     }
 });
 
