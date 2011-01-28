@@ -66,7 +66,7 @@
 
 .box_container {
     width:960px;
-    margin:60px auto 0;
+    margin:35px auto 0;
 }
 
 .box_header {
@@ -79,7 +79,7 @@
     width: 298px;
     margin: 10px;
     float:left;
-    border-right: solid 1px #lightgrey;
+    border-right: solid 1px lightgrey;
     line-height: 30px;
     min-height:210px;
 }
