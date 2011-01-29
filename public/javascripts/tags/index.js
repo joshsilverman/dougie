@@ -101,7 +101,7 @@ var cDirectoryView = Class.create({
           tag = tagArray[1]
           this.html += '<div tag_id="'+tag['id']+'" class="icon_container rounded_border">\
               <div tag_id="'+tag['id']+'" class="title">'+tag['name']+'</div>\
-              <div class="folder">\
+              <div class="folder" tag_id="'+tag['id']+'" >\
                 <img tag_id="'+tag['id']+'" class="folder" alt="" src="/images/organizer/folder-full-icon.png" />\
               </div>\
               <div class="folder_options">\
@@ -130,7 +130,7 @@ var cDirectoryView = Class.create({
         /* add listeners */
 
         //open directory
-        $$('img.folder, .icon_container .title').each(function(element) {
+        $$('div.folder, img.folder, .icon_container .title').each(function(element) {
             element.observe('click', function(event) {
                 var tagId = event.target.getAttribute('tag_id');
                 this.openDirectory(tagId);
@@ -138,7 +138,7 @@ var cDirectoryView = Class.create({
         }.bind(this));
 
         //new directory
-        $$('.new_directory').each(function(element) {
+        $$('.new_directory, div.new_directory, .new_directory_container .folder').each(function(element) {
             element.observe('click', this.createDirectory.bind(this));
         }.bind(this));
 

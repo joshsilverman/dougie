@@ -12,6 +12,7 @@ var cAppUtilities = Class.create({
     initialize: function() {
         
         this.Cookies = new this.cCookies;
+        this.logXHR();
     },
 
     resizeContents: function() {
@@ -31,6 +32,39 @@ var cAppUtilities = Class.create({
 
         /* set min height */
         contents.setStyle({'minHeight': newContentsY + 'px'});
+    },
+
+    requestCount: 0,
+    logXHR: function() {
+
+        /* monkey patch responders with wrappers */
+        Ajax.Responders.dispatch = 
+            Ajax.Responders.dispatch.wrap(function(dispatch, callback, request, transport, json) {
+                
+                if (callback == 'onComplete') console.log(transport);
+
+                /* inject request */
+                if (callback == 'onCreate') {
+                    var params = request['parameters'];
+                    delete params['_method'];
+                    params = Object.toJSON(params).escapeHTML();
+                    params = params.gsub('","', '",<br />"') + "<br /><br />"
+                    params = "<div style='background-color:lightgrey'>{"+(AppUtilities.requestCount++)+" => {:request => </div>" + params + ','
+
+                    $$('body')[0].insert({'bottom': params});
+                }
+
+                /* inject results */
+                if (callback == 'onComplete') {
+                    var response = transport['responseText'];
+                    response = "<div style='background-color:lightgrey'>:request => </div>" + response + ","
+
+                    $$('body')[0].insert({'bottom': response});
+                }
+
+                /* invoke original dispatch */
+                return dispatch(callback, request, transport, json);
+            });
     },
 
     /* utility classes */
