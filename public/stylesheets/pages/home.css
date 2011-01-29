@@ -86,6 +86,12 @@
 
 .box input[type=text], .box input[type=password] {
     border:#9e943a solid 1px;
+    width:100%;
+    clear:both;
+}
+
+.box div {
+    line-height:25px;
 }
 
 .box:last-child {
