@@ -558,10 +558,7 @@ var cOutlineHandlers = Class.create({
         if (!id) doc.rightRail.createCard(target);
 
         //existing card
-        else if (doc.rightRail.cards.get(id)) {
-            doc.rightRail.focus(id);
-            doc.rightRail.cards.get(id).update(target);
-        }
+        else if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, target);
 
         //error
         else console.log('error: node has id but no card exists');
@@ -713,6 +710,8 @@ var cRightRail = Class.create({
     cards: new Hash(),
     inFocus: null,
 
+    updateFocusCardTimer: null,
+
     initialize: function() {
         
         /* render listener */
@@ -736,6 +735,21 @@ var cRightRail = Class.create({
                if(event.target.hasClassName('card_activation')) doc.outline.activateNode(event.target);
             }.bind(this));
         }.bind(this));
+    },
+
+    /* wrapper function for focus/update to limit the number of calls! */
+    updateFocusCardWrapper: function(id, target) {
+
+        /* clear timer */
+        window.clearTimeout(this.updateFocusCardTimer)
+
+        /* make call */
+        this.updateFocusCardTimer =
+            (function () {
+                doc.rightRail.focus(id);
+                doc.rightRail.cards.get(id).update(target);
+            }).delay(.25)
+        
     },
 
     createCard: function(node) {
@@ -914,13 +928,27 @@ var cCard = Class.create({
 
     render: function(truncate) {
 
-        //checkbox
+        /* checkbox dom */
         var checkbox;
         if (this.active == true) checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
         else checkbox = '<input type="checkbox" class="card_activation" />';
 
+        /* attempt autoactivate */
+        if (this.autoActivate) {
+            this.autoActivated = true;
+            this.autoActivate = false;
+            this.activate();
+            this.elmntCard.down('input').checked = 'yes';
+            console.log('activate in render');
+            doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
+        }
+
+        //is active
+        if (!this.active)
+            this.elmntCard.innerHTML = checkbox + '<i>Click checkbox to activate</i>';
+
         //truncated txt
-        if (truncate && !this.active) {
+        else if (truncate && !this.active) {
             this.elmntCard.innerHTML
                 = checkbox + this.text;
         }
@@ -930,16 +958,6 @@ var cCard = Class.create({
             this.elmntCard.innerHTML = '<div class="card_front">'
                     + checkbox + this.front + '</div>\
                 <div class="card_back">'+this.back+'</div>';
-
-            //autoActivate
-            if (this.autoActivate) {
-                this.autoActivated = true;
-                this.autoActivate = false;
-                this.activate();
-                this.elmntCard.down('input').checked = 'yes';
-                console.log('activate in render');
-                doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
-            }
         }
 
         //just front
