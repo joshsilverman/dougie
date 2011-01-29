@@ -12,7 +12,6 @@ var cAppUtilities = Class.create({
     initialize: function() {
         
         this.Cookies = new this.cCookies;
-        this.logXHR();
     },
 
     resizeContents: function() {
