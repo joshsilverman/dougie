@@ -1,3 +1,5 @@
+<% @page_specific_scripts_css = '/stylesheets/pages/change_password' %>
+
 <h2>Change your password</h2>
 
 <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put }) do |f| %>
