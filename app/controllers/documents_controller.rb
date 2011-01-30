@@ -145,4 +145,12 @@ class DocumentsController < ApplicationController
     render :json => @document.html
 
   end
+
+  def test_destroy
+
+    documents = current_user.tags.find_all_by_misc(1).documents.all(id)
+    documents do |document|
+      document.delete unless document.blank?
+    end
+  end
 end
