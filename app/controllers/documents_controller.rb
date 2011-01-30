@@ -148,9 +148,11 @@ class DocumentsController < ApplicationController
 
   def test_destroy
 
-    documents = current_user.tags.find_all_by_misc(1).documents.all(id)
-    documents do |document|
+    documents = Document.includes(:tag).find(:all, :conditions => {'tags.misc' => true, :user_id => current_user.id})
+    documents.each do |document|
       document.delete unless document.blank?
     end
+
+    render :nothing
   end
 end
