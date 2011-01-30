@@ -16,8 +16,13 @@ var cDoc = Class.create({
 
         /* check for reload cookie */
         var reload = AppUtilities.Cookies.read('reloadOrganizer') == 'true';
-        AppUtilities.Cookies.erase('reloadOrganizer')
-        if (reload) self.document.location.reload(true);
+//        AppUtilities.Cookies.erase('reloadOrganizer')
+        if (reload) {
+            //self.document.location.reload(true);
+            new Ajax.Request('/tags/json', {
+                asynchronous: false,
+                onSuccess: function(transport) {$('tags_json').innerHTML = transport.responseText;}});
+        }
 
         /* organize and set json member */
         this.tags = [];
@@ -34,20 +39,27 @@ var cDoc = Class.create({
         /* listen for hash change */
         //@todo find cross-browser solution
         window.onhashchange = this.onChange.bind(this);
+
+        /* resize listener */
+        window.onresize = AppUtilities.resizeContents;
     },
 
     onChange: function() {
 
-            /* rerender? browser navigation used? */
-            var hashValue = self.document.location.hash.substring(1)
-            var rerender = hashValue != this.currentView;
+        /* rerender? browser navigation used? */
+        var hashValue = self.document.location.hash.substring(1)
+        var rerender = hashValue != this.currentView;
 
-            /* rerender */
-            if (rerender) {
-                if (hashValue == '') this.directoryView.render();
-                else this.directoryView.openDirectory(hashValue);
-            }
+        /* rerender */
+        if (rerender) {
+            if (hashValue == '') this.directoryView.render();
+            else this.directoryView.openDirectory(hashValue);
         }
+
+        /* fire resize */
+        AppUtilities.resizeContents();
+        AppUtilities.resizeContents.delay(.01);
+    }
 });
 
 var cDirectoryView = Class.create({
@@ -89,7 +101,7 @@ var cDirectoryView = Class.create({
           tag = tagArray[1]
           this.html += '<div tag_id="'+tag['id']+'" class="icon_container rounded_border">\
               <div tag_id="'+tag['id']+'" class="title">'+tag['name']+'</div>\
-              <div class="folder">\
+              <div class="folder" tag_id="'+tag['id']+'" >\
                 <img tag_id="'+tag['id']+'" class="folder" alt="" src="/images/organizer/folder-full-icon.png" />\
               </div>\
               <div class="folder_options">\
@@ -118,7 +130,7 @@ var cDirectoryView = Class.create({
         /* add listeners */
 
         //open directory
-        $$('img.folder, .icon_container .title').each(function(element) {
+        $$('div.folder, img.folder, .icon_container .title').each(function(element) {
             element.observe('click', function(event) {
                 var tagId = event.target.getAttribute('tag_id');
                 this.openDirectory(tagId);
@@ -126,7 +138,7 @@ var cDirectoryView = Class.create({
         }.bind(this));
 
         //new directory
-        $$('.new_directory').each(function(element) {
+        $$('.new_directory, div.new_directory, .new_directory_container .folder').each(function(element) {
             element.observe('click', this.createDirectory.bind(this));
         }.bind(this));
 
@@ -183,9 +195,10 @@ var cDirectoryView = Class.create({
 
         /* request params */
         var tagName = prompt('What would you like to name the new directory?');
+        if (!tagName) return;
 
         /* request */
-        new Ajax.Request('/tags/create', {
+        new Ajax.Request('/tags', {
             method: 'post',
             parameters: {'name': tagName},
             onSuccess: function(transport) {
@@ -210,9 +223,8 @@ var cDirectoryView = Class.create({
         var tagId = event.target.up('.icon_container').getAttribute('tag_id');
 
         /* request */
-        new Ajax.Request('/tags/destroy', {
-            method: 'post',
-            parameters: {'id': tagId},
+        new Ajax.Request('/tags/' + tagId, {
+            method: 'delete',
             onSuccess: function(transport) {
 
                 /* inject json and rerender document */
@@ -291,6 +303,12 @@ var cDocumentsView = Class.create({
         this.tag = tag;
 
         /* sort (builds html) */
+        /* remove old sort listeners/classes; add new classes */
+        $('sort_options').childElements().each(function(element) {
+            element.stopObserving();
+            element.removeClassName('reverse');
+            element.removeClassName('active');
+        });
         this.sort('updated_at');
     },
 
@@ -317,14 +335,14 @@ var cDocumentsView = Class.create({
         //document links
         this.tag.documents.each(function(document) {
           this.html += '<div document_id="'+document['id']+'" class="icon_container rounded_border">\
-              <a href="/editor/'+document['id']+'">\
+              <a href="/documents/'+document['id']+'/edit">\
                 <div class="title">'+document['name']+'</div>\
                 <div class="folder">\
                   <img class="folder" alt="" src="/images/organizer/doc-icon.png" />\
                 </div>\
               </a>\
               <div class="folder_options">\
-                <a href="/editor/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>\
+                <a href="/documents/'+document['id']+'/edit"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>\
                 <a href="/review/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/play-icon.png" /></a>\
                 <img class="rounded_border remove_document" alt="" src="/images/organizer/remove-icon.png" />\
               </div>\
@@ -335,7 +353,10 @@ var cDocumentsView = Class.create({
     render: function() {
         
         /* render view and title*/
-        $('directory_name').update('/' + this.tag.name + '/');
+        var dirName;
+        if (this.tag.misc) dirName = this.tag.name
+        else dirName = this.tag.name + " <span id='edit_directory_name'>[Edit Name]</span>"
+        $('directory_name').update('/' + dirName + '/');
         $('icons').update(this.html);
 
         /* remove old sort listeners/classes; add new classes */
@@ -346,6 +367,8 @@ var cDocumentsView = Class.create({
         });
         $('sort_by_' + this.sortBy).addClassName('active');
         if (this.reverse) $('sort_by_' + this.sortBy).addClassName('reverse');
+        var edit_directory_name = $('edit_directory_name');
+        if (edit_directory_name) edit_directory_name.stopObserving();
 
         /* listeners */
 
@@ -363,6 +386,9 @@ var cDocumentsView = Class.create({
         $$('.remove_document').each(function(element) {
             element.observe('click', this.destroyDocument.bind(this));
         }.bind(this));
+
+        //edit dir name listeners
+        if (edit_directory_name) edit_directory_name.observe('click', this.editDirName.bind(this));
 
         /* sort listeners */
         $('sort_by_updated_at').observe('click', function() {
@@ -388,9 +414,8 @@ var cDocumentsView = Class.create({
         var documentId = event.target.up('.icon_container').getAttribute('document_id');
 
         /* request */
-        new Ajax.Request('/documents/destroy', {
-            method: 'post',
-            parameters: {'id': documentId},
+        new Ajax.Request('/documents/' + documentId, {
+            method: 'delete',
             onSuccess: function(transport) {
 
                 /* inject json and rerender document */
@@ -403,6 +428,31 @@ var cDocumentsView = Class.create({
             }.bind(this),
             onFailure: function(transport) {
                 alert('There was an error removing the directory.');
+            }
+        });
+    },
+
+    editDirName: function() {
+
+        /* request params */
+        var tagName = prompt('What would you like to rename the directory?');
+        if (!tagName) return;
+        
+        /* request */
+        new Ajax.Request('/tags/' + doc.currentView, {
+            method: 'put',
+            parameters: {'name': tagName,
+                         'id': doc.currentView},
+            onSuccess: function(transport) {
+
+                /* inject json and rerender document */
+                // @todo clear area for optimization at if latency becomes a problem
+                $('tags_json').update(Object.toJSON(transport.responseJSON));
+                doc = new cDoc;
+                doc.onChange();
+            },
+            onFailure: function(transport) {
+                alert('There was an error updating the directory name.');
             }
         });
     },

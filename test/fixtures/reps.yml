@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  user_id: 1
+  rep_id: 1
+  strength: 1.5
+  confidence: 1.5
+
+two:
+  user_id: 1
+  rep_id: 1
+  strength: 1.5
+  confidence: 1.5

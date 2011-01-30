@@ -1,13 +1,12 @@
 <% if user_signed_in? %>
-	<div class="login">
-		<span style="float:left; margin-left: 6px;">Welcome, <%= current_user.first_name %></span>
-		<span style="float:right; margin-right: 6px;">
-			<%= link_to "Edit Account", edit_user_registration_path %>&nbsp;|
-			<%= link_to "Sign Out", destroy_user_session_path %>
-		</span>
-		<br class="clr" />
-		<!-- ID: <%#= current_user.id %><br>
-		Docs: <%#= current_user.documents.inspect %><br>
-		Tags: <%#= current_user.tags.inspect %> //-->
-	</div>
+
+    <a href="/"><img src="/images/logos/zendo_slogan_small.png" /></a>
+    <span style="float:right; margin: 8px 6px 0 0;">
+            Welcome, <%= current_user.first_name %>&nbsp;|&nbsp;
+            <%= link_to "Edit Account", edit_user_registration_path %>&nbsp;|&nbsp;
+            <%= link_to "Sign Out", destroy_user_session_path %>
+    </span>
+<% else %>
+    <a href="/"><img src="/images/logos/zendo_beta.png" /></a>
+
 <% end %>

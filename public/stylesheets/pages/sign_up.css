@@ -1,0 +1,18 @@
+.header {
+    height: 50px;
+}
+
+.restrictions, .form_container {
+    padding:40px 10px 10px;
+    float:left;
+}
+
+.restrictions {
+    width: 230px;
+    margin:55px 0 0 220px;
+}
+
+.form_container {
+    width: 300px;
+    border-left:1px solid grey;
+}

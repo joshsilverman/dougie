@@ -1,6 +1,6 @@
 .doc_options {
-    margin-bottom: 8px;
-    padding: 5px;
+    margin-bottom: 5px;
+    padding: 3px;
     border: none;
     background-color:#EEE;
 }
@@ -15,14 +15,14 @@
 }
 
 #editor_container {
-    width:700px;
+    width:660px;
     float:left;
 }
 
 #right_rail {
     padding: 5px;
     margin-left: 10px;
-    width:278px;
+    width:277px;
     float:left;
     height:503px;
     overflow-y: scroll;
@@ -49,17 +49,20 @@
 
     min-height:15px;
     overflow:hidden;
+    display:none;
 }
 
 .card_active {
     background-color:#D2FF78 !important;
     color:black !important;
+    display:block;
 }
 
 .card_focus {
     border: 2px dashed darkgrey;
     color:black !important;
     width:248px;
+    display:block;
 }
 
 .card_front {

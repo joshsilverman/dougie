@@ -1,7 +1,4 @@
 Dougie::Application.routes.draw do
-  devise_for :users
-
-  get "tag/index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -59,37 +56,29 @@ Dougie::Application.routes.draw do
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
+  
+  #devise
+  devise_for :users, :path_names => { :sign_in => '/welcome'}
 
-  #editor
-  match "/editor/:id" => "documents#read" #** public **#
-  match "/documents/update" => "documents#update"
+  #tags
+  get "tag/index"
+
+  # documents
   match "/documents/create/:tag_id" => "documents#create"
-
-  match "/documents/test_edit" => "documents#test_edit"
-  match "/documents/test_edit/:id" => "documents#test_edit"
-  match "/documents/test_create" => "documents#test_create"
-  match "/documents/test_update" => "documents#test_update"
-
+  resources :documents, :only => [:edit, :update, :destroy]
+  
   #reviwer
   match "/review/:id" => "documents#review" #** public **#
   match "/review/dir/:id" => "tags#review" #** public **#
   match "/mems/update/:id/:confidence/:importance" => "mems#update"
-  match "/lines/update/:id" => "lines#update"
-
-  #organizer
+  resources :lines, :only => [:update]
+  
+  # organizer
+  resources :tags, :only => [:destroy, :create, :update]
   match "/" => "tags#index" #** public **#
-  match "/tags/create" => "tags#create"
-  match "/tags/destroy" => "tags#destroy"
-  match "/documents/destroy" => "documents#destroy"
+  match "/tags/json" => "tags#json"
 
-  match "/lines/index" => "lines#index"
-  match "/lines/active" => "lines#active"
-  match "/lines/inactive" => "lines#inactive"
-  
-  match "/mems/index" => "mems#index"
-  match "/mems/active" => "mems#active"
-  match "/mems/inactive" => "mems#inactive"
-  
-  root :to => "user#index"
+  # login system
+  root :to => "users#index"
 
 end

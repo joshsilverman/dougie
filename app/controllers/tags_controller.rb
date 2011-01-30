@@ -6,28 +6,57 @@ class TagsController < ApplicationController
 
     # create Misc tag if not exists
     
-    misc = Tag.find_by_misc(true)
+    misc = current_user.tags.find_by_misc(true)
     if misc.nil?
-      Tag.create(:misc => true, :name => 'Misc.')
+      Tag.create( :misc => true,
+                  :name => 'Misc.',
+                  :user_id => current_user.id)
     end
 
     @tags_json = Tag.tags_json(current_user)
 
   end
 
+  def json
+    render :text => Tag.tags_json(current_user)
+  end
+
   def create
 
-    #param check
+    #params
     name = params[:name]
-    if name.nil?
+
+    #create
+    Tag.transaction do
+      tag = current_user.tags.create(:name => params[:name])
+
+      if tag.nil?
+        render :nothing => true, :status => 400
+        return
+      else
+        render :json => Tag.tags_json(current_user)
+      end
+    end
+
+  end
+
+  def update
+
+    #param check
+    if params[:name].nil?
       render :nothing => true, :status => 400
       return
     end
 
     #create
     Tag.transaction do
-      current_user.tags.create(:name => name)
-      render :json => Tag.tags_json(current_user)
+      tag = current_user.tags.where('misc IS NULL AND id = ?', params[:id]).first
+      if tag.nil?
+        render :nothing => true, :status => 403
+      else
+        tag.update_attribute(:name, params[:name])
+        render :json => Tag.tags_json(current_user)
+      end
     end
 
   end
@@ -45,7 +74,7 @@ class TagsController < ApplicationController
     tag = current_user.tags.find_by_id(id)
 
     #don't delete if Misc, or if nothing's there
-    if tag.misc == true or tag.nil?
+    if tag.nil? || tag.misc == true || tag.nil?
       render :nothing => true, :status => 400
       return
     end
@@ -80,7 +109,11 @@ class TagsController < ApplicationController
     @lines_json = Line.includes(:mems)\
                  .where("     lines.document_id IN (?)
                           AND lines.text <> 'root'
-                          AND mems.review_after < ?", document_ids, Time.now())\
+                          AND mems.user_id = ?
+                          AND mems.review_after < ?",
+                        document_ids, 
+                        current_user.id,
+                        Time.now())\
                  .to_json :include => :mems
 
     render '/documents/review'

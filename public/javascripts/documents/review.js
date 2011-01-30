@@ -10,6 +10,11 @@ var cDoc = Class.create({
         /* new reviewer */
         var data = $('card_json').innerHTML.evalJSON();
         this.reviewer = new cReviewer(data);
+
+        /* resize listener - fire after dom:loaded */
+        window.onresize = AppUtilities.resizeContents;
+        AppUtilities.resizeContents();
+        AppUtilities.resizeContents.delay(.01);
     }
 });
 
@@ -28,13 +33,18 @@ var cReviewer = Class.create({
         }.bind(this));
 
         /* show first */
-        this.cards[0].cue();
+        if (this.cards[0]) this.cards[0].cue();
+        else $('card_front').update("<i>No cards to review</i>");
         
         /* next listeners */
         $('strength_1').observe('click', this.next.bind(this, 1));
         $('strength_2').observe('click', this.next.bind(this, 2));
         $('strength_3').observe('click', this.next.bind(this, 3));
         $('strength_4').observe('click', this.next.bind(this, 4));
+
+        /* nav listeners */
+        $('back_button').observe('click', this.back.bind(this, false));
+        $('next_button').observe('click', this.next.bind(this, false));
 
         /* progress bar */
         this.progressBar = new cProgressBar();
@@ -44,7 +54,7 @@ var cReviewer = Class.create({
     next: function(grade) {
 
         /* grade current */
-        this.cards[this.currentCardIndex].grade(grade);
+        if (grade) this.cards[this.currentCardIndex].grade(grade);
         this.currentCardIndex++;
 
         /* advance */
@@ -52,6 +62,19 @@ var cReviewer = Class.create({
             this.cards[this.currentCardIndex].cue();
         }
         else alert('No more cards for this document');
+
+        /* update progress bar */
+        this.progressBar.update((this.currentCardIndex)/this.cards.length);
+        $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+    },
+
+    back: function(grade) {
+
+        /* back */
+        this.currentCardIndex--;
+        if (this.cards[this.currentCardIndex]) {
+            this.cards[this.currentCardIndex].cue();
+        }
 
         /* update progress bar */
         this.progressBar.update((this.currentCardIndex)/this.cards.length);
@@ -138,6 +161,11 @@ var cCard = Class.create({
                 this.confidence = 2;
                 this.importance = 2;
                 break;
+
+            /* catch if not a grade - ie person has pressed next button */
+            default:
+                return;
+                break;
         }
 
         /* save grade */
@@ -147,7 +175,7 @@ var cCard = Class.create({
             
             onFailure: function() {},
 
-            onComplete: function(transport) {$('log').update(transport.responseText);}
+            onComplete: function(transport) {}//$('log').update(transport.responseText);}
         });
     },
 
@@ -182,9 +210,9 @@ var cCard = Class.create({
         var text = $('input_front').value + ' - ' + $('input_back').value;
 
         /* save */
-        var requestUrl = '/lines/update/'+this.lineId;
+        var requestUrl = '/lines/'+this.lineId;
         new Ajax.Request(requestUrl, {
-            method: 'post',
+            method: 'put',
             parameters: {"line[text]": text, "line[id]": this.lineId},
             
             onSuccess: function(transport) {
@@ -228,6 +256,6 @@ var cProgressBar = Class.create({
 
 /* global objects */
 document.observe('dom:loaded', function() {
-    parser = new cParser();
+    parser = new cParser(); //@todo move to doc object
     doc = new cDoc();
 });

@@ -1,5 +1,4 @@
-<% @page_specific_scripts_js = ["ckeditor/ckeditor", "parser", "documents/read"] %>
-<% @page_specific_scripts_css = ["documents/read"] %>
+<% @page_specific_scripts_js = ["ckeditor/ckeditor", "parser"] %>
 
 <div class="rounded_border doc_options">
   <span>/<%=@tag.name%>/<input id="document_name" value="<%=@document.name%>"></input></span>
@@ -7,9 +6,12 @@
   <img id="sync_button" class="sync" src="/images/editor/sync-icon.png" alt=""/>
 </div>
 
-<div id="editor_container">
-  <textarea id="editor" name="editor"><%=@document.html%></textarea>
-</div>
+<% if @new_doc %>
+  <% @document.html = '<ul><li>zendo - meditation hall</li></ul>'%>
+  <%= "<span id='new_document' style='display:hidden'></span>".html_safe %>
+<% end %>
+
+<div id="editor_container"><textarea id="editor" name="editor"><%=@document.html%></textarea></div>
 
 <div id="right_rail" class="rounded_border">
   <table class="align_bottom" valign="bottom"><tr><td id="cards" valign="bottom">
@@ -24,11 +26,12 @@
 
 <!-- document vars -->
 <div id="document_id" style="display:none;"><%=@document.id%></div>
+<div id="line_ids" style="display:none;"><%=@line_ids%></div>
 
 <script type="text/javascript">
 //<![CDATA[
   CKEDITOR.replace( 'editor', {
-    startupFocus : true,
+    startupFocus : <%= !@new_doc%>,
     //fullPage : true,
     on: {
       instanceReady : function(e) {Event.fire(document, 'CKEDITOR:ready');},

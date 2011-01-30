@@ -7,7 +7,19 @@ var cDoc = Class.create({
     editor: null,
     utilities: null,
 
+    newDoc:null,
+
     initialize: function() {
+
+        /* set new document attr */
+        var newDoc = $('new_document');
+        if (newDoc) {
+
+            /* set attr and remove node (in case there are edits followed by reload) */
+            this.newDoc = true;
+            newDoc.remove();
+        }
+        else newDoc = false;
 
         //wait for ckeditor to load
         document.observe('CKEDITOR:ready', function() {
@@ -25,12 +37,29 @@ var cDoc = Class.create({
 
                 /* fire editor loaded */
                 document.fire('editor:loaded');
-                }.bind(this)).delay(.1);
 
-                /* resize listener */
-                window.onresize = this.onResize;
-                this.onResize();
+                /* focus and select sample node if exists */
+                if (this.newDoc) {
+                    var handler = function() {
 
+                        /* sample node, clear */
+                        var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
+                        sampleNode.innerHTML = '<br />';
+
+                        /* update card when interpreter available */
+                        var card = doc.rightRail.cards.get(sampleNode.id);
+                        card.update.bind(card).defer(sampleNode);
+
+                        /* stop observing */
+                        Element.stopObserving.defer(doc.outline.iDoc.document, 'click', handler);
+                    };
+                    Element.observe(doc.outline.iDoc.document, 'click', handler);
+                }
+            }.bind(this)).delay(.1);
+
+            /* resize listener */
+            window.onresize = this.onResize;
+            this.onResize();
         }.bind(this));
 
         /* select all in doc name on click */
@@ -67,7 +96,7 @@ var cOutline = Class.create({
 
     documentId: null,
 
-    maxIdle: 4,
+    maxIdle: 8,
     idleSaveTimerId: null,
     maxActive: 12,
     activeSaveTimerId: null,
@@ -78,10 +107,15 @@ var cOutline = Class.create({
     deleteNodes: [],  //list of domIds for nodes to be delete
     deletingNodes: [],  //list of domIds for nodes currently being deleted (request in progress)
 
+    newNodes: false, //boolean tracks whether new nodes have been added
+
+    lineIds: null,
+
     initialize: function() {
 
         /* document members */
         this.documentId = $('document_id').innerHTML;
+        this.lineIds = $H($('line_ids').innerHTML.evalJSON());
 
         /* iframe doc */
         var iframe = $$('#cke_contents_editor iframe')[0];
@@ -98,21 +132,26 @@ var cOutline = Class.create({
         $("document_name").observe('keypress', this.autosave.bind(this));
     },
 
-    autosave: function() {
-        
+    autosave: function(force) {
+
         /* idle save timer */
         window.clearTimeout(this.idleSaveTimerId);
-        this.idleSaveTimerId = this.save.bind(this).delay(this.maxIdle);
+        this.idleSaveTimerId = this.save.bind(this, force).delay(this.maxIdle);
 
         /* idle save timer */
         if (this.activeSaveTimerId == null)
-            this.activeSaveTimerId = this.save.bind(this).delay(this.maxActive);
+            this.activeSaveTimerId = this.save.bind(this, force).delay(this.maxActive);
 
         /* save button styling */
         $('save_button').innerHTML = 'Save';
+
+        /* navigate away while saving warning */
+        window.onbeforeunload = function(e){
+            return 'There is unsaved information on this page.';
+        }
     },
 
-    save: function() {
+    save: function(force) {
 
         /* cancel other timers */
         window.clearTimeout(this.idleSaveTimerId);
@@ -120,25 +159,44 @@ var cOutline = Class.create({
         this.idleSaveTimerId = null;
         this.activeSaveTimerId = null;
 
-        /* don't save if nothing changed */
-        if (this.unsavedChanges.length == 0) return;
+        /* look for new lines and deleted lines */
+        doc.outline.updateIds();
+
+        /* don't save if nothing changed or save not being forced */
+        var saveButton = $('save_button');
+        if (   this.unsavedChanges.length == 0
+            && this.deleteNodes.length == 0
+            && !force
+            && this.lineIds) {
+
+            console.log('save canceled');
+            saveButton.innerHTML = 'Saved';
+            return;
+        }
+
+        console.log('save');
 
         /* sync */
         //@todo this may become unnecessary later on
         doc.rightRail.sync();
 
         /* save button styling */
-        var saveButton = $('save_button');
         saveButton.disabled = true;
         saveButton.innerHTML = 'Saving';
 
+        /* body outerHTML - workaround for firefox */
+        var body = this.iDoc.document.getElementsByTagName('body')[0];
+        var bodyClone = new Element('body', {'line_id': body.getAttribute('line_id'),
+                                                   'id': 'node_0'});
+        var bodyOuterHTML = bodyClone.update(body.innerHTML).wrap().innerHTML;
+
         /* save */
-        new Ajax.Request('/documents/update', {
-            method: 'post',
-            parameters: {'html': this.iDoc.document.getElementsByTagName('body')[0].innerHTML,
-                         'id': this.documentId,
+        new Ajax.Request('/documents/'+this.documentId, {
+            method: 'put',
+            parameters: {'html': bodyOuterHTML,
                          'name': $('document_name').value,
-                         'delete_nodes': this.deleteNodes.toString()},
+                         'delete_nodes': this.deleteNodes.toString(),
+                         'new_nodes': this.newNodes},
 
             onCreate: function() {
 
@@ -153,13 +211,22 @@ var cOutline = Class.create({
                 /* track nodes being delete, clear nodes to be deleted */
                 this.deletingNodes = this.deleteNodes;
                 this.deleteNodes = [];
+
             }.bind(this),
 
             onSuccess: function(transport) {
-                var lineIds = transport.responseText.evalJSON();
-                this.updateIds(lineIds);
+                this.lineIds = $H(transport.responseText.evalJSON());
+                this.updateIds();
+                
+                /* set new nodes to false */
+                this.newNodes = false;
 
-                /*  */
+                /* save button styling */
+                saveButton.disabled = false;
+                saveButton.innerHTML = 'Saved';
+
+                /* cancel navigate away while saving warning */
+                window.onbeforeunload = null;
             }.bind(this),
 
             onFailure: function() {
@@ -173,25 +240,22 @@ var cOutline = Class.create({
 
                 /* add unsuccessfully deleted back to deleteNodes */
                 this.deleteNodes = this.deleteNodes.concat(this.deletingNodes);
-            }.bind(this),
-
-            onComplete: function() {
 
                 /* save button styling */
                 saveButton.disabled = false;
-                saveButton.innerHTML = 'Saved';
+                saveButton.innerHTML = 'Save';
+                this.autosave();
+
+                console.log('error: unable to save');
+            }.bind(this),
+
+            onComplete: function() {
 
                 /* clear saving changes */
                 this.savingChanges = []
                 this.deletingNodes = []
             }.bind(this)
         });
-
-        /* activate card */
-        document.observe('click', function(event) {
-           if(event.target.hasClassName('card_activation')) this.activateNode(event.target);
-        }.bind(this));
-
     },
 
     activateNode: function(checkbox) {
@@ -210,20 +274,80 @@ var cOutline = Class.create({
             node.setAttribute('active', false);
             doc.rightRail.cards.get(nodeId).deactivate();
         }
+
+        /* autosave */
+        node.setAttribute('changed', '1');
+        this.unsavedChanges.push(node.id);
+        this.autosave();
+
+        /* refocus on editor */
+        doc.editor.focus();
     },
 
-    updateIds: function(lineIds) {
-        $H(lineIds).each(function(idArray) {
-            
+    updateIds: function() {
+
+        /* don't run if no lineids */
+        if (!this.lineIds) {
+            console.log('cannot update ids');
+            return;
+        }
+        else console.log('update ids');
+
+        /* iterate through id, line_id hash */
+        this.lineIds.each(function(idArray) {
+
             /* add id */
-            if (this.iDoc.document.getElementById(idArray[0]))
-                this.iDoc.document.getElementById(idArray[0]).setAttribute('line_id', idArray[1]);
-            
+            if (this.iDoc.document.getElementById(idArray[1])) {
+                this.iDoc.document.getElementById(idArray[1]).setAttribute('line_id', idArray[0]);
+            }
+
             /* remove line if no node has the associated node id */
             else {
-                this.deleteNodes.push(idArray[1]);
+
+                this.deleteNodes.push(idArray[0]);
                 console.log('deleting ' + idArray[0]);
             }
+        }.bind(this));
+
+        /* iterate through nodes, make sure line_id is in hash */
+        Element.select(doc.outline.iDoc.document, '.outline_node').each(function(node) {
+
+            /* parent attribute setter */
+            doc.outline.iDoc.document.body.setAttribute("id","node_0"); //@todo can be placed in outline initialization if this strat remains
+            var parent = (node.parentNode.tagName != "UL")
+                ? node.parentNode
+                : node.parentNode.parentNode;
+
+            //set parent - if changed, treat node as new
+            if (   node.getAttribute("parent")
+                && node.getAttribute("parent") != parent.id) {
+
+                console.log('reset line id and id');
+                this.deleteNodes.push(node.getAttribute("line_id"));
+                node.setAttribute("line_id", '');
+                node.setAttribute("id", '');
+            }
+            node.setAttribute("parent", parent.id);
+
+            /* treat nodes that aren't in returned hash as new - set doc as changed */
+            if (   this.lineIds.get(node.getAttribute('line_id'))
+                != node.id) {
+
+                console.log('node not in hash; removing');
+                node.setAttribute('line_id', '');
+                this.unsavedChanges.push(node.id);
+            }
+
+            /* assure all changed nodes in unsavedChanges - shouldn't be necessary */
+            if (   node.getAttribute('changed') == '1'
+                && this.unsavedChanges.indexOf(node.id) == -1) {
+
+                console.log('adding node to unsavedChanges: ' + node.id);
+                this.unsavedChanges.push(node.id);
+            }
+
+            /* new nodes */
+            if (!node.getAttribute('line_id')) this.newNodes = true;
         }.bind(this));
     }
 });
@@ -235,11 +359,14 @@ var cOutlineHandlers = Class.create({
     initialize: function(iDoc) {
         //capture iframe keystroke events
         this.iDoc = iDoc;
-        this.iDoc.document.onkeyup = this.delegateHandler.bind(this);
-        this.iDoc.document.onkeydown = this.delegateHandler.bind(this);
+        this.iDoc.document.onkeyup = this.delegateKeystrokeHandler.bind(this);
+        this.iDoc.document.onkeydown = this.delegateKeystrokeHandler.bind(this);
+
+        this.iDoc.document.onmouseup = this.delegateClickHandler.bind(this);
+        this.iDoc.document.onmousedown = this.delegateClickHandler.bind(this);
     },
 
-    delegateHandler: function(event) {
+    getEventDetails: function() {
 
         /* get real target - target in event object is wrong */
 
@@ -265,127 +392,171 @@ var cOutlineHandlers = Class.create({
             else target = rangeGrandParent
         }
 
+        return [range, target];
+    },
+
+    delegateKeystrokeHandler: function(event) {
+
+        /* event details */
+        var eventDetails = this.getEventDetails();
+        var range = eventDetails[0];
+        var target = eventDetails[1];
+
         /* invoke proper handlers */
 
         //keydown events
         if (event.type == "keydown") {
-            switch (event.keyCode) {
-                case Event.KEY_TAB:
-                    this.onTab(event, target, range);
-                    break;
-                case Event.KEY_BACKSPACE:
-                    this.onBackspace(event, target, range);
-                    break;
-                case Event.KEY_DELETE:
-                    this.onDelete(event, target, range);
-                    break;
-//                case 86: //v
-//                    if (event.ctrlKey) {
-//                        this.onPaste(event, target, range);
-//                        break;
-//                    }
-                case 88: //x
-                    if (event.ctrlKey) {
-                        this.onCut(event, target, range);
-                        break;
-                    }
-//                case 67: //c
-//                    if (event.ctrlKey) {
-//                        this.onCopy(event, target, range);
-//                        break;
-//                    }
 
-                /* handles ranges of keys */
-                default:
+            if (event.keyCode == Event.KEY_TAB)
+                this.onTab(event, target, range);
 
-                    /* punc */
-                    if (event.keyCode >=188 && event.keyCode <=122)
-                        this.onDelete(event, null, range);
+            else if (Event.KEY_DELETE == event.keyCode)
+                this.onDelete(event, target, range);
 
-                    /* letters */
-                    else if (event.keyCode >=65 && event.keyCode <=90)
-                        this.onDelete(event, null, range);
+            /* special backspace handling for highlighted text and beginning of nodes */
+            else if (Event.KEY_BACKSPACE == event.keyCode)
+                this.onBackspace(event, target, range);
 
-                    /* numbers */
-                    else if (event.keyCode >=48 && event.keyCode <= 57)
-                        this.onDelete(event, null, range);
+            /* incercept save - wait for keyup */
+            else if(83 == event.keyCode && event.ctrlKey) Event.stop(event);
 
-                    /* math */
-                    else if (event.keyCode >=107 && event.keyCode <=111)
-                        this.onDelete(event, null, range);
+            /* intercept arrow events */
+            else if (   Event.KEY_UP == event.keyCode
+                     || Event.KEY_DOWN == event.keyCode
+                     || Event.KEY_LEFT == event.keyCode
+                     || Event.KEY_RIGHT == event.keyCode) ;
 
-                    break;
-            }
+            /* treat like letter */
+            else if (Event.KEY_RETURN == event.keyCode)
+                this.onLetter(event, target, range);
+
+            /* intecept certain letters - take no action here */
+            else if (67 == event.keyCode && event.ctrlKey) ; //copy
+            else if (86 == event.keyCode && event.ctrlKey) ; //paste
+            else if (88 == event.keyCode && event.ctrlKey) ; //cut
+            else if (89 == event.keyCode && event.ctrlKey) ; //redo
+            else if (90 == event.keyCode && event.ctrlKey) ; //undo
+
+            /* hyphen - make bulletedlist */
+            else if (189 == event.keyCode && range.startOffset == 0)
+                    this.onHyphen(event, target, range);
+
+            /* letter like keys */
+            else if (   event.keyCode == 32 /* space */
+                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
+                     || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
+                     || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
+                     || event.keyCode >= 107 && event.keyCode <= 111) /* math */
+
+                this.onDelete(event, null, range);
         }
 
         //keyup events
         else {
 
-            switch (event.keyCode) {
-                //down event caught
-                case Event.KEY_TAB:break;
+            if (Event.KEY_TAB == event.keyCode) ; /* nothing */
 
-                case Event.KEY_UP:break;
-                case Event.KEY_DOWN:break;
-                case Event.KEY_LEFT:break;
-                case Event.KEY_RIGHT:break;
-                case 16:break; //shift
-                case 17:break; //ctrl
-                
-                //normal letter behavior for backspace (rerendering card, etc)
-                //case Event.KEY_BACKSPACE:break;
-
-                //normal behavior for return - allow rerendering when splitting card
-                //case Event.KEY_RETURN:break;
-
-                //all other chars to be treated as letters
-                default:this.onLetter(event, target, range);
+            /* return keyup target is new node */
+            else if (Event.KEY_RETURN == event.keyCode) {
+                this.onDelete(event, null, range);
+                this.onLetter(event, target, range);
             }
+
+            /* intercept arrow events */
+            else if (   Event.KEY_UP == event.keyCode
+                     || Event.KEY_DOWN == event.keyCode
+                     || Event.KEY_LEFT == event.keyCode
+                     || Event.KEY_RIGHT == event.keyCode) ;
+
+            /* ordered list */
+            else if (55 == event.keyCode && event.ctrlKey && event.shiftKey) {
+                doc.editor.execCommand('numberedlist');
+                doc.outline.autosave(true);
+            }
+
+            /* unordered list */
+            else if (56 == event.keyCode && event.ctrlKey && event.shiftKey) {
+                doc.editor.execCommand('bulletedlist');
+                doc.outline.autosave(true);
+            }
+
+            /* intecept certain letters - take no action here */
+            else if (67 == event.keyCode && event.ctrlKey) ; //copy
+            else if (86 == event.keyCode && event.ctrlKey) ; //paste
+            else if (88 == event.keyCode && event.ctrlKey) ; //cut
+
+            /* undo/redo trigger save */
+            //redo
+            else if (89 == event.keyCode && event.ctrlKey) {
+                console.log('redo autosave');
+                doc.outline.autosave(true);
+            }
+
+            //undo
+            else if (90 == event.keyCode && event.ctrlKey) {
+                console.log('undo autosave');
+                doc.outline.autosave(true);
+            }
+
+            /* save */
+            else if (83 == event.keyCode && event.ctrlKey) {
+                console.log('ctrl + s save');
+                doc.outline.save(true);
+                Event.stop(event);
+            }
+
+            /* hyphen - make bulletedlist - cancel keyup event*/
+            else if (189 == event.keyCode && range.startOffset == 0) ;
+
+            /* letter like keys */
+            else if (   event.keyCode == 32 /* space */
+                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
+                     || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
+                     || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
+                     || event.keyCode >= 107 && event.keyCode <= 111) /* math */
+
+                this.onLetter(event, target, range);
+        }
+    },
+
+    delegateClickHandler: function(event) {
+
+        /* event details */
+        var eventDetails = this.getEventDetails();
+        var range = eventDetails[0];
+        var target = eventDetails[1];
+
+        /* mouse up events */
+        if (event.type == 'mouseup') {
+            this.onDragNode(event, target, range);
         }
 
-        /* special handling for re-synchronizing right rail */
-
-        //check if multiple nodes are in selection
-        //gecko, webkit, others?
-        if (   range
-            //&& range.endOffset > range.startOffset
-            && range.startContainer != range.endContainer
-            && range.commonAncestorContainer
-            && range.commonAncestorContainer.tagName != 'Text'
-            && range.commonAncestorContainer.tagName != undefined) {
-
-            //key code check
-            if (   event.keyCode != Event.KEY_UP
-                && event.keyCode != Event.KEY_DOWN
-                && event.keyCode != Event.KEY_LEFT
-                && event.keyCode != Event.KEY_RIGHT
-                && event.keyCode != 16     //shift
-                && event.keyCode != 17) {  //ctrl
-                
-                (function () {doc.rightRail.sync();}).delay(.1);
-            }
+        /* mouse down events */
+        else {
+            this.onClickNode(event, target, range);
         }
     },
 
     onTab: function(event, target, range) {
 
         /* ignore if not at beginning of node */
-//        if (range.startOffset != 0) {
-//            Event.stop(event);
-//            event.preventDefault();
-//            return;
-//        }
+        if (range.startOffset != 0) {
+            Event.stop(event);
+            doc.editor.focus();
+            return;
+        }
         //@todo determine how to overide default tab event
 
         /* fire indent/outdent */
         if (event.shiftKey) doc.editor.execCommand('outdent');
         else doc.editor.execCommand('indent');
+
+        /* autosave */
+        console.log('tab autosave');
+        doc.outline.autosave();
     },
 
     onLetter: function(event, target, range) {
-
-        /* autosave */
-        doc.outline.autosave();
 
         /* fire onDelete if selection */
         if (   range.commonAncestorContainer.nodeName != '#text'
@@ -407,10 +578,8 @@ var cOutlineHandlers = Class.create({
         }
 
         /* set outline changed attribute, unsaved changes list */
-        if (target.id != '') {
-            Element.writeAttribute(target, {'changed': '1'});
-            doc.outline.unsavedChanges.push(target.id)
-        }
+        Element.writeAttribute(target, {'changed': '1'});
+        doc.outline.unsavedChanges.push(target.id);
 
         /* new/existing card handling */
 
@@ -418,19 +587,16 @@ var cOutlineHandlers = Class.create({
         if (!id) doc.rightRail.createCard(target);
 
         //existing card
-        else if (doc.rightRail.cards.get(id)) {
-            doc.rightRail.focus(id);
-            doc.rightRail.cards.get(id).update(target);
-        }
+        else if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, target);
 
         //error
-        else console.log('error: node has id but no card exists')
+        else console.log('error: node has id but no card exists');
     },
 
     onBackspace: function(event, target, range) {
 
         /* treat as delete if selection */
-        if (   range.commonAncestorContainer.nodeName != '#text'
+        if (   range.startContainer.outerHTML != range.endContainer.outerHTML
             || range.startOffset != range.endOffset) {
 
             this.onDelete(event, null, range);
@@ -453,10 +619,6 @@ var cOutlineHandlers = Class.create({
                 
                 //first element in body - stop event
                 if (Element.previousSiblings(target).length == 0) Event.stop(event);
-                
-                //delete node which already has id
-                else if (target.getAttribute('line_id') != '')
-                    doc.outline.deleteNodes.push(target.getAttribute('line_id'));
 
                 //delete node which hadn't yet been saved
                 else {/* normal behavior */}
@@ -468,12 +630,10 @@ var cOutlineHandlers = Class.create({
             doc.editor.execCommand('outdent');
             Event.stop(event);
         }
-    },
 
-    onCut: function(event, target, range) {
-        
-        /* treat as deletion */
-        this.onDelete(event,target, range)
+        /* autosave */
+        console.log('backspace autosave');
+        doc.outline.autosave();
     },
 
     onDelete: function(event, target, range) {
@@ -494,18 +654,22 @@ var cOutlineHandlers = Class.create({
             }
 
             /* not end of node */
-            else {/* normal behavior */}
-
+            else {
+                doc.outline.unsavedChanges.push(target.id);
+                console.log('setting changed. target: ' + target);
+                target.setAttribute('changed', 1);
+            }
         }
 
-        /* push line ids in deleted html indo deleteNodes array */
-        //don't bother checking if range parent is text
-        else if (range.commonAncestorContainer.nodeName != '#text') {
-
-            html.scan(/line_id="([^"]*)"/, function(match) {
-                if (match[1]) doc.outline.deleteNodes.push(match[1]);
-            });
+        /* check for partial delete of first node in range */
+        else {
+            doc.outline.unsavedChanges.push(range.startContainer.parentNode.id);
+            range.startContainer.parentNode.setAttribute('changed', 1);
         }
+
+        /* autosave */
+        console.log('delete (or before char) autosave');
+        doc.outline.autosave();
     },
 
     // @note listener set in view on editor creation
@@ -533,6 +697,39 @@ var cOutlineHandlers = Class.create({
         //remove meta tags - necessary?
         html = html.gsub(/<meta[^>]*>/, '');
         event.data.html = html;
+    },
+
+    onClickNode: function(event, target, range) {},
+
+    onDragNode: function(event, target, range) {
+
+//        /* check for change in parents */
+//        Element.select(doc.outline.iDoc.document, '.outline_node').each(function(node) {
+//
+//            /* parent attribute setter */
+//            var parent = (node.parentNode.tagName != "UL")
+//                ? node.parentNode
+//                : node.parentNode.parentNode;
+//
+//            //set parent - if changed, treat node as new
+//            if (   node.getAttribute("parent")
+//                && node.getAttribute("parent") != parent.id) {
+//
+//                /* auto save */
+//                console.log('change in parents detected');
+//                doc.outline.autosave(true);
+//            }
+//        });
+    },
+
+    /* called when a hypen is pressed at beginning of node */
+    onHyphen: function(event, target, range) {
+
+        /* stop event */
+        Event.stop(event);
+
+        /* exec bulletlist ckeditor command */
+        doc.editor.execCommand('bulletedlist');
     }
 });
 
@@ -541,6 +738,8 @@ var cRightRail = Class.create({
     cardCount: 2,
     cards: new Hash(),
     inFocus: null,
+
+    updateFocusCardTimer: null,
 
     initialize: function() {
         
@@ -559,7 +758,27 @@ var cRightRail = Class.create({
 
             /* sync */
             this.sync();
+
+            /* activate card */
+            document.observe('click', function(event) {
+               if(event.target.hasClassName('card_activation')) doc.outline.activateNode(event.target);
+            }.bind(this));
         }.bind(this));
+    },
+
+    /* wrapper function for focus/update to limit the number of calls! */
+    updateFocusCardWrapper: function(id, target) {
+
+        /* clear timer */
+        window.clearTimeout(this.updateFocusCardTimer)
+
+        /* make call */
+        this.updateFocusCardTimer =
+            (function () {
+                doc.rightRail.focus(id);
+                doc.rightRail.cards.get(id).update(target);
+            }).delay(.25)
+        
     },
 
     createCard: function(node) {
@@ -649,16 +868,6 @@ var cRightRail = Class.create({
                 //update
                 this.cards.get(node.id).update(node, truncate);
             }
-
-            /* parent attribute setter */
-            //@todo backend should be able to handle this, in which case sync
-            //      would not need to be run before save. the placement of this
-            //      logic here is ontologically wrong
-            doc.outline.iDoc.document.body.setAttribute("id","node_0"); //@todo can be placed in outline initialization if this strat remains
-            var parent = (node.parentNode.tagName != "UL")
-                ? node.parentNode
-                : node.parentNode.parentNode;
-            node.setAttribute("parent", parent.id);
         }.bind(this));
 
         /* destroy cards if node no longer exists */
@@ -668,7 +877,6 @@ var cRightRail = Class.create({
             var node = doc.outline.iDoc.document.getElementById(nodeId);
             if (!node) card.destroy();
         });
-
     }
 });
 
@@ -682,7 +890,7 @@ var cCard = Class.create({
 
     active: false,
     elmntCard: null,
-    elmntNode: null,
+    nodeId: null,
     updating: false,
 
     autoActivate: false,
@@ -692,8 +900,9 @@ var cCard = Class.create({
 
     initialize: function(node, cardCount, truncate, attributes) {
 
-        /* set count */
+        /* set count, nodeId */
         this.cardNumber = cardCount;
+        this.nodeId = node.id;
 
         /* set dom node attributes */
         var defaultAttributes = $H({'id': 'node_' + this.cardNumber,
@@ -748,13 +957,27 @@ var cCard = Class.create({
 
     render: function(truncate) {
 
-        //checkbox
+        /* checkbox dom */
         var checkbox;
         if (this.active == true) checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
         else checkbox = '<input type="checkbox" class="card_activation" />';
 
+        /* attempt autoactivate */
+        if (this.autoActivate) {
+            this.autoActivated = true;
+            this.autoActivate = false;
+            this.activate();
+            this.elmntCard.down('input').checked = 'yes';
+            console.log('activate in render');
+            doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
+        }
+
+        //is active
+        if (!this.active)
+            this.elmntCard.innerHTML = checkbox + '<i>Click checkbox to activate</i>';
+
         //truncated txt
-        if (truncate && !this.active) {
+        else if (truncate && !this.active) {
             this.elmntCard.innerHTML
                 = checkbox + this.text;
         }
@@ -764,15 +987,6 @@ var cCard = Class.create({
             this.elmntCard.innerHTML = '<div class="card_front">'
                     + checkbox + this.front + '</div>\
                 <div class="card_back">'+this.back+'</div>';
-
-            //autoActivate
-            if (this.autoActivate) {
-                this.autoActivated = true;
-                this.autoActivate = false;
-                this.activate();
-                this.elmntCard.down('input').checked = 'yes';
-                doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
-            }
         }
 
         //just front
@@ -785,12 +999,16 @@ var cCard = Class.create({
                 this.autoActivated = false;
                 this.deactivate();
                 this.elmntCard.down('input').checked = '';
+                console.log('activate in render');
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', false);
             }
         }
 
         //no card to update
-        else console.log('error: cannot render - no card in dom to update')
+        else {
+            console.log('error: cannot render - no card in dom to update')
+            return;
+        }
 
     },
 

@@ -8,15 +8,17 @@ gem 'rails', '3.0.3'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 
 # Use unicorn as the web server
-gem 'unicorn'
+# gem 'unicorn'
+# gem 'heroku_s3_backup'
 gem 'mysql'
 gem 'nokogiri'
 gem 'acts_as_tree'
-gem 'libxml-ruby'
+gem 'libxml-ruby', '1.1.3'
 gem 'devise'
 gem 'warden', '0.10.7'
 gem 'cancan', '1.4.1'
-gem 'ruby-prof'
+# gem 'ruby-prof'
+# gem 'simple_captcha', :git => 'git://github.com/galetahub/simple-captcha.git'
 
 # Deploy with Capistrano
 # gem 'capistrano'

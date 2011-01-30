@@ -1,17 +1,54 @@
-<h2>Sign in</h2>
+<% @page_specific_scripts_js = "/javascripts/pages/home" %>
+<% @page_specific_scripts_css = "/stylesheets/pages/home" %>
 
-<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-  <p><%= f.label :email %><br />
-  <%= f.text_field :email %></p>
+<div class="splash-wrapper">
+  
+  <div class="headline" id="headline">
+    <h1><span style="color:#009CFF;">Efficient </span> learning for <span style="color:#009CFF;">passionate</span> students</h1>
+    <h5>Roll over the images below to see how</h5>
+  </div>
 
-  <p><%= f.label :password %><br />
-  <%= f.password_field :password %></p>
+  <div class="splash-img-wrapper">
+    <div class="splash"><img id="img_learn" src="/images/home/learn.png" /></div>
+    <div class="splash"><img id="img_study" src="/images/home/study.png" /></div>
+    <div class="splash"><img id="img_know" src="/images/home/know.png" /></div>
+  </div>
 
-  <% if devise_mapping.rememberable? -%>
-    <p><%= f.check_box :remember_me %> <%= f.label :remember_me %></p>
-  <% end -%>
+  <div class="register">
+    <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+      <%= link_to "", '/', :class => "register_button"%>
+      <%#= link_to "", new_registration_path(resource_name), :class => "register_button"%>
+    <% end %>
+  </div>
 
-  <p><%= f.submit "Sign in" %></p>
-<% end %>
+</div>
 
-<%= render :partial => "devise/shared/links" %>
+<div class="box_container">
+  <div class="box">
+    We are students and <span class="box_title">our Mission</span> is to become more efficient learners. We want to spend less time studying and know our material much better. And, we want commit the most essential information we come across to long-term memory.
+  </div>
+
+  <div class="box">
+    Zen.do is in <span class="box_title">Beta</span> and we hope to find out from our users what works, what does't and where we should go next. Please send us your comments and suggestions!
+  </div>
+
+  <div class="box">
+    <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+      <div><%= f.label :email %></div>
+      <div><%= f.text_field :email %></div>
+
+      <div><%= f.label :password %></div>
+      <div><%= f.password_field :password %></div>
+
+      <% if devise_mapping.rememberable? -%>
+        <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+      <% end -%>
+
+      <%= f.submit "Sign in" %>
+    <% end %>
+
+    <a href="/users/password/new">Forgot your password?</a>
+    <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a>
+
+  </div>
+</div>
