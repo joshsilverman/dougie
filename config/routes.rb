@@ -66,7 +66,13 @@ Dougie::Application.routes.draw do
   # documents
   match "/documents/create/:tag_id" => "documents#create"
   resources :documents, :only => [:edit, :update, :destroy]
-  
+
+  match "/documents/test_edit" => "documents#test_edit"
+  match "/documents/test_edit/:id" => "documents#test_edit"
+  match "/documents/test_create" => "documents#test_create"
+  match "/documents/test_update" => "documents#test_update"
+
+
   #reviwer
   match "/review/:id" => "documents#review" #** public **#
   match "/review/dir/:id" => "tags#review" #** public **#
