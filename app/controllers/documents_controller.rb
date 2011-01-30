@@ -27,14 +27,14 @@ class DocumentsController < ApplicationController
   
   def edit
 
-    #check id posted
+    # check id posted
     id = params[:id]
     if id.nil?
       redirect_to '/', :notice => "Error accessing that document."
       return
     end
 
-    #check document exists
+    # check document exists
     @document = current_user.documents.find_by_id(id)
     if @document.nil?
       redirect_to '/', :notice => "Error accessing that document."
@@ -43,6 +43,9 @@ class DocumentsController < ApplicationController
 
     @tag = current_user.tags.find_by_id(@document.tag_id)
     @line_ids = Hash[*@document.lines.map {|line| [line.id, line.domid]}.flatten].to_json
+
+    # new document?
+    @new_doc = (@document.html.blank?) ? true : false
     
   end
   

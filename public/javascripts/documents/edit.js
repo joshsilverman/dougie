@@ -7,7 +7,19 @@ var cDoc = Class.create({
     editor: null,
     utilities: null,
 
+    newDoc:null,
+
     initialize: function() {
+
+        /* set new document attr */
+        var newDoc = $('new_document');
+        if (newDoc) {
+
+            /* set attr and remove node (in case there are edits followed by reload) */
+            this.newDoc = true;
+            newDoc.remove();
+        }
+        else newDoc = false;
 
         //wait for ckeditor to load
         document.observe('CKEDITOR:ready', function() {
@@ -25,12 +37,29 @@ var cDoc = Class.create({
 
                 /* fire editor loaded */
                 document.fire('editor:loaded');
-                }.bind(this)).delay(.1);
 
-                /* resize listener */
-                window.onresize = this.onResize;
-                this.onResize();
+                /* focus and select sample node if exists */
+                if (this.newDoc) {
+                    var handler = function() {
 
+                        /* sample node, clear */
+                        var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
+                        sampleNode.innerHTML = '<br />';
+
+                        /* update card when interpreter available */
+                        var card = doc.rightRail.cards.get(sampleNode.id);
+                        card.update.bind(card).defer(sampleNode);
+
+                        /* stop observing */
+                        Element.stopObserving.defer(doc.outline.iDoc.document, 'click', handler);
+                    };
+                    Element.observe(doc.outline.iDoc.document, 'click', handler);
+                }
+            }.bind(this)).delay(.1);
+
+            /* resize listener */
+            window.onresize = this.onResize;
+            this.onResize();
         }.bind(this));
 
         /* select all in doc name on click */
@@ -82,8 +111,6 @@ var cOutline = Class.create({
 
     lineIds: null,
 
-//    sampleDocuments: ['&lt;body contenteditable="true" id="node_0" line_id="" spellcheck="false" class="cke_show_borders"&gt;&lt;ul changed="1"&gt;&lt;li id="node_2" line_id="" changed="0" class="outline_node" active="true" parent="node_0"&gt;US Treasury Securities - government debt issued by the US Dept. of the Treasury&lt;br _moz_dirty=""&gt;&lt;ul changed="1"&gt;&lt;li line_id="" changed="0" class="outline_node" id="node_3" parent="node_2"&gt;Types:&lt;ul changed="1"&gt;&lt;li line_id="" changed="0" class="outline_node" parent="node_3" id="node_18" active="true"&gt;Treasury bills - mature in 28, 91, 182, 364 days&lt;br type="_moz"&gt;&lt;/li&gt;&lt;li line_id="" changed="0" class="outline_node" parent="node_3" id="node_19" active="true"&gt;Treasury notes - mature in 1-10 years&lt;br type="_moz"&gt;&lt;/li&gt;&lt;li line_id="" changed="0" class="outline_node" parent="node_3" id="node_20" active="true"&gt;Treasury bonds - mature in 20-30 years&lt;br type="_moz"&gt;&lt;/li&gt;&lt;li line_id="" changed="0" class="outline_node" parent="node_3" id="node_21" active="true"&gt;TIPS - Treasury inflation protected security&lt;br type="_moz"&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li line_id="" changed="0" class="outline_node" id="node_4" parent="node_2" active="false"&gt;History:&lt;br type="_moz"&gt;&lt;ul changed="1"&gt;&lt;li line_id="" changed="0" class="outline_node" parent="node_4" id="node_23" active="true"&gt;created to - help finance WWII&lt;br _moz_dirty=""&gt;&lt;/li&gt;&lt;li line_id="" changed="0" class="outline_node" parent="node_4" id="node_24"&gt;...&lt;br type="_moz"&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;'],
-
     initialize: function() {
 
         /* document members */
@@ -103,19 +130,6 @@ var cOutline = Class.create({
 
         /* outline title observer */
         $("document_name").observe('keypress', this.autosave.bind(this));
-
-//        /* load sample document */
-//        console.log(this.iDoc.document.getElementsByTagName('body')[0].innerHTML);
-//        var docHtml = this.iDoc.document.getElementsByTagName('body')[0];
-//        if (docHtml.innerHTML == "<p><br></p>") {
-//            docHtml.innerHTML = this.sampleDocuments[0];
-//            doc.editor.focus();
-//            Element.observe(this.iDoc.document, 'click', function() {
-//                docHtml.innerHTML = "&lt;ul&gt;&lt;li&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;";
-//                doc.rightRail.sync();
-//                doc.editor.focus();
-//            });
-//        }
     },
 
     autosave: function(force) {

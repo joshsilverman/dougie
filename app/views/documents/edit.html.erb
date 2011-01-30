@@ -6,9 +6,12 @@
   <img id="sync_button" class="sync" src="/images/editor/sync-icon.png" alt=""/>
 </div>
 
-<div id="editor_container">
-  <textarea id="editor" name="editor"><%=@document.html%></textarea>
-</div>
+<% if @new_doc %>
+  <% @document.html = '<ul><li>zendo - meditation hall</li></ul>'%>
+  <%= "<span id='new_document' style='display:hidden'></span>".html_safe %>
+<% end %>
+
+<div id="editor_container"><textarea id="editor" name="editor"><%=@document.html%></textarea></div>
 
 <div id="right_rail" class="rounded_border">
   <table class="align_bottom" valign="bottom"><tr><td id="cards" valign="bottom">
@@ -28,7 +31,7 @@
 <script type="text/javascript">
 //<![CDATA[
   CKEDITOR.replace( 'editor', {
-    startupFocus : true,
+    startupFocus : <%= !@new_doc%>,
     //fullPage : true,
     on: {
       instanceReady : function(e) {Event.fire(document, 'CKEDITOR:ready');},
