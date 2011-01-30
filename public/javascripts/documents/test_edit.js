@@ -101,7 +101,8 @@ var cUser = Class.create({
             method: 'post',
             parameters: {id: this.documentId,
                          name: this.documentName,
-                         html: this.html},
+                         html: this.html,
+                         new_nodes: true},
                      
             onCreate: function() {
                 this.beginUpdateRequest = new Date().getTime();
