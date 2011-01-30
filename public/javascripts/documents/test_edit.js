@@ -4,11 +4,14 @@ var cTest = Class.create({
 
     initialize: function() {
 
-        $R(1, parseInt($('user_count').value)).each(function(i) {
-            this.users.push(new cUser(i));
-        }.bind(this));
-
         /* listeners */
+
+        //start
+        $('start_button').observe('click', function() {
+            $R(1, parseInt($('user_count').value)).each(function(i) {
+                this.users.push(new cUser(i));
+            }.bind(this));
+        }.bind(this));
 
         //stop
         $('stop_button').observe('click', this.stop.bind(this));
