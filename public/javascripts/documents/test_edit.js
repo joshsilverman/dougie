@@ -114,9 +114,9 @@ var cUser = Class.create({
                 var updateCount = $('update_count');
                 var averageUpdate = $('average_update');
                 var requestTime = new Date().getTime() - this.beginUpdateRequest;
-                averageUpdate.value = ((  (parseInt(averageUpdate.value) * parseInt(updateCount.value))
+                averageUpdate.value = ((  (parseInt(averageUpdate.value) * 9)
                                       + requestTime))
-                                     / (parseInt(updateCount.value) + 1);
+                                      / 10;
 
                 /* update average_update */
                 updateCount.value = parseInt(updateCount.value) + 1;
