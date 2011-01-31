@@ -12,9 +12,32 @@ var cDoc = Class.create({
         this.reviewer = new cReviewer(data);
 
         /* resize listener - fire after dom:loaded */
-        window.onresize = AppUtilities.resizeContents;
-        AppUtilities.resizeContents();
+        window.onresize = this.onResize;
+        this.onResize();
         AppUtilities.resizeContents.delay(.01);
+    },
+
+    onResize: function() {
+
+        /* vertically center cards */
+        var footer = $$('.footer')[0];
+        var footerY = footer.getHeight();
+        var viewportY = document.viewport.getHeight();
+        var title = $('title');
+        var titleY = title.getHeight();
+        var titlerOffsetY = title.cumulativeOffset()[1];
+
+        var maxContentsY = viewportY - titlerOffsetY - footerY;
+        var extraY = maxContentsY - 455;
+
+//        var contentsHeight = $$('.contents')[0].getHeight();
+        var titleMargin = extraY / 2;
+        console.log(titleMargin);
+//        console.log($('title'));
+        if (titleMargin > 0) $('title').setStyle({'marginTop': titleMargin + 'px'})
+
+        /* place footer */
+        AppUtilities.resizeContents();
     }
 });
 

@@ -31,6 +31,15 @@ table, tr, td {
     font-size: 14px;
 }
 
+.card_container button {
+    border: #3F799E solid 1px;
+    background-color: white;
+}
+
+.card_container button:hover {
+    background-color: lightgrey;
+}
+
 td {
     vertical-align: middle;
     height:50%;
@@ -39,6 +48,7 @@ td {
 
 .card_side {
     width:500px;
+    background-color: #F5F5F5;
 }
 
 #card_front {
