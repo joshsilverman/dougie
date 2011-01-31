@@ -110,6 +110,7 @@ class TagsController < ApplicationController
                  .where("     lines.document_id IN (?)
                           AND lines.text <> 'root'
                           AND mems.user_id = ?
+                          AND mems.status = true
                           AND mems.review_after < ?",
                         document_ids, 
                         current_user.id,

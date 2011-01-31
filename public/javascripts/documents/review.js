@@ -93,6 +93,9 @@ var cReviewer = Class.create({
 
     back: function(grade) {
 
+        /* check boundary */
+        if (this.currentCardIndex == 0) return;
+
         /* back */
         this.currentCardIndex--;
         if (this.cards[this.currentCardIndex]) {
