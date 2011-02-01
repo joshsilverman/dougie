@@ -52,7 +52,7 @@ var cParser = Class.create({
             else ancestor.setStyle({'display':'block'});});
 
             /* set line display block/list-item based on exists ancestors */
-            if (line.ancestors().length > 0) line.setStyle({'display':'list-item'});
+            if (line.ancestors().length > 2) line.setStyle({'display':'list-item'});
             else {
                 line.setStyle({'display':'block'});
                 line.setStyle({'display':'block', 'textAlign': 'center'});
