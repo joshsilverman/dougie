@@ -1,7 +1,7 @@
 <% @page_specific_scripts_js = ["ckeditor/ckeditor", "parser"] %>
 
 <div class="rounded_border doc_options">
-  <span>/<%=@tag.name%>/<input id="document_name" value="<%=@document.name%>"></input></span>
+  <span>/<%= link_to @tag.name, '/#%i' % @tag.id %>/<input id="document_name" value="<%=@document.name%>"></input></span>
   <button id="save_button" style="float:right">Saved</button>
   <img id="sync_button" class="sync" src="/images/editor/sync-icon.png" alt=""/>
 </div>
