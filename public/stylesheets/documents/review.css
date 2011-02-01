@@ -1,3 +1,7 @@
+ul {
+    padding-left: 15px;
+}
+
 #title {
     padding-left: 255px;
     
@@ -47,7 +51,8 @@ td {
 }
 
 .card_side {
-    width:500px;
+    width:470px;
+    padding: 0 15px;
     background-color: #F5F5F5;
 }
 
@@ -57,6 +62,17 @@ td {
 
 #card_back {
     border-top: #5e5e55 dashed 1px;
+}
+
+#card_front_text {
+    text-align: left;
+    color:grey;
+}
+
+.card_front_cue {
+    color:black;
+    font-size:15px;
+    line-height: 18px;
 }
 
 .grade {
@@ -88,4 +104,8 @@ td {
     text-align: center;
     font-size:13px;
     color:#737357;
+}
+
+.outline_node {
+    display:none;
 }

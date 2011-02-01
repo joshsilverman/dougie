@@ -8,7 +8,7 @@
 
 <div id="title">
   <% if @document.nil? %>
-    /<%= link_to @tag.name, '/#' + @tag.id.to_s %>/
+    /<%= link_to @tag.name, '/#' + @tag.id.to_s %>
   <% else %>
     /<%= link_to @document.tag.name, '/#%i' % @document.tag.id %>
     /<%= link_to @document.name, '/documents/%i/edit' % @document.id %>
@@ -40,5 +40,15 @@
 </div>
 
 <div id="card_json" style="display:none;"><%=@lines_json%></div>
+
+<% if !@document.nil? %>
+  <div style="display:block" id="document_<%=@document.id%>"><%=@document.html.html_safe %></div>
+<% else %>
+  <% @tag.documents.each do |document| %>
+    <% unless document.html.nil? %>
+      <div style="display:block" id="document_<%=document.id%>"><%=document.html.html_safe %></div>
+    <% end %>
+  <% end %>
+<% end %>
 
 <div id="log" style="margin-top:25px;"></div>

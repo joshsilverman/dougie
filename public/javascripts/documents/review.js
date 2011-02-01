@@ -30,10 +30,7 @@ var cDoc = Class.create({
         var maxContentsY = viewportY - titlerOffsetY - footerY;
         var extraY = maxContentsY - 455;
 
-//        var contentsHeight = $$('.contents')[0].getHeight();
         var titleMargin = extraY / 2;
-        console.log(titleMargin);
-//        console.log($('title'));
         if (titleMargin > 0) $('title').setStyle({'marginTop': titleMargin + 'px'})
 
         /* place footer */
@@ -121,8 +118,11 @@ var cCard = Class.create({
 
     memId: null,
     lineId: null,
+    domId: null,
+    documentId: null,
     text: '',
     front: '',
+    simpleFront: '',
     back: '',
 
     buttons: '<div id="edit_buttons">\
@@ -133,17 +133,22 @@ var cCard = Class.create({
     
     initialize: function(data) {
 
+        console.log(data);
         this.lineId = data['id'];
+        this.domId = data['domid'];
         this.memId = data['mems'][0]['id'];
         this.documentId = data['document_id'];
         this.text = data['text'];
-        parser.parse(this);
     },
 
     cue: function() {
 
+        /* parse on demand - to avoid latency on initializing reviewer */
+        parser.parse(this, true);
+
         /* front */
         $('card_front').update("<div id='card_front_text'>"+this.front+"</div>" + this.buttons);
+        $('card_front_text').update(this.front);
 
         /* back */
         $('card_back').update('<button id="card_show">Show</button>');
@@ -156,7 +161,8 @@ var cCard = Class.create({
     showAll: function() {
 
         /* show */
-        $('card_front').update("<div id='card_front_text'>"+this.front+"</div>" + this.buttons);
+        $('card_front').update("<div id='card_front_text'></div>" + this.buttons);
+        $('card_front_text').update(this.front);
         $('card_back').update( "<div id='card_back_text'>"+this.back+"</div>");
 
         /* show grading buttons */
@@ -215,7 +221,7 @@ var cCard = Class.create({
         /* inputs */
 
         //front
-        var input = "<textarea id='input_front'>"+this.front+"</textarea>";
+        var input = "<textarea id='input_front'>"+this.simpleFront+"</textarea>";
         $('card_front_text').remove();
         $('edit_buttons').insert({'after': input});
         $('input_front').focus();
@@ -245,8 +251,9 @@ var cCard = Class.create({
 
                 /* reparse and update card */
                 var data = transport.responseText.evalJSON();
-                this.text = data['line']['text'];
-                parser.parse(this);
+                this.text = data['line'];
+                $('document_' + this.documentId).update(data['html']);
+                parser.parse(this, true);
             }.bind(this),
 
             onFailure: function() {},
