@@ -45,20 +45,23 @@ var cParser = Class.create({
 
         /* display properties for cue */
         if (line.tagName == 'LI') {
-            line.setStyle({'display':'list-item'});
 
             /* traverse anscestors */
             line.ancestors().each(function(ancestor) {
             if (ancestor.tagName == 'LI') ancestor.setStyle({'display':'list-item'});
             else ancestor.setStyle({'display':'block'});});
+
+            /* set line display block/list-item based on exists ancestors */
+            if (line.ancestors().length > 0) line.setStyle({'display':'list-item'});
+            else {
+                line.setStyle({'display':'block'});
+                line.setStyle({'display':'block', 'textAlign': 'center'});
+            }
         }
         else line.setStyle({'display':'block', 'textAlign': 'center'});
         line.addClassName('card_front_cue')
-
-
         
         /* update front */
         Card.front = doc.clone(true);
-
     }
 });
