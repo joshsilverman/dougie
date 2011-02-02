@@ -1,0 +1,60 @@
+body {
+    background-image: url(/images/static/bg_gradient.jpg);
+    background-repeat: repeat-y;
+    background-position: center center;
+}
+
+.contents {
+    position:relative;
+}
+
+.title {
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    color: #007AC7;
+    font-size: 60px;
+    left: -102px;
+    position: absolute;
+    top: 130px;
+    width: 350px;
+}
+
+.about_sections {
+    
+}
+
+.about_sections p {
+    font-size:1em;
+    padding-left:10px;
+}
+
+.about_sections h4 {
+    font-size:1em;
+    text-transform: capitalize;
+}
+
+.about_section {
+    margin: 25px 25px 0 0 ;
+    padding:0 130px 0 110px;
+    background-repeat: no-repeat;
+    background-position: right;
+    min-height: 100px;
+}
+
+.problem {
+    background-image: url(/images/static/bookshelf.jpg);
+}
+
+.solution {
+    background-image: url(/images/static/watch.jpg);
+}
+
+.vision {
+    background-image: url(/images/static/stonehenge.jpg);
+}
+
+.important_term {
+    color: #007AC7;
+    font-weight: bold;
+}
