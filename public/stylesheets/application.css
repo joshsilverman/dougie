@@ -70,6 +70,11 @@ img.home {
     color:#383838;
 }
 
+.footer a {
+    color:#404040;
+    text-decoration: none;
+}
+
 .footer_columns {
     width:960px;
     margin: 0 auto;
