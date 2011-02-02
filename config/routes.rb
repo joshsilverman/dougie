@@ -81,4 +81,9 @@ Dougie::Application.routes.draw do
   # login system
   root :to => "users#index"
 
+  # catch-all route for static pages
+  Dougie::Application.routes.draw do |map|
+    map.connect ':action', :controller => "static"
+  end
+
 end

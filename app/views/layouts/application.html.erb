@@ -46,7 +46,36 @@
     <div class="contents"><%= yield %></div>
 
     <div class="clr"></div><br />
-    <div class="footer"><h6>Copyright Zendo 2011</h6></div>
+    <div class="footer">
+      <div class="footer_columns">
+        <div class="footer_column">
+          <h5>Zendo</h5>
+          <%= link_to "About", "/about" %>
+          <span>Blog</span>
+          <span>Terms of Service</span>
+          <span>Privacy Policy</span>
+        </div>
+
+        <div class="footer_column">
+          <h5>Product</h5>
+          <span>FAQ</span>
+          <span>Articles</span>
+        </div>
+
+        <div class="footer_column">
+          <h5>Contact</h5>
+          <span>Feedback</span>
+          <span>Suggest a feature</span>
+          <span>Report a bug</span>
+        </div>
+
+        <div class="footer_column">
+          <h5>Twitter</h5>
+          <h5>Facebook</h5>
+        </div>
+      </div>
+      <h6 class="copyright">Copyright Zendo 2011</h6>
+    </div>
   </div>
   <%= javascript_include_tag '/javascripts/pages/feedback' %>
 </body>

@@ -64,7 +64,34 @@ img.home {
     background-repeat:repeat-x;
 }
 
-.footer h6 {
+.footer h5 {
+    padding:10px 0;
+    margin: 0;
+    color:#383838;
+}
+
+.footer_columns {
+    width:960px;
+    margin: 0 auto;
+    background-color: #edebdd;
+}
+
+.footer_column {
+    width:140px;
+    text-align: left;
+    float:left;
+    color:#5c5c5c;
+    padding-left: 10px;
+}
+
+.footer_column span {
+    display:block;
+    clear:both;
+}
+
+.copyright {
+    clear:both;
+    color:#7b7967;
     padding:15px 0;
     margin: 0;
 }

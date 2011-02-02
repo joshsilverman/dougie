@@ -5,6 +5,9 @@
             <%= link_to "Edit Account", edit_user_registration_path %>&nbsp;|&nbsp;
             <%= link_to "Sign Out", destroy_user_session_path %>
     </span>
+
+<% elsif ['static'].count(controller.controller_name) > 0 %>
+    <a href="/"><img src="/images/logos/zendo_slogan_small.png" /></a>
 <% else %>
     <a href="/"><img src="/images/logos/zendo_beta.png" /></a>
 <% end %>
