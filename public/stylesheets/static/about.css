@@ -1,11 +1,14 @@
 body {
-    background-image: url(/images/static/bg_gradient.jpg);
     background-repeat: repeat-y;
     background-position: center center;
 }
 
 .contents {
     position:relative;
+    margin-top:0px;
+    margin-bottom:-15px;
+    padding:10px 0;
+    background-image: url(/images/static/bg_solid.jpg);
 }
 
 .title {
@@ -14,9 +17,9 @@ body {
     filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
     color: #007AC7;
     font-size: 60px;
-    left: -102px;
+    left: -105px;
     position: absolute;
-    top: 130px;
+    top: 170px;
     width: 350px;
 }
 
