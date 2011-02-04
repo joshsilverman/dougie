@@ -56,23 +56,24 @@ img.home {
 
 .footer {
     min-width:960px;
-    color:#404040;
     padding:0;
     text-align: center;
     background-color: #edebdd;
     background-image: url(/images/shared/footer_border.gif);
     background-repeat:repeat-x;
+    height:203px;
 }
 
 .footer h5 {
-    padding:10px 0;
+    padding:12px 0 8px;
     margin: 0;
-    color:#383838;
+    color:#404040;
 }
 
-.footer a {
+.footer a, .footer span {
     color:#404040;
     text-decoration: none;
+    line-height: 18px;
 }
 
 .footer_columns {
@@ -82,7 +83,7 @@ img.home {
 }
 
 .footer_column {
-    width:140px;
+    width:188px;
     text-align: left;
     float:left;
     color:#5c5c5c;
@@ -95,10 +96,13 @@ img.home {
 }
 
 .copyright {
-    clear:both;
-    color:#7b7967;
-    padding:15px 0;
-    margin: 0;
+    color:#383838;
+    padding:15px 0 -25px;
+    margin: 0 10px;
+    float:left;
+    clear:left;
+    position:relative;
+    top: -10px;
 }
 
 header {
@@ -126,4 +130,36 @@ header {
     margin: 40px auto;
     background-color:#FF734D;
     padding:1px;
+}
+
+/* twitter styling */
+div.twtr-doc {
+    background-color:#C9C9C9;
+}
+
+div.twtr-hd, div.twtr-ft div {
+    padding: 4px
+}
+
+.twtr-profile-img {
+    height:19px !important;
+    width:19px !important;
+}
+
+div.twtr-hd h3 {
+    display:none;
+}
+
+.twtr-widget-profile h4 {
+    position:relative;
+    left:-17px;
+    top:1px;
+}
+
+div.twtr-ft div span {
+    clear:none;
+}
+
+div.twtr-tweet-wrap {
+    padding: 2px 7px;
 }
