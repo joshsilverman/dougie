@@ -1,6 +1,6 @@
 var cParser = Class.create({
 
-    parse: function(Card, contextualize) {
+    parse: function(Card, contextualize, ellipsize) {
 
         //definition
         var defParts = Card.text.match(/(^[\w\W]+) - ([\s\S]+)$/);
@@ -27,41 +27,51 @@ var cParser = Class.create({
         
         /* add context to front if showContext set to true */
         if (contextualize) this.contextualize(Card);
+        else if (ellipsize) this.ellipsize(Card);
     },
 
     contextualize: function(Card) {
 
-        /* set doc var */
-        var doc = $('document_' + Card.documentId);
-        if (!doc) return;
-        doc = doc.clone(true)
-        doc.id = '';
+        /* set docHtml var */
+        //look for document_123 tag
+        var docHtml = $('document_' + Card.documentId);
+
+        //or look for ckeditor
+        if (!docHtml && doc.outline) {
+            docHtml = doc.outline.iDoc.document.body
+        }
+        if (!docHtml) return;
+
+        docHtml = Element.clone(docHtml, true)
+        docHtml.id = '';
 
         /* locate adjust line node */
-        var line = Element.select(doc, '#' + Card.domId);
+        var line = Element.select(docHtml, '#' + Card.domId);
         if (line.length == 0) return;
-        line = line[0];
-        line.update(Card.front)
+        line = Element.extend(line[0]);
+        Element.update(line, Card.front)
 
         /* display properties for cue */
         if (line.tagName == 'LI') {
 
             /* traverse anscestors */
-            line.ancestors().each(function(ancestor) {
-            if (ancestor.tagName == 'LI') ancestor.setStyle({'display':'list-item'});
-            else ancestor.setStyle({'display':'block'});});
+            Element.ancestors(line).each(function(ancestor) {
+                if (ancestor.tagName == 'LI') Element.setStyle(ancestor, {'display':'list-item'});
+                else Element.setStyle(ancestor, {'display':'block'});});
 
             /* set line display block/list-item based on exists ancestors */
-            if (line.ancestors().length > 2) line.setStyle({'display':'list-item'});
+            if (Element.ancestors(line).length > 2) Element.setStyle(line, {'display':'list-item'});
             else {
-                line.setStyle({'display':'block'});
-                line.setStyle({'display':'block', 'textAlign': 'center'});
+                Element.setStyle(line, {'display':'block'});
+                Element.setStyle(line, {'display':'block', 'textAlign': 'center'});
             }
         }
-        else line.setStyle({'display':'block', 'textAlign': 'center'});
-        line.addClassName('card_front_cue')
-        
+        else Element.setStyle(line, {'display':'block', 'textAlign': 'center'});
+        Element.addClassName(line, 'card_front_cue')
+
         /* update front */
-        Card.front = doc.clone(true);
-    }
+        Card.front = docHtml;
+    },
+
+    ellipsize: function() {}
 });

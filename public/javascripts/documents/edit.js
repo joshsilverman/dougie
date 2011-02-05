@@ -262,17 +262,17 @@ var cOutline = Class.create({
 
         //vars
         var card = checkbox.up('.card');
-        var nodeId = doc.utilities.toNodeId(card);
-        var node = this.iDoc.document.getElementById(nodeId);
+        var domId = doc.utilities.toNodeId(card);
+        var node = this.iDoc.document.getElementById(domId);
 
         //activate/dactivate card
         if (checkbox.checked) {
             node.setAttribute('active', true);
-            doc.rightRail.cards.get(nodeId).activate();
+            doc.rightRail.cards.get(domId).activate();
         }
         else {
             node.setAttribute('active', false);
-            doc.rightRail.cards.get(nodeId).deactivate();
+            doc.rightRail.cards.get(domId).deactivate();
         }
 
         /* autosave */
@@ -820,9 +820,9 @@ var cRightRail = Class.create({
         //unfocus previously focused
         else if(this.inFocus && this.inFocus.id != cardId) {
             Element.removeClassName(this.inFocus, 'card_focus');
-            var nodeIdPrev = doc.utilities.toNodeId(this.inFocus);
-            var nodePrev = doc.outline.iDoc.document.getElementById(nodeIdPrev);
-            if (this.cards.get(nodeIdPrev)) this.cards.get(nodeIdPrev).update(nodePrev, true);
+            var domIdPrev = doc.utilities.toNodeId(this.inFocus);
+            var nodePrev = doc.outline.iDoc.document.getElementById(domIdPrev);
+            if (this.cards.get(domIdPrev)) this.cards.get(domIdPrev).update(nodePrev, true);
             else console.log('error: cannot unfocus previous card');
         }
 
@@ -872,9 +872,9 @@ var cRightRail = Class.create({
 
         /* destroy cards if node no longer exists */
         this.cards.each(function(cardArray) {
-            var nodeId = cardArray[0];
+            var domId = cardArray[0];
             var card = cardArray[1];
-            var node = doc.outline.iDoc.document.getElementById(nodeId);
+            var node = doc.outline.iDoc.document.getElementById(domId);
             if (!node) card.destroy();
         });
     }
@@ -890,7 +890,7 @@ var cCard = Class.create({
 
     active: false,
     elmntCard: null,
-    nodeId: null,
+    domId: null,
     updating: false,
 
     autoActivate: false,
@@ -900,9 +900,9 @@ var cCard = Class.create({
 
     initialize: function(node, cardCount, truncate, attributes) {
 
-        /* set count, nodeId */
+        /* set count, domId */
         this.cardNumber = cardCount;
-        this.nodeId = node.id;
+        this.domId = node.id;
 
         /* set dom node attributes */
         var defaultAttributes = $H({'id': 'node_' + this.cardNumber,
@@ -1022,17 +1022,17 @@ var cCard = Class.create({
         /* identify previous node in outline */
 
         //collect nodes which have cards
-        var nodeId = 'node_' + this.cardNumber;
+        var domId = 'node_' + this.cardNumber;
         var outlineNodes = $A(doc.outline.iDoc.document.getElementsByClassName('outline_node'))
             .findAll(function(node) {return node.id});
 
         //itererate backwards to find previous node; set id vars
-        var outlineNodePrev, nodeIdPrev, cardIdPrev;
+        var outlineNodePrev, domIdPrev, cardIdPrev;
         for (var i = outlineNodes.length - 1; i >= 0; i--) {
-            if (outlineNodes[i].id == nodeId && i != 0) {
+            if (outlineNodes[i].id == domId && i != 0) {
                 outlineNodePrev = outlineNodes[i-1];
-                nodeIdPrev = outlineNodePrev.id;
-                cardIdPrev = "card_" + nodeIdPrev.replace('node_', '');
+                domIdPrev = outlineNodePrev.id;
+                cardIdPrev = "card_" + domIdPrev.replace('node_', '');
                 break;
             }
         }
@@ -1077,7 +1077,7 @@ var cUtilities = Class.create({
         //id
         else if (Object.isNumber(mixed)) id = mixed;
 
-        //nodeId or cardId
+        //domId or cardId
         else if (Object.isString(mixed)) var id = mixed.replace('node_', '').replace('card_', '');
 
         return id;
