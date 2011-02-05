@@ -61,7 +61,7 @@ img.home {
     background-color: #edebdd;
     background-image: url(/images/shared/footer_border.gif);
     background-repeat:repeat-x;
-    height:203px;
+    min-height:203px;
 }
 
 .footer h5 {
@@ -70,10 +70,11 @@ img.home {
     color:#404040;
 }
 
-.footer a, .footer span {
+.footer_column > a, .footer span {
     color:#404040;
     text-decoration: none;
     line-height: 18px;
+    display:block;
 }
 
 .footer_columns {

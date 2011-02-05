@@ -134,6 +134,7 @@ var cDirectoryView = Class.create({
             element.observe('click', function(event) {
                 var tagId = event.target.getAttribute('tag_id');
                 this.openDirectory(tagId);
+                event.stop();
             }.bind(this));
         }.bind(this));
 
@@ -192,6 +193,9 @@ var cDirectoryView = Class.create({
     },
 
     createDirectory: function(event) {
+
+        /* stop bubble */
+        event.stop();
 
         /* request params */
         var tagName = prompt('What would you like to name the new directory?');
