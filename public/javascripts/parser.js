@@ -1,5 +1,8 @@
 var cParser = Class.create({
 
+    docHTML: null,
+    line:null,
+
     parse: function(Card, contextualize, ellipsize) {
 
         //definition
@@ -26,52 +29,68 @@ var cParser = Class.create({
         Card.simpleFront = Card.front;
         
         /* add context to front if showContext set to true */
-        if (contextualize) this.contextualize(Card);
-        else if (ellipsize) this.ellipsize(Card);
+        if (contextualize) this._contextualize(Card);
+        else if (ellipsize) this._ellipsize(Card);
     },
 
-    contextualize: function(Card) {
+    _contextualize: function(Card) {
 
-        /* set docHtml var */
-        //look for document_123 tag
-        var docHtml = $('document_' + Card.documentId);
-
-        //or look for ckeditor
-        if (!docHtml && doc.outline) {
-            docHtml = doc.outline.iDoc.document.body
-        }
-        if (!docHtml) return;
-
-        docHtml = Element.clone(docHtml, true)
-        docHtml.id = '';
-
-        /* locate adjust line node */
-        var line = Element.select(docHtml, '#' + Card.domId);
-        if (line.length == 0) return;
-        line = Element.extend(line[0]);
-        Element.update(line, Card.front)
+        /* identify doc and line */
+        this._identifyDoc(Card);
 
         /* display properties for cue */
-        if (line.tagName == 'LI') {
+        if (this.line.tagName == 'LI') {
 
             /* traverse anscestors */
-            Element.ancestors(line).each(function(ancestor) {
+            Element.ancestors(this.line).each(function(ancestor) {
                 if (ancestor.tagName == 'LI') Element.setStyle(ancestor, {'display':'list-item'});
                 else Element.setStyle(ancestor, {'display':'block'});});
 
             /* set line display block/list-item based on exists ancestors */
-            if (Element.ancestors(line).length > 2) Element.setStyle(line, {'display':'list-item'});
+            if (Element.ancestors(this.line).length > 2) Element.setStyle(this.line, {'display':'list-item'});
             else {
-                Element.setStyle(line, {'display':'block'});
-                Element.setStyle(line, {'display':'block', 'textAlign': 'center'});
+                Element.setStyle(this.line, {'display':'block'});
+                Element.setStyle(this.line, {'display':'block', 'textAlign': 'center'});
             }
         }
-        else Element.setStyle(line, {'display':'block', 'textAlign': 'center'});
-        Element.addClassName(line, 'card_front_cue')
+        else Element.setStyle(this.line, {'display':'block', 'textAlign': 'center'});
+        Element.addClassName(this.line, 'card_front_cue')
 
         /* update front */
-        Card.front = docHtml;
+        Card.front = this.docHtml;
     },
 
-    ellipsize: function() {}
+    _ellipsize: function(Card) {
+
+        /* identify doc and line */
+        this._identifyDoc(Card);
+        if (this.line.tagName == 'LI') Card.front = this.line;
+        var grandparent = Element.up(Element.up(this.line));
+        if (grandparent && grandparent.tagName == 'LI')
+            Card.front = "<ul style='text-align:left; color:#666;'><li>...<ul><li style='color:black;'>"+Card.front.innerHTML+"</li><ul></li></ul>"
+
+    },
+
+    _identifyDoc: function(Card) {
+
+        /* set docHtml var */
+        //look for document_123 tag
+        this.docHtml = $('document_' + Card.documentId);
+
+        //or look for ckeditor
+        if (!this.docHtml && doc.outline) {
+            this.docHtml = doc.outline.iDoc.document.body
+        }
+        if (!this.docHtml) return;
+
+        this.docHtml = Element.clone(this.docHtml, true)
+        this.docHtml.id = '';
+
+        /* locate adjust line node */
+        console.log(Card.domId);
+        this.line = Element.select(this.docHtml, '#' + Card.domId);
+        if (this.line.length == 0) return;
+        this.line = Element.extend(this.line[0]);
+        Element.update(this.line, Card.front)
+    }
 });

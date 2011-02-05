@@ -776,7 +776,7 @@ var cRightRail = Class.create({
         this.updateFocusCardTimer =
             (function () {
                 doc.rightRail.focus(id);
-                doc.rightRail.cards.get(id).update(target);
+        doc.rightRail.cards.get(id).update(target, false, true);
             }).delay(.25)
         
     },
@@ -900,9 +900,8 @@ var cCard = Class.create({
 
     initialize: function(node, cardCount, truncate, attributes) {
 
-        /* set count, domId */
+        /* set count */
         this.cardNumber = cardCount;
-        this.domId = node.id;
 
         /* set dom node attributes */
         var defaultAttributes = $H({'id': 'node_' + this.cardNumber,
@@ -912,6 +911,9 @@ var cCard = Class.create({
         attributes = defaultAttributes.merge(attributes).toObject();
         Element.writeAttribute(node, attributes);
         Element.addClassName(node, 'outline_node');
+
+        /* set domId */
+        this.domId = node.id;
 
         /* card in dom */
         var cardHtml = '<div id="card_' + this.cardNumber + '" class="rounded_border card"></div>';
@@ -925,7 +927,7 @@ var cCard = Class.create({
         this.update(node, truncate);
     },
 
-    update: function(node, truncate) {
+    update: function(node, truncate, contextualize) {
 
         //node exists?
         if (!node) {
@@ -935,9 +937,14 @@ var cCard = Class.create({
 
         this.active = node.getAttribute('active') == "true";
         
-        //parse and render
+        /* parse and render */
         this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
-        parser.parse(this);
+
+        // @todo for now ignore contextualizing active card
+//        if (contextualize) parser.parse(this, true, false);
+//        else
+        parser.parse(this, false, true);
+
         this.render(truncate);
     },
 
@@ -985,14 +992,16 @@ var cCard = Class.create({
         //both sides set
         else if (this.back) {
             this.elmntCard.innerHTML = '<div class="card_front">'
-                    + checkbox + this.front + '</div>\
+                    + checkbox + '</div>\
                 <div class="card_back">'+this.back+'</div>';
+            this.elmntCard.down().insert(this.front);
         }
 
         //just front
         else if (this.elmntCard) {
             this.elmntCard.innerHTML = '<div class="card_front">'
-                + checkbox + this.front + '</div>';
+                + checkbox + '</div>';
+            this.elmntCard.down().insert(this.front);
 
             //autoDeactivate
             if (this.autoActivated) {

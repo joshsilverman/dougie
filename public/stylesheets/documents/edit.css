@@ -53,13 +53,14 @@
 }
 
 .card_active {
-    background-color:#D2FF78 !important;
+    background-color:#E4FFAD !important;
     color:black !important;
     display:block;
 }
 
 .card_focus {
     border: 2px dashed darkgrey;
+    background-color:#D2FF78 !important;
     color:black !important;
     width:248px;
     display:block;

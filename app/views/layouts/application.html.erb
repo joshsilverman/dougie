@@ -73,50 +73,47 @@
         <div class="footer_column">
           
           <h5>Facebook</h5>
-
-          <div style="height:25px;">
-            <fb:like href="zen.do" show_faces="true" width="350" action="recommend"></fb:like>
-          </div>
+          <div style="height:25px;"><fb:like href="zen.do" show_faces="true" width="350" action="recommend"></fb:like></div>
 
           <h5>Twitter</h5>
-          <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+          <!--<script src="http://widgets.twimg.com/j/2/widget.js"></script>
           <script>
-          new TWTR.Widget({
-            version: 2,
-            type: 'profile',
-            rpp: 1,
-            interval: 6000,
-            width: 350,
-            height: 200,
-            theme: {
-              shell: {
-                background: '#d6d6d6',
-                color: '#333333'
+            new TWTR.Widget({
+              version: 2,
+              type: 'profile',
+              rpp: 1,
+              interval: 6000,
+              width: 350,
+              height: 200,
+              theme: {
+                shell: {
+                  background: '#d6d6d6',
+                  color: '#333333'
+                },
+                tweets: {
+                  background: '#ffffff',
+                  color: '#00b3ff',
+                  links: '#005985'
+                }
               },
-              tweets: {
-                background: '#ffffff',
-                color: '#00b3ff',
-                links: '#005985'
+              features: {
+                scrollbar: false,
+                loop: false,
+                live: false,
+                hashtags: true,
+                timestamp: true,
+                avatars: false,
+                behavior: 'all'
               }
-            },
-            features: {
-              scrollbar: false,
-              loop: false,
-              live: false,
-              hashtags: true,
-              timestamp: true,
-              avatars: false,
-              behavior: 'all'
-            }
-          }).render().setUser('zendo_notes').start();
-          </script>
+            }).render().setUser('zendo_notes').start();
+          </script>-->
 
         </div>
         <h6 class="copyright">Copyright 2011 Zendo. All rights reserved.</h6>
       </div>
     </div>
   </div>
-  <%= javascript_include_tag '/javascripts/pages/feedback' %>
-  <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+  <%#= javascript_include_tag '/javascripts/pages/feedback' %>
+  <!--<script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>-->
 </body>
 </html>
