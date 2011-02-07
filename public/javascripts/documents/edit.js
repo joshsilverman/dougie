@@ -201,8 +201,9 @@ var cOutline = Class.create({
             onCreate: function() {
 
                 /* track saving changes */
+                this.unsavedChanges = this.unsavedChanges.uniq();
                 this.unsavedChanges.each(function(domId) {
-                    if (this.iDoc.document.getElementById(domId))
+                    if (domId && this.iDoc.document.getElementById(domId))
                         Element.writeAttribute(this.iDoc.document.getElementById(domId), {'changed': '0'});
                 }.bind(this));
                 this.savingChanges = this.unsavedChanges;
@@ -333,7 +334,7 @@ var cOutline = Class.create({
             if (   this.lineIds.get(node.getAttribute('line_id'))
                 != node.id) {
 
-                console.log('node not in hash; removing');
+                console.log('node not in hash; removing line_id');
                 node.setAttribute('line_id', '');
                 this.unsavedChanges.push(node.id);
             }
@@ -361,6 +362,7 @@ var cOutlineHandlers = Class.create({
         this.iDoc = iDoc;
         this.iDoc.document.onkeyup = this.delegateKeystrokeHandler.bind(this);
         this.iDoc.document.onkeydown = this.delegateKeystrokeHandler.bind(this);
+        this.iDoc.document.onkeypress = this.delegateKeystrokeHandler.bind(this);
 
         this.iDoc.document.onmouseup = this.delegateClickHandler.bind(this);
         this.iDoc.document.onmousedown = this.delegateClickHandler.bind(this);
@@ -397,6 +399,9 @@ var cOutlineHandlers = Class.create({
 
     delegateKeystrokeHandler: function(event) {
 
+        /* @browser fetch event for IE */
+        if (!event) {event = doc.outline.iDoc.event;}
+
         /* event details */
         var eventDetails = this.getEventDetails();
         var range = eventDetails[0];
@@ -413,12 +418,14 @@ var cOutlineHandlers = Class.create({
             else if (Event.KEY_DELETE == event.keyCode)
                 this.onDelete(event, target, range);
 
+            /* hyphen - make bulletedlist */
+            else if ((189 == event.keyCode || 109 == event.keyCode) && range.startOffset == 0) 
+                this.onHyphen(event, target, range);
+
             /* special backspace handling for highlighted text and beginning of nodes */
             else if (Event.KEY_BACKSPACE == event.keyCode)
-                this.onBackspace(event, target, range);
-
-            /* incercept save - wait for keyup */
-            else if(83 == event.keyCode && event.ctrlKey) Event.stop(event);
+                // @browser fire on keydown for all but opera
+                if (!Prototype.Browser.Opera) this.onBackspace(event, target, range);
 
             /* intercept arrow events */
             else if (   Event.KEY_UP == event.keyCode
@@ -437,22 +444,18 @@ var cOutlineHandlers = Class.create({
             else if (89 == event.keyCode && event.ctrlKey) ; //redo
             else if (90 == event.keyCode && event.ctrlKey) ; //undo
 
-            /* hyphen - make bulletedlist */
-            else if (189 == event.keyCode && range.startOffset == 0)
-                    this.onHyphen(event, target, range);
-
-            /* letter like keys */
+            /* letter like */
             else if (   event.keyCode == 32 /* space */
                      || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
                      || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
                      || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
                      || event.keyCode >= 107 && event.keyCode <= 111) /* math */
 
-                this.onDelete(event, null, range);
+                this.onDelete(event, target, range);
         }
 
         //keyup events
-        else {
+        else if (event.type == "keyup") {
 
             if (Event.KEY_TAB == event.keyCode) ; /* nothing */
 
@@ -498,15 +501,8 @@ var cOutlineHandlers = Class.create({
                 doc.outline.autosave(true);
             }
 
-            /* save */
-            else if (83 == event.keyCode && event.ctrlKey) {
-                console.log('ctrl + s save');
-                doc.outline.save(true);
-                Event.stop(event);
-            }
-
             /* hyphen - make bulletedlist - cancel keyup event*/
-            else if (189 == event.keyCode && range.startOffset == 0) ;
+            else if ((189 == event.keyCode || 109 == event.keyCode) && range.startOffset == 0) ;
 
             /* letter like keys */
             else if (   event.keyCode == 32 /* space */
@@ -517,9 +513,24 @@ var cOutlineHandlers = Class.create({
 
                 this.onLetter(event, target, range);
         }
+
+        //keypress events
+        else if (event.type == "keypress") {
+
+            /* @browser weird ckeditor in OPERA - must intersept keyCode 45!!! */
+            if (45 == event.keyCode && range.startOffset == 0) 
+                if (Prototype.Browser.Opera) Event.stop(event);
+
+            /* @browser opera silence backspace for keypress (unless beginning of line) */
+             if (Event.KEY_BACKSPACE == event.keyCode)
+                if (Prototype.Browser.Opera) this.onBackspace(event, target, range);
+        }
     },
 
     delegateClickHandler: function(event) {
+
+        /* @browser fetch event for IE */
+        if (!event) {event = doc.outline.iDoc.event;}
 
         /* event details */
         var eventDetails = this.getEventDetails();
@@ -527,22 +538,21 @@ var cOutlineHandlers = Class.create({
         var target = eventDetails[1];
 
         /* mouse up events */
-        if (event.type == 'mouseup') {
+        if (event.type == 'mouseup')
             this.onDragNode(event, target, range);
-        }
 
         /* mouse down events */
-        else {
-            this.onClickNode(event, target, range);
-        }
+        else this.onClickNode(event, target, range);
     },
 
     onTab: function(event, target, range) {
 
+        console.log('tab');
+
         /* ignore if not at beginning of node */
         if (range.startOffset != 0) {
             Event.stop(event);
-            doc.editor.focus();
+            (function() {doc.editor.focus();}).delay(.01);
             return;
         }
         //@todo determine how to overide default tab event
@@ -554,17 +564,16 @@ var cOutlineHandlers = Class.create({
         /* autosave */
         console.log('tab autosave');
         doc.outline.autosave();
+
+        /* reset focus - delay required for opera*/
+        (function() {doc.editor.focus();}).delay(.1);
     },
 
     onLetter: function(event, target, range) {
 
-        /* fire onDelete if selection */
-        if (   range.commonAncestorContainer.nodeName != '#text'
-            && range.startOffset != range.endOffset) {
-
-            console.log('letter with selection, delete!');
-            this.onDelete(event, null, range);
-        }
+        /* autosave */
+        console.log('onLetter autosave');
+        doc.outline.autosave(true);
 
         /* card creation, card update, catch invalid targets */
 
@@ -595,13 +604,8 @@ var cOutlineHandlers = Class.create({
 
     onBackspace: function(event, target, range) {
 
-        /* treat as delete if selection */
-        if (   range.startContainer.outerHTML != range.endContainer.outerHTML
-            || range.startOffset != range.endOffset) {
-
-            this.onDelete(event, null, range);
-            return;
-        }
+        /* run delete to handle cases where text is being overwritten */
+        this.onDelete(event, null, range);
 
         /* take no action if not at beginning of node */
         if (range.startOffset != 0) return;
@@ -616,17 +620,19 @@ var cOutlineHandlers = Class.create({
 
             //not indented
             else {
-                
+
                 //first element in body - stop event
+                console.log(Element.previousSiblings(target).length);
                 if (Element.previousSiblings(target).length == 0) Event.stop(event);
 
                 //delete node which hadn't yet been saved
-                else {/* normal behavior */}
+                else { /* normal behavior */}
             }
         }
 
         /* li handling */
         else if (target.tagName == 'LI') {
+            console.log('backspace li');
             doc.editor.execCommand('outdent');
             Event.stop(event);
         }
@@ -638,8 +644,16 @@ var cOutlineHandlers = Class.create({
 
     onDelete: function(event, target, range) {
 
+        /* autosave */
+        console.log('onDelete autosave');
+        doc.outline.autosave(true);
+
         /* string representation of deleted text */
-        var html = new XMLSerializer().serializeToString(range.cloneContents());
+        var html;
+        if (Prototype.Browser.IE) {
+            html = range.htmlText;
+        }
+        else html = new XMLSerializer().serializeToString(range.cloneContents());
 
         /* delete with nothing highlighted */
         //check target because this may be invoked when pasting on top of something, etc..
@@ -663,8 +677,21 @@ var cOutlineHandlers = Class.create({
 
         /* check for partial delete of first node in range */
         else {
-            doc.outline.unsavedChanges.push(range.startContainer.parentNode.id);
-            range.startContainer.parentNode.setAttribute('changed', 1);
+
+            //@browser identify start container
+            if (Prototype.Browser.IE) {
+                var matches = html.match(/<[^>]* id=([^\s]+)[^>]*>/);
+                if (matches) {
+                    var startContainer = doc.outline.iDoc.document.getElementById(matches[1]);
+                    if (startContainer) {
+                        startContainer.parentNode.setAttribute('changed', 1);
+                    }
+                }
+            }
+            else {
+                doc.outline.unsavedChanges.push(range.startContainer.parentNode.id);
+                range.startContainer.parentNode.setAttribute('changed', 1);
+            }
         }
 
         /* autosave */
@@ -778,7 +805,6 @@ var cRightRail = Class.create({
                 doc.rightRail.focus(id);
         doc.rightRail.cards.get(id).update(target, false, true);
             }).delay(.25)
-        
     },
 
     createCard: function(node) {
@@ -1032,8 +1058,8 @@ var cCard = Class.create({
 
         //collect nodes which have cards
         var domId = 'node_' + this.cardNumber;
-        var outlineNodes = $A(doc.outline.iDoc.document.getElementsByClassName('outline_node'))
-            .findAll(function(node) {return node.id});
+        var outlineNodes = Element.select(doc.outline.iDoc.document, '.outline_node');
+        outlineNodes = $A(outlineNodes).findAll(function(node) {return node.id});
 
         //itererate backwards to find previous node; set id vars
         var outlineNodePrev, domIdPrev, cardIdPrev;
