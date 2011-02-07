@@ -15,7 +15,7 @@ class DocumentsControllerTest < ActionController::TestCase
                }
 
     # create/update default outline
-    @document = Document.create(:user_id => @user_id)
+    @document = Document.create(:user_id => @user_id, :name => 'untitled')
 
     # add document id to params
     params = @requests[:basic_outline]
@@ -33,6 +33,7 @@ class DocumentsControllerTest < ActionController::TestCase
 
     # set requests
     @add_node_request = {
+       :id => @document.id,
        :html => nil,
        :name => 'untitled',
        :delete_nodes => nil,
@@ -55,4 +56,24 @@ class DocumentsControllerTest < ActionController::TestCase
     return html
   end
   
+  test "new IE doc" do
+
+    # create/update default outline
+    document = Document.create(:user_id => @user_id, :name => 'untitled')
+
+    # set requests
+    request = {
+       :id => document.id,
+       :html => "<BODY id=node_0 line_id=\"\">\r\n<UL>\r\n<LI id=node_2 class=outline_node line_id changed=\"0\" active=\"true\" parent=\"node_0\">hello - adsf</LI>\r\n<LI id=node_3 class=outline_node line_id changed=\"0\" active=\"true\" parent=\"node_0\">sdfsdf - adfsdfd</LI>\r\n<LI id=node_4 class=outline_node line_id changed=\"0\" parent=\"node_0\">sdfgsdfgsdfgsdfg</LI>\r\n<LI id=node_5 class=outline_node line_id changed=\"0\" parent=\"node_0\">sdfgsdfg</LI>\r\n<LI id=node_6 class=outline_node line_id changed=\"1\" active=\"true\" parent=\"node_0\">zxcv - asdf</LI>\r\n<LI id=node_7 class=outline_node line_id changed=\"1\" active=\"true\" parent=\"node_0\">asdf - asdf</LI></UL></BODY>",
+       :name => 'untitled',
+       :delete_nodes => nil,
+       :new_nodes => 'true'}
+
+    document = Document.update(request, @user_id)
+    lines = Line.find_all_by_document_id(document.id)
+
+    puts lines.length
+    assert(lines.length == 7)
+  end
+
 end
