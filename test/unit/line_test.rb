@@ -86,7 +86,7 @@ class LineTest < ActiveSupport::TestCase
             #]
     
    
-      document[0] = Document.create
+      document[0] = Document.create(:name => 'untitled')
       dp = DocumentsHelper::DocumentParser.new(html[0])
       existing_lines = document[0].lines
 
@@ -171,7 +171,7 @@ class LineTest < ActiveSupport::TestCase
             #]
     
    
-      document[0] = Document.create
+      document[0] = Document.create(:name => 'untitled')
       dp = DocumentsHelper::DocumentParser.new(html[0])
       existing_lines = document[0].lines
 
@@ -263,7 +263,7 @@ class LineTest < ActiveSupport::TestCase
             ]
     
    
-      document[0] = Document.create
+      document[0] = Document.create(:name => 'untitled')
       dp = []
       dp[0] = DocumentsHelper::DocumentParser.new(html[0])
       existing_lines = document[0].lines
@@ -368,7 +368,7 @@ class LineTest < ActiveSupport::TestCase
             ]
     
    
-      document[0] = Document.create
+      document[0] = Document.create(:name => 'untitled')
       dp = []
       dp[0] = DocumentsHelper::DocumentParser.new(html[0])
       existing_lines = document[0].lines
