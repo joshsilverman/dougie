@@ -6,3 +6,5 @@ nbproject/*
 test/tmp/*
 .bundle/config
 config/environments/development.rb
+public/cache/*
+public/javascripts/all.js
