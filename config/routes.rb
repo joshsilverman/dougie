@@ -58,7 +58,7 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
   
   #devise
-  devise_for :users, :path_names => { :sign_in => '/welcome'}
+  devise_for :users, :path_names => { :sign_in => '/welcome'}, :timeout_in => 7.days
 
   #tags
   get "tag/index"
