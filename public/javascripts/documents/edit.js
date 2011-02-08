@@ -375,7 +375,7 @@ var cOutlineHandlers = Class.create({
         //@todo this is not quite there - sometimes it returns a ul; also, I
         //      couldn't overwrite event.target
         //@todo target may be be UL or BODY on return key!
-        var range, target;
+        var range, target, spansMultiple;
         //trident?
         if (this.iDoc.document.selection) {
             range = this.iDoc.document.selection.createRange();
@@ -392,9 +392,12 @@ var cOutlineHandlers = Class.create({
             if (rangeParent.tagName == 'LI' || rangeParent.tagName == 'P')
                 target = rangeParent
             else target = rangeGrandParent
+
+            //set spansMultiple
+            spansMultiple = range.startContainer != range.endContainer;
         }
 
-        return [range, target];
+        return [range, target, spansMultiple];
     },
 
     delegateKeystrokeHandler: function(event) {
@@ -406,6 +409,7 @@ var cOutlineHandlers = Class.create({
         var eventDetails = this.getEventDetails();
         var range = eventDetails[0];
         var target = eventDetails[1];
+        var spansMultiple = eventDetails[2];
 
         /* invoke proper handlers */
 
@@ -416,7 +420,7 @@ var cOutlineHandlers = Class.create({
                 this.onTab(event, target, range);
 
             else if (Event.KEY_DELETE == event.keyCode)
-                this.onDelete(event, target, range);
+                this.onDelete(event, target, range, spansMultiple);
 
             /* hyphen - make bulletedlist */
             else if ((189 == event.keyCode || 109 == event.keyCode) && range.startOffset == 0) 
@@ -425,7 +429,7 @@ var cOutlineHandlers = Class.create({
             /* special backspace handling for highlighted text and beginning of nodes */
             else if (Event.KEY_BACKSPACE == event.keyCode)
                 // @browser fire on keydown for all but opera
-                if (!Prototype.Browser.Opera) this.onBackspace(event, target, range);
+                if (!Prototype.Browser.Opera) this.onBackspace(event, target, range, spansMultiple);
 
             /* intercept arrow events */
             else if (   Event.KEY_UP == event.keyCode
@@ -451,7 +455,7 @@ var cOutlineHandlers = Class.create({
                      || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
                      || event.keyCode >= 107 && event.keyCode <= 111) /* math */
 
-                this.onDelete(event, target, range);
+                this.onDelete(event, target, range, spansMultiple);
         }
 
         //keyup events
@@ -461,7 +465,7 @@ var cOutlineHandlers = Class.create({
 
             /* return keyup target is new node */
             else if (Event.KEY_RETURN == event.keyCode) {
-                this.onDelete(event, null, range);
+                this.onDelete(event, null, range, spansMultiple);
                 this.onLetter(event, target, range);
             }
 
@@ -523,7 +527,7 @@ var cOutlineHandlers = Class.create({
 
             /* @browser opera silence backspace for keypress (unless beginning of line) */
              if (Event.KEY_BACKSPACE == event.keyCode)
-                if (Prototype.Browser.Opera) this.onBackspace(event, target, range);
+                if (Prototype.Browser.Opera) this.onBackspace(event, target, range, spansMultiple);
         }
     },
 
@@ -536,6 +540,7 @@ var cOutlineHandlers = Class.create({
         var eventDetails = this.getEventDetails();
         var range = eventDetails[0];
         var target = eventDetails[1];
+        var spansMultiple = eventDetails[2];
 
         /* mouse up events */
         if (event.type == 'mouseup')
@@ -602,10 +607,10 @@ var cOutlineHandlers = Class.create({
         else console.log('error: node has id but no card exists');
     },
 
-    onBackspace: function(event, target, range) {
+    onBackspace: function(event, target, range, spansMultiple) {
 
         /* run delete to handle cases where text is being overwritten */
-        this.onDelete(event, null, range);
+        this.onDelete(event, null, range, spansMultiple);
 
         /* take no action if not at beginning of node */
         if (range.startOffset != 0) return;
@@ -642,7 +647,7 @@ var cOutlineHandlers = Class.create({
         doc.outline.autosave();
     },
 
-    onDelete: function(event, target, range) {
+    onDelete: function(event, target, range, spansMultiple) {
 
         /* autosave */
         console.log('onDelete autosave');
@@ -693,6 +698,9 @@ var cOutlineHandlers = Class.create({
                 range.startContainer.parentNode.setAttribute('changed', 1);
             }
         }
+
+        /* resync if delete called with selection spanning multiple nodes */
+        if (spansMultiple) doc.rightRail.sync.bind(doc.rightRail).defer();
 
         /* autosave */
         console.log('delete (or before char) autosave');
