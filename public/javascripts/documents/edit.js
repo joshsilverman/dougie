@@ -1123,4 +1123,7 @@ var cUtilities = Class.create({
 document.observe('dom:loaded', function() {
     parser = new cParser();
     doc = new cDoc();
+
+    /* fire app:loaded */
+    document.fire('app:loaded');
 });

@@ -500,4 +500,7 @@ var cDocumentsView = Class.create({
 document.observe('dom:loaded', function() {
     doc = new cDoc;
     doc.onChange();
+
+    /* fire app:loaded */
+    document.fire('app:loaded');
 });

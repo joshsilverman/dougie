@@ -75,45 +75,17 @@
           <h5>Facebook</h5>
           <div style="height:25px;"><fb:like href="zen.do" show_faces="true" width="350" action="recommend"></fb:like></div>
 
-          <h5>Twitter</h5>
-          <!--<script src="http://widgets.twimg.com/j/2/widget.js"></script>
-          <script>
-            new TWTR.Widget({
-              version: 2,
-              type: 'profile',
-              rpp: 1,
-              interval: 6000,
-              width: 350,
-              height: 200,
-              theme: {
-                shell: {
-                  background: '#d6d6d6',
-                  color: '#333333'
-                },
-                tweets: {
-                  background: '#ffffff',
-                  color: '#00b3ff',
-                  links: '#005985'
-                }
-              },
-              features: {
-                scrollbar: false,
-                loop: false,
-                live: false,
-                hashtags: true,
-                timestamp: true,
-                avatars: false,
-                behavior: 'all'
-              }
-            }).render().setUser('zendo_notes').start();
-          </script>-->
+          <h5>Twitter</h5><div id="script_twitter1"></div><div id="script_twitter2"></div>
+          <a href="http://twitter.com/zendo_notes">
+            <img src="/images/shared/twitter.png" style="position:relative; top:4px;"> Follow us on twitter
+          </a>
 
         </div>
         <h6 class="copyright">Copyright 2011 Zendo. All rights reserved.</h6>
       </div>
     </div>
   </div>
-  <%#= javascript_include_tag '/javascripts/pages/feedback' %>
-  <!--<script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>-->
+  <div id="script_userecho"></div>
+  <div id="script_facebook"></div>
 </body>
 </html>

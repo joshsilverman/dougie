@@ -12,6 +12,8 @@ var cAppUtilities = Class.create({
     initialize: function() {
         
         this.Cookies = new this.cCookies;
+
+        document.observe('app:loaded', this.loadVendorScripts);
     },
 
     resizeContents: function() {
@@ -64,6 +66,17 @@ var cAppUtilities = Class.create({
                 /* invoke original dispatch */
                 return dispatch(callback, request, transport, json);
             });
+    },
+
+    loadVendorScripts: function() {
+        
+        $H({script_userecho: "/javascripts/pages/feedback.js",
+            script_facebook: "http://connect.facebook.net/en_US/all.js#xfbml=1"}).each(function(keyValue) {
+
+            var script = new Element('script', {'type': 'text/javascript', 'src': keyValue[1]});
+            var container = document.getElementById(keyValue[0]);
+            if (container) document.getElementById(keyValue[0]).appendChild(script);
+        });
     },
 
     /* utility classes */

@@ -291,4 +291,7 @@ var cProgressBar = Class.create({
 document.observe('dom:loaded', function() {
     parser = new cParser(); //@todo move to doc object
     doc = new cDoc();
+
+    /* fire app:loaded */
+    document.fire('app:loaded');
 });

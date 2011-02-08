@@ -61,7 +61,7 @@ img.home {
     background-color: #edebdd;
     background-image: url(/images/shared/footer_border.gif);
     background-repeat:repeat-x;
-    min-height:203px;
+    min-height:148px;
 }
 
 .footer h5 {
@@ -103,7 +103,7 @@ img.home {
     float:left;
     clear:left;
     position:relative;
-    top: -10px;
+    top: 20px;
 }
 
 header {
