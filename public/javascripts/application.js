@@ -13,7 +13,7 @@ var cAppUtilities = Class.create({
         
         this.Cookies = new this.cCookies;
 
-        document.observe('app:loaded', this.loadVendorScripts);
+        document.observe('app:loaded', function() {this.loadVendorScripts.defer()}.bind(this));
     },
 
     resizeContents: function() {

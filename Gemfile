@@ -17,6 +17,7 @@ gem 'libxml-ruby', '1.1.3'
 gem 'devise'
 gem 'warden', '0.10.7'
 gem 'cancan', '1.4.1'
+gem 'smurf'
 # gem 'ruby-prof'
 # gem 'simple_captcha', :git => 'git://github.com/galetahub/simple-captcha.git'
 

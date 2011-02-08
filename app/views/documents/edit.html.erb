@@ -1,4 +1,4 @@
-<% @page_specific_scripts_js = ["ckeditor/ckeditor", "parser"] %>
+<% @page_specific_scripts_js = "parser" %>
 
 <div class="rounded_border doc_options">
   <span>/<%= link_to @tag.name, '/#%i' % @tag.id %>/<input id="document_name" value="<%=@document.name%>"></input></span>
@@ -28,11 +28,31 @@
 <div id="document_id" style="display:none;"><%=@document.id%></div>
 <div id="line_ids" style="display:none;"><%=@line_ids%></div>
 
+<% auto_js_css =  controller.controller_name + '/' + controller.action_name  %>
+<%= javascript_include_tag ["ckeditor/ckeditor", "ckeditor/lang/en.js"], :cache => false %>
 <script type="text/javascript">
 //<![CDATA[
+  var CKEDITOR_BASEPATH = '/javascripts/ckeditor/';
   CKEDITOR.replace( 'editor', {
     startupFocus : <%= !@new_doc%>,
-    //fullPage : true,
+    customConfig: '',
+    contentsCss: '/stylesheets/documents/edit_contents.css',
+    removePlugins: 'elementspath',
+    resize_enabled: false,
+    startupFocus: true,
+    language: 'en',
+
+    toolbar:  [
+
+        ['BulletedList','-','Outdent','Indent'],
+        ['Bold','Italic','Underline'],//,'Strike'],
+        ['JustifyLeft','JustifyCenter','JustifyRight']//,'JustifyBlock'],
+        //['Undo','Redo'],
+        //['Cut','Copy','Paste','-','Print', 'SpellChecker'],
+        //['Link','Unlink'],
+        //['SpecialChar']
+    ],
+
     on: {
       instanceReady : function(e) {Event.fire(document, 'CKEDITOR:ready');},
       paste: function(e) {doc.outline.outlineHandlers.onPaste(e)}
