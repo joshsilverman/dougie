@@ -11,7 +11,7 @@
   <%= "<span id='new_document' style='display:hidden'></span>".html_safe %>
 <% end %>
 
-<div id="editor_container"><textarea id="editor" name="editor"><%=@document.html%></textarea></div>
+<div id="editor_container"><textarea id="editor" name="editor" style="display:none;"><%=@document.html%></textarea></div>
 
 <div id="right_rail" class="rounded_border">
   <table class="align_bottom" valign="bottom"><tr><td id="cards" valign="bottom">
@@ -30,7 +30,7 @@
 
 <% auto_js_css =  controller.controller_name + '/' + controller.action_name  %>
 <%= javascript_include_tag ["ckeditor/ckeditor", "ckeditor/lang/en.js"], :cache => false %>
-<script type="text/javascript">
+<!--<script type="text/javascript">
 //<![CDATA[
   var CKEDITOR_BASEPATH = '/javascripts/ckeditor/';
   CKEDITOR.replace( 'editor', {
@@ -59,4 +59,4 @@
     }
   });
 //]]>
-</script>
+</script>-->

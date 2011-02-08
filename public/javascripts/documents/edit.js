@@ -21,49 +21,80 @@ var cDoc = Class.create({
         }
         else newDoc = false;
 
-        //wait for ckeditor to load
-        document.observe('CKEDITOR:ready', function() {
-
-            /* member objects */
-            this.utilities = new cUtilities();
-            this.editor = CKEDITOR.instances.editor;
-            this.rightRail = new cRightRail();
-
-            //@todo this creates race condition - look for callback - ugglie!!!
-            (function () {
-
-                /* load outline obj */
-                this.outline = new cOutline();
-
-                /* fire editor loaded */
-                document.fire('editor:loaded');
-
-                /* focus and select sample node if exists */
-                if (this.newDoc) {
-                    var handler = function() {
-
-                        /* sample node, clear */
-                        var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
-                        sampleNode.innerHTML = '<br />';
-
-                        /* update card when interpreter available */
-                        var card = doc.rightRail.cards.get(sampleNode.id);
-                        card.update.bind(card).defer(sampleNode);
-
-                        /* stop observing */
-                        Element.stopObserving.defer(doc.outline.iDoc.document, 'click', handler);
-                    };
-                    Element.observe(doc.outline.iDoc.document, 'click', handler);
-                }
-            }.bind(this)).delay(.1);
-
-            /* resize listener */
-            window.onresize = this.onResize;
-            this.onResize();
-        }.bind(this));
+        /* load editor */
+        this.loadEditor();
 
         /* select all in doc name on click */
         $('document_name').observe('click', function(e) {e.target.select();});
+    },
+
+    loadEditor: function() {
+
+      var CKEDITOR_BASEPATH = '/javascripts/ckeditor/';
+      CKEDITOR.replace( 'editor', {
+        startupFocus : 111111111111111111111111111111111111,
+        customConfig: '',
+        contentsCss: '/stylesheets/documents/edit_contents.css',
+        removePlugins: 'elementspath',
+        resize_enabled: false,
+        startupFocus: true,
+        language: 'en',
+
+        toolbar:  [
+
+            ['BulletedList','-','Outdent','Indent'],
+            ['Bold','Italic','Underline'],//,'Strike'],
+            ['JustifyLeft','JustifyCenter','JustifyRight']//,'JustifyBlock'],
+            //['Undo','Redo'],
+            //['Cut','Copy','Paste','-','Print', 'SpellChecker'],
+            //['Link','Unlink'],
+            //['SpecialChar']
+        ],
+
+        on: {
+          instanceReady : function(e) {doc.onEditorLoaded();},
+          paste: function(e) {doc.outline.outlineHandlers.onPaste(e)}
+        }
+      });
+    },
+
+    onEditorLoaded: function() {
+
+        /* member objects */
+        this.utilities = new cUtilities();
+        this.editor = CKEDITOR.instances.editor;
+
+        //@todo this creates race condition - look for callback - ugglie!!!
+        (function () {
+
+            /* load outline obj */
+            this.outline = new cOutline();
+
+            /* initialize right rail once editor loaded */
+            this.rightRail = new cRightRail();
+
+            /* focus and select sample node if exists */
+            if (this.newDoc) {
+                var handler = function() {
+
+                    /* sample node, clear */
+                    var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
+                    sampleNode.innerHTML = '<br />';
+
+                    /* update card when interpreter available */
+                    var card = doc.rightRail.cards.get(sampleNode.id);
+                    card.update.bind(card).defer(sampleNode);
+
+                    /* stop observing */
+                    Element.stopObserving.defer(doc.outline.iDoc.document, 'click', handler);
+                };
+                Element.observe(doc.outline.iDoc.document, 'click', handler);
+            }
+        }.bind(this)).delay(.1);
+
+        /* resize listener */
+        window.onresize = this.onResize;
+        this.onResize();
     },
 
     onResize: function() {
@@ -781,23 +812,19 @@ var cRightRail = Class.create({
         /* render listener */
         $('sync_button').observe('click', this.sync.bind(this));
 
-        /* run sync - for if reading */
-        document.observe('editor:loaded', function() {
-
-            /* set card count */
-            var nodes = Element.select(doc.outline.iDoc.document, 'li, p')
-                .each(function (node) {
-                    var index = parseInt(node.id.replace('node_', ''));
-                    if (index >= this.cardCount) this.cardCount = index + 1;
-                }.bind(this));
-
-            /* sync */
-            this.sync();
-
-            /* activate card */
-            document.observe('click', function(event) {
-               if(event.target.hasClassName('card_activation')) doc.outline.activateNode(event.target);
+        /* set card count */
+        var nodes = Element.select(doc.outline.iDoc.document, 'li, p')
+            .each(function (node) {
+                var index = parseInt(node.id.replace('node_', ''));
+                if (index >= this.cardCount) this.cardCount = index + 1;
             }.bind(this));
+
+        /* sync */
+        this.sync();
+
+        /* activate card */
+        document.observe('click', function(event) {
+           if(event.target.hasClassName('card_activation')) doc.outline.activateNode(event.target);
         }.bind(this));
     },
 
