@@ -36,7 +36,7 @@
 
     <div class="contents"><%= yield %></div>
 
-    <div class="clr"></div><br />
+    <div class="clr"></div>
     <div class="footer">
       <div class="footer_columns">
         <div class="footer_column">
@@ -83,6 +83,8 @@
   <% auto_js_full =  RAILS_ROOT + '/public/javascripts/' + controller.controller_name + '/' + controller.action_name + '.js'  %>
   <% if  File.file?(auto_js_full) %>
     <%= javascript_include_tag auto_js_css, :cache => false %>
+  <% else %>
+    <%= javascript_include_tag 'default', :cache => false %>
   <% end %>
   <% if @page_specific_scripts_js %> <%= javascript_include_tag @page_specific_scripts_js, :cache => '/cache/' + auto_js_css %> <% end %>
 </body>

@@ -30,14 +30,13 @@ var cDoc = Class.create({
 
     loadEditor: function() {
 
-      var CKEDITOR_BASEPATH = '/javascripts/ckeditor/';
+      window.CKEDITOR_BASEPATH = '/javascripts/ckeditor/';
       CKEDITOR.replace( 'editor', {
-        startupFocus : 111111111111111111111111111111111111,
+        startupFocus : !this.newDoc,
         customConfig: '',
         contentsCss: '/stylesheets/documents/edit_contents.css',
         removePlugins: 'elementspath',
         resize_enabled: false,
-        startupFocus: true,
         language: 'en',
 
         toolbar:  [

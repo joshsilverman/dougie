@@ -1,5 +1,5 @@
 <% @page_specific_scripts_js = "/javascripts/pages/home" %>
-<% @page_specific_scripts_css = "/stylesheets/pages/home" %>
+<% @page_specific_scripts_css = "/stylesheets/static/home" %>
 
 <div class="splash-wrapper">
   
@@ -14,10 +14,11 @@
     <div class="splash"><img id="img_know" src="/images/home/know.png" /></div>
   </div>
 
-  <div class="register">
+  <div class="buttons">
     <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
       <%#= link_to "", '/', :class => "register_button"%>
-      <%= link_to "", new_registration_path(resource_name), :class => "register_button"%>
+      <div class="rounded_border video_button"><span>Video Demo</span></div>
+      <div class="rounded_border register_button"><%= link_to "Sign up", new_registration_path(resource_name)%></div>
     <% end %>
   </div>
 

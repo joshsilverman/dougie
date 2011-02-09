@@ -1,4 +1,4 @@
-<% @page_specific_scripts_js = "parser" %>
+<% @page_specific_scripts_js = ["parser", "ckeditor/lang/en.js"] %>
 
 <div class="rounded_border doc_options">
   <span>/<%= link_to @tag.name, '/#%i' % @tag.id %>/<input id="document_name" value="<%=@document.name%>"></input></span>
@@ -28,13 +28,12 @@
 <div id="document_id" style="display:none;"><%=@document.id%></div>
 <div id="line_ids" style="display:none;"><%=@line_ids%></div>
 
-<% auto_js_css =  controller.controller_name + '/' + controller.action_name  %>
-<%= javascript_include_tag ["ckeditor/ckeditor", "ckeditor/lang/en.js"], :cache => false %>
+<%= javascript_include_tag ["ckeditor/ckeditor"], :cache => false %>
 <!--<script type="text/javascript">
 //<![CDATA[
   var CKEDITOR_BASEPATH = '/javascripts/ckeditor/';
   CKEDITOR.replace( 'editor', {
-    startupFocus : <%= !@new_doc%>,
+    startupFocus : <%#= !@new_doc%>,
     customConfig: '',
     contentsCss: '/stylesheets/documents/edit_contents.css',
     removePlugins: 'elementspath',

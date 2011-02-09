@@ -1,8 +1,13 @@
+html {
+    height:100%;
+}
+
 body {
-     font-family:arial,helvetica,times;
-     font-size:13px;
-     padding:0;
-     margin:0;
+    font-family:arial,helvetica,times;
+    font-size:13px;
+    padding:0;
+    margin:0;
+    height:100%;
 }
 
 a {
@@ -22,7 +27,7 @@ img.home {
     width:100px;
 }
 
-.clr { height:0;clear:both; }
+.clr { height:10px;clear:both; }
 
 .rounded_border {
     border: 1px solid lightGrey;

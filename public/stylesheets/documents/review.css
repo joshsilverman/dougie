@@ -41,6 +41,7 @@ table, tr, td {
 }
 
 .card_container button:hover {
+    border: #007AC7 solid 1px;
     background-color: lightgrey;
 }
 
@@ -108,4 +109,27 @@ td {
 
 .outline_node {
     display:none;
+}
+
+.grade_top_left button, .grade_top_right button, .grade_bottom_left button, .grade_bottom_right button {
+    border-color:lightgrey;
+    padding:2px;
+}
+
+.grade_top_left button, .grade_top_left button:hover {
+    background-color:#C4DEBF;
+}
+
+.grade_top_right button, .grade_top_right button:hover {
+    background-color:#32DE10;
+    font-weight:bold;
+}
+
+.grade_bottom_left button, .grade_bottom_left button:hover {
+    background-color:#F2DAB6;
+}
+
+.grade_bottom_right button, .grade_bottom_right button:hover {
+    background-color:#F29500;
+    font-weight:bold;
 }
