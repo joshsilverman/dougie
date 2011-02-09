@@ -63,7 +63,7 @@ var cDoc = Class.create({
         this.utilities = new cUtilities();
         this.editor = CKEDITOR.instances.editor;
 
-        //@todo this creates race condition - look for callback - ugglie!!!
+        // @todo this creates race condition - look for callback - ugglie!!!
         (function () {
 
             /* load outline obj */
@@ -207,7 +207,7 @@ var cOutline = Class.create({
         console.log('save');
 
         /* sync */
-        //@todo this may become unnecessary later on
+        // @todo this may become unnecessary later on
         doc.rightRail.sync();
 
         /* save button styling */
@@ -344,7 +344,7 @@ var cOutline = Class.create({
         Element.select(doc.outline.iDoc.document, '.outline_node').each(function(node) {
 
             /* parent attribute setter */
-            doc.outline.iDoc.document.body.setAttribute("id","node_0"); //@todo can be placed in outline initialization if this strat remains
+            doc.outline.iDoc.document.body.setAttribute("id","node_0"); // @todo can be placed in outline initialization if this strat remains
             var parent = (node.parentNode.tagName != "UL")
                 ? node.parentNode
                 : node.parentNode.parentNode;
@@ -385,7 +385,7 @@ var cOutline = Class.create({
 
 var cOutlineHandlers = Class.create({
 
-    iDoc: null, //@todo repeated unfortunately - can't access in outline until initialization complete
+    iDoc: null, // @todo repeated unfortunately - can't access in outline until initialization complete
 
     initialize: function(iDoc) {
         //capture iframe keystroke events
@@ -402,9 +402,9 @@ var cOutlineHandlers = Class.create({
 
         /* get real target - target in event object is wrong */
 
-        //@todo this is not quite there - sometimes it returns a ul; also, I
+        // @todo this is not quite there - sometimes it returns a ul; also, I
         //      couldn't overwrite event.target
-        //@todo target may be be UL or BODY on return key!
+        // @todo target may be be UL or BODY on return key!
         var range, target, spansMultiple;
         //trident?
         if (this.iDoc.document.selection) {
@@ -590,7 +590,7 @@ var cOutlineHandlers = Class.create({
             (function() {doc.editor.focus();}).delay(.01);
             return;
         }
-        //@todo determine how to overide default tab event
+        // @todo determine how to overide default tab event
 
         /* fire indent/outdent */
         if (event.shiftKey) doc.editor.execCommand('outdent');
@@ -660,8 +660,8 @@ var cOutlineHandlers = Class.create({
                 console.log(Element.previousSiblings(target).length);
                 if (Element.previousSiblings(target).length == 0) Event.stop(event);
 
-                //delete node which hadn't yet been saved
-                else { /* normal behavior */}
+                //delete node/card
+                else doc.rightRail.sync.bind(doc.rightRail).delay(.25);
             }
         }
 
@@ -698,7 +698,7 @@ var cOutlineHandlers = Class.create({
             if (   target.firstChild.nodeName == '#text' && range.endOffset == target.firstChild.length
                 || target.firstChild.nodeName != '#text' && range.endOffset == 0) {
 
-                //@todo implement delete at end of line - must push deleted node into delete queue
+                // @todo implement delete at end of line - must push deleted node into delete queue
                 Event.stop(event);
             }
 
@@ -713,7 +713,7 @@ var cOutlineHandlers = Class.create({
         /* check for partial delete of first node in range */
         else {
 
-            //@browser identify start container
+            // @browser identify start container
             if (Prototype.Browser.IE) {
                 var matches = html.match(/<[^>]* id=([^\s]+)[^>]*>/);
                 if (matches) {
@@ -1001,8 +1001,6 @@ var cCard = Class.create({
         this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
 
         // @todo for now ignore contextualizing active card
-//        if (contextualize) parser.parse(this, true, false);
-//        else
         parser.parse(this, false, true);
 
         this.render(truncate);
@@ -1112,7 +1110,7 @@ var cCard = Class.create({
         //previous node but no previous card
         else if (cardIdPrev && !$(cardIdPrev)) {
 
-            //@todo create previous card if does not exist
+            // @todo create previous card if does not exist
             console.log('error: no previous card but there should be!');
 
             //temp
