@@ -1,5 +1,5 @@
-<% @page_specific_scripts_js = "/javascripts/pages/home" %>
-<% @page_specific_scripts_css = "/stylesheets/static/home" %>
+<% @page_specific_scripts_js = ["/javascripts/pages/home", "/javascripts/vendors/lightview/js/lightview"] %>
+<% @page_specific_scripts_css = ["/stylesheets/static/home", "/javascripts/vendors/lightview/css/lightview"] %>
 
 <div class="splash-wrapper">
   
@@ -17,7 +17,7 @@
   <div class="buttons">
     <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
       <%#= link_to "", '/', :class => "register_button"%>
-      <div class="rounded_border video_button"><span>Video Demo</span></div>
+      <div class="rounded_border video_button"><a href='http://www.youtube.com/v/hGpyPI2qdIg' class='lightview' rel='set[myset][flash]' title="Become a more efficient learner in under 3 minutes. :: :: width: 540, height: 360">Video Demo</a></div>
       <div class="rounded_border register_button"><%= link_to "Sign up", new_registration_path(resource_name)%></div>
     <% end %>
   </div>
@@ -50,6 +50,5 @@
 
     <a href="/users/password/new">Forgot your password?</a>
     <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a>
-
   </div>
 </div>

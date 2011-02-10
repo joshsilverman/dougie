@@ -69,13 +69,13 @@
     color:white;
 }
 
-.video_button span, .register_button a {
+.video_button a, .register_button a {
     color:white;
     text-decoration:none;
     cursor:pointer;
 }
 
-.video_button span:hover, .register_button a:hover {
+.video_button a:hover, .register_button a:hover {
     color:white;
     text-decoration:underline;
 }
