@@ -64,7 +64,7 @@ class DocumentsControllerTest < ActionController::TestCase
     # set requests
     request = {
        :id => document.id,
-       :html => "<BODY id=node_0 line_id=\"\">\r\n<UL>\r\n<LI id=node_2 class=outline_node line_id changed=\"0\" active=\"true\" parent=\"node_0\">hello - adsf</LI>\r\n<LI id=node_3 class=outline_node line_id changed=\"0\" active=\"true\" parent=\"node_0\">sdfsdf - adfsdfd</LI>\r\n<LI id=node_4 class=outline_node line_id changed=\"0\" parent=\"node_0\">sdfgsdfgsdfgsdfg</LI>\r\n<LI id=node_5 class=outline_node line_id changed=\"0\" parent=\"node_0\">sdfgsdfg</LI>\r\n<LI id=node_6 class=outline_node line_id changed=\"1\" active=\"true\" parent=\"node_0\">zxcv - asdf</LI>\r\n<LI id=node_7 class=outline_node line_id changed=\"1\" active=\"true\" parent=\"node_0\">asdf - asdf</LI></UL></BODY>",
+       :html => "<BODY id=node_0 line_id=\"413\">\r\n<UL>\r\n<LI id=node_16 class=outline_node line_id changed=\"1\" parent=\"node_0\" active=\"true\">a</LI>\r\n<LI id=node_17 class=outline_node line_id changed=\"1\" parent=\"node_0\" active=\"true\">b \r\n<UL>\r\n<LI id=node_18 class=outline_node line_id changed=\"1\" active=\"true\" parent=\"node_17\">c - d</LI></UL></LI></UL></BODY>",
        :name => 'untitled',
        :delete_nodes => nil,
        :new_nodes => 'true'}
@@ -72,8 +72,7 @@ class DocumentsControllerTest < ActionController::TestCase
     document = Document.update(request, @user_id)
     lines = Line.find_all_by_document_id(document.id)
 
-    puts lines.length
-    assert(lines.length == 7)
+    assert(lines.length == 4)
   end
 
 end

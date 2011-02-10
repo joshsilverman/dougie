@@ -10,7 +10,7 @@ module DocumentsHelper
       
       return nil if html.blank? 
       @html = sanitize(html)
-      @doc = Nokogiri::XML(html)
+      @doc = Nokogiri::XML(@html)
       
     end
     
@@ -26,7 +26,6 @@ module DocumentsHelper
       html.gsub!(/(<[^>]*id=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")
       html.gsub!(/(<[^>]*class=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")
 
-      puts html
       return html
     end
 
