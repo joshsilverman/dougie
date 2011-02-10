@@ -9,19 +9,24 @@ module DocumentsHelper
     def initialize(html = nil)
       
       return nil if html.blank? 
-      @html = "<li id=\"node_0\">#{sanitize(html)}</li>"
-      @doc = to_nokogiri(@html)
+      @html = sanitize(html)
+      @doc = Nokogiri::XML(@html)
       
     end
     
     def sanitize(html = nil)
       return "" if html.blank?
-      html.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<(\/|)ul>|<(\/|)body>|/i,"").gsub(/<p/i,"<li").gsub(/<\/p/,"</li").gsub(/<br>/,"")
-    end
-    
-    def to_nokogiri(html = nil)
-      return nil if html.blank?
-      Nokogiri::XML(html)
+
+      # general adjustments
+      html = "<li id=\"node_0\">#{html}</li>"
+      html = html.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<\/?(?:body|ul)[^>]*>/i,"").gsub(/<p/i,"<li").gsub(/<\/p/,"</li").gsub(/<br>/,"").gsub(/<(\/?)LI([^>]*)>/,"<\\1li\\2>")
+
+      # @browser ie adjustments
+      html.gsub!(/(<[^>]* line_id)( [^>]*>)/, "\\1=\"\"\\2")
+      html.gsub!(/(<[^>]*id=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")
+      html.gsub!(/(<[^>]*class=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")
+
+      return html
     end
 
   end
