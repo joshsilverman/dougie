@@ -70,12 +70,12 @@ var cAppUtilities = Class.create({
 
     loadVendorScripts: function() {
         
-        $H({script_userecho: "/javascripts/pages/feedback.js",
+        $H({script_userecho: "/javascripts/vendors/userecho/userecho.js",
             script_facebook: "http://connect.facebook.net/en_US/all.js#xfbml=1"}).each(function(keyValue) {
 
             var script = new Element('script', {'type': 'text/javascript', 'src': keyValue[1]});
             var container = document.getElementById(keyValue[0]);
-            if (container) document.getElementById(keyValue[0]).appendChild(script);
+            if (container) container.appendChild(script);
         });
     },
 
