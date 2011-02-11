@@ -53,13 +53,9 @@ Dougie::Application.configure do
   
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-      :enable_starttls_auto => true,
-      :address => "smtp.gmail.com",
-      :port => 587,
-      :domain => "gmail.com",
-      :authentication => :login,
-      :user_name => "zendonotes@gmail.com",
-      :password => "93guz93man"
-  }
-  
+    :domain             => "zendonotes.com",
+    :address            => "smtp",
+    :port               => 25,
+    :perform_deliveries => true}
+
 end
