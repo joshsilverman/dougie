@@ -1,5 +1,8 @@
-<% @page_specific_scripts_js = ["/javascripts/pages/home", "/javascripts/vendors/lightview/js/lightview"] %>
+<% @page_specific_scripts_js = ["/javascripts/pages/home"] %>
 <% @page_specific_scripts_css = ["/stylesheets/static/home", "/javascripts/vendors/lightview/css/lightview"] %>
+
+<!--cannot cache due because path image paths are relative-->
+<%= javascript_include_tag "/javascripts/vendors/lightview/js/lightview", :cache => false %>
 
 <div class="splash-wrapper">
   
