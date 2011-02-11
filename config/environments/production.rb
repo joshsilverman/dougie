@@ -59,7 +59,7 @@ Dougie::Application.configure do
       :domain => "zendonotes.com",
       :authentication => :login,
       :user_name => "no-reply@zendonotes.com",
-      :password => "N46948"
+      :password => "93guz93man"
   }
   
 end
