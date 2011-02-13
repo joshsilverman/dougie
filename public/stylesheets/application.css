@@ -80,6 +80,8 @@ img.home {
     text-decoration: none;
     line-height: 18px;
     display:block;
+    position:relative;
+    z-index:1;
 }
 
 .footer_columns {
