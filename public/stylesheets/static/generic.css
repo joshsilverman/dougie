@@ -18,16 +18,17 @@ body {
 }
 
 .title {
-    -webkit-transform: rotate(-90deg);
+    /* -webkit-transform: rotate(-90deg);
     -moz-transform: rotate(-90deg);
-    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); */
     color: #007AC7;
-    font-size: 60px;
-    left: -240px;
+    font-size: 40px;
+    /* left: -240px;
     position: absolute;
-    top: 300px;
+    top: 300px; */
     width: 600px;
-    text-align:right;
+    text-align:left;
+    margin:10px 0 -10px 110px;
 }
 
 .about_sections {
