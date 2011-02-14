@@ -47,15 +47,14 @@ var cDoc = Class.create({
     onChange: function() {
 
         /* rerender? browser navigation used? */
-        var hashValue = self.document.location.hash.substring(1)
+        var hashValue = self.document.location.hash.substring(1);
         var rerender = hashValue != this.currentView;
-
+        
         /* rerender */
         if (rerender) {
             if (hashValue == '') this.directoryView.render();
             else this.directoryView.openDirectory(hashValue);
         }
-
         /* fire resize */
         AppUtilities.resizeContents();
         AppUtilities.resizeContents.delay(.01);
@@ -165,10 +164,10 @@ var cDirectoryView = Class.create({
             this.sort('name');
             this.render();
         }.bind(this));
-
+        
         /* set location hash */
-        if (window.doc) doc.currentView = '';
-        self.document.location.hash = '';
+        if (window.doc) doc.currentView = "";
+        self.document.location.hash = '#';
     },
 
     openDirectory: function(tagId) {
