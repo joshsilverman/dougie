@@ -10,17 +10,18 @@
   </div>
 
   <div class="splash-img-wrapper">
-    <div class="splash"><img id="img_learn" src="/images/home/learn.png" /></div>
-    <div class="splash"><img id="img_study" src="/images/home/study.png" /></div>
-    <div class="splash"><img id="img_know" src="/images/home/know.png" /></div>
-  </div>
 
-  <div class="buttons">
-    <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-      <%#= link_to "", '/', :class => "register_button"%>
-      <div class="rounded_border video_button"><a href='http://www.youtube.com/v/hGpyPI2qdIg' class='lightview' rel='set[myset][flash]' title="Become a more efficient learner in under 3 minutes. :: :: width: 540, height: 360">Video Demo</a></div>
-      <div class="rounded_border register_button"><%= link_to "Sign up", new_registration_path(resource_name)%></div>
-    <% end %>
+    <div class="buttons">
+      <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+        <%#= link_to "", '/', :class => "register_button"%>
+        <div class="rounded_border video_button"><a href='http://www.youtube.com/v/hGpyPI2qdIg' class='lightview' rel='set[myset][flash]' title="Become a more efficient learner in under 3 minutes. :: :: width: 540, height: 360">Video Demo</a></div>
+        <div class="rounded_border register_button"><%= link_to "Sign up", new_registration_path(resource_name)%></div>
+      <% end %>
+    </div>
+
+    <div class="splash"><img id="img_learn" src="/images/home/notes.png" /></div>
+    <div class="splash img_study"><img id="img_study" src="/images/home/flashcards.png" /></div>
+    <div class="splash img_know"><img id="img_know" src="/images/home/review.png" /></div>
   </div>
 
 </div>

@@ -9,3 +9,5 @@ config/environments/development.rb
 public/cache/*
 public/javascripts/cache/*
 public/javascripts/all.js
+*.psd
+*.xcf

@@ -16,27 +16,43 @@
     width:200px;
     height:250px;
     float:left;
-    margin:0 30px 0 30px;
+    margin:0 0;
+}
+
+div.img_study {
+    margin-left:0;
+    margin-right:0;
+    width:330px;
+}
+
+div.img_know {
+    margin-left:-118px;
 }
 
 .splash-wrapper{
     display:block;
     text-align:center;
+    height:374px;
 
     margin:0 0 20px;
 
     background-image:url(/images/home/splash_bg.png);
     background-repeat:repeat-x;
-    background-position:0 224px;
+    background-position:0 0;
+    
+    /*border-bottom:#ddd solid 1px;
+    background-color:#f0ebc9;*/
 }
 
 .splash-img-wrapper{
-    width:790px;
+    width:953px;
     margin:0 auto;
 }
 
 .headline{
     text-align: center;
+    position:relative;
+    left:120px;
 }
 
 .headline h1{
@@ -51,17 +67,17 @@
 }
 
 .buttons {
-    margin:268px auto 0;
-    clear:both;
-    width: 448px;
+    margin:10px 0;
+    width: 240px;
     height: 60px;
+    float:left;
 
 }
 
 .video_button, .register_button {
     float:left;
     width: 200px;
-    margin:0 10px;
+    margin:20px 0;
     clear:none;
     font-size: 30px;
     padding:15px 0;
