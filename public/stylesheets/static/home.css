@@ -32,13 +32,13 @@ div.img_know {
 .splash-wrapper{
     display:block;
     text-align:center;
-    height:374px;
+    height:362px;
 
     margin:0 0 20px;
 
     background-image:url(/images/home/splash_bg.png);
     background-repeat:repeat-x;
-    background-position:0 0;
+    background-position:0 -12px;
     
     /*border-bottom:#ddd solid 1px;
     background-color:#f0ebc9;*/
@@ -58,7 +58,7 @@ div.img_know {
 .headline h1{
     font:"";
     font-size: 36px;
-    margin:8px 0 0;
+    margin:8px 0 14px;
 }
 .headline h5{
     font-size: 14px;
