@@ -19,13 +19,13 @@
     margin:0 0;
 }
 
-div.img_study {
+div.img_flashcards {
     margin-left:0;
     margin-right:0;
     width:330px;
 }
 
-div.img_know {
+div.img_review {
     margin-left:-118px;
 }
 
@@ -50,9 +50,13 @@ div.img_know {
 }
 
 .headline{
+    width:800px;
+    margin:0 auto;
     text-align: center;
     position:relative;
     left:120px;
+    height:56px;
+    overflow:hidden;
 }
 
 .headline h1{
