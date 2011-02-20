@@ -83,13 +83,11 @@ class DocumentsController < ApplicationController
   def review
 
     # check params and document exists
-    id = params[:id]
-    if id.nil?
-      render :nothing => true, :status => 400
+    @document = current_user.documents.find_by_id(id)
+    if @document.nil?
+      redirect_to '/', :notice => "Error accessing that document."
       return
     end
-
-    @document = current_user.documents.find_by_id(id)
 
     # get lines
     @lines_json = Line.includes(:mems)\

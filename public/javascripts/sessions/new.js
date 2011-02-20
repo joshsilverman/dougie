@@ -24,6 +24,12 @@ var cDoc = Class.create({
 
             /* over */
             $('img_' + keyValue[0]).observe('mouseover', function(event) {
+
+                /* make sure all are not underlined */
+                this.mouseoverTargets.each(function(keyValue) {
+                    $('img_' + keyValue[0]).src = '/images/home/' + keyValue[0] + '.png';
+                });
+
                 event.target.src = srcUnderlined;
                 window.clearTimeout(this.restoreDefaultTimer);
                 document.getElementById('headline').innerHTML = keyValue[1];
@@ -31,9 +37,8 @@ var cDoc = Class.create({
 
             /* out */
             $('img_' + keyValue[0]).observe('mouseout', function(event) {
-                event.target.src = src;
                 this.restoreDefaultTimer
-                    = this.restoreDefault.bind(this).delay(1);
+                    = this.restoreDefault.bind(this).delay(.75, event.target, src);
             }.bind(this));
         }.bind(this));
 
@@ -41,7 +46,8 @@ var cDoc = Class.create({
 //        this.loadLightview();
     },
 
-    restoreDefault: function() {
+    restoreDefault: function(target, src) {
+        target.src = src;
         document.getElementById('headline').innerHTML
             = this.defaultMessage;
     }

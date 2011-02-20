@@ -89,16 +89,14 @@ class TagsController < ApplicationController
 
   def review
 
-    #check params and tag exists
-    
-    id = params[:id]
-    if id.nil?
-      redirect_to '/', :notice => "Unable to locate that directory."
-      return
-    end
-
     #get document ids
     @tag = current_user.tags.joins(:documents).find_by_id(id)
+
+    #check params and tag exists
+    if @tag.nil?
+      redirect_to '/', :notice => "Error accessing that document."
+      return
+    end
 
     document_ids = []
     @tag.documents.each do |document|

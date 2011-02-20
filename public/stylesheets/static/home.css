@@ -173,3 +173,7 @@ div.img_review {
     display:block;
     line-height:1.5em;
 }
+
+.footer_column:first-child {
+    padding-left: 10px;
+}
