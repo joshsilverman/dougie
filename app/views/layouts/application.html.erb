@@ -27,8 +27,9 @@
     </div>
 
     <!--flash messages-->
-    <% unless flash[:notice].blank? && flash[:error].blank? %>
+    <% unless flash[:notice].blank? && flash[:error].blank? && flash[:alert].blank? %>
       <div class="flash_container">
+        <% unless flash[:alert].blank? %><span class="error rounded_border"><%= flash[:alert] %></span><% end %>
         <% unless flash[:notice].blank? %><span class="notice rounded_border"><%= flash[:notice] %></span><% end %>
         <% unless flash[:error].blank? %><span class="error rounded_border"><%= flash[:error] %></span><% end %>
       </div>
