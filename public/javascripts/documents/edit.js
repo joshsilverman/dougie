@@ -79,6 +79,7 @@ var cDoc = Class.create({
                     /* sample node, clear */
                     var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
                     sampleNode.innerHTML = '<br />';
+//                    doc.editor.focus();
 
                     /* update card when interpreter available */
                     var card = doc.rightRail.cards.get(sampleNode.id);
@@ -417,11 +418,10 @@ var cOutlineHandlers = Class.create({
             target = range.parentElement();
         }
         //gecko, webkit, others?
-        else if (this.iDoc.window.getSelection) {
+        else if (this.iDoc.window.getSelection && this.iDoc.window.getSelection().rangeCount > 0) {
             range = this.iDoc.window.getSelection().getRangeAt(0);
             var rangeParent = range.commonAncestorContainer;
             var rangeGrandParent = range.commonAncestorContainer.parentNode;
-
 
             //common select valid target
             if (rangeParent.tagName == 'LI' || rangeParent.tagName == 'P')
