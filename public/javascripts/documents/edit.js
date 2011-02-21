@@ -647,8 +647,13 @@ var cOutlineHandlers = Class.create({
         /* run delete to handle cases where text is being overwritten */
         this.onDelete(event, null, range, spansMultiple);
 
-        /* take no action if not at beginning of node */
-        if (range.startOffset != 0) return;
+        /* just update card if not at beginning of node */
+        if (range.startOffset != 0) {
+            /* update node */
+            var id = Element.readAttribute(target, 'id') || null;
+            if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, target);
+            return;
+        }
 
         /* indented paragraph handling */
         else if (target.tagName == 'P') {
@@ -712,6 +717,10 @@ var cOutlineHandlers = Class.create({
                 doc.outline.unsavedChanges.push(target.id);
                 console.log('setting changed. target: ' + target);
                 target.setAttribute('changed', 1);
+
+                /* update node */
+                var id = Element.readAttribute(target, 'id') || null;
+                if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, target);
             }
         }
 
