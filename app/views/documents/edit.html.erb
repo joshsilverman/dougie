@@ -11,9 +11,9 @@
   <%= "<span id='new_document' style='display:hidden'></span>".html_safe %>
 <% end %>
 
-<div id="editor_container"><textarea id="editor" name="editor" style="display:none;"><%=@document.html%></textarea></div>
+<div id="editor_container" style="display:none"><textarea id="editor" name="editor" style="display:none;"><%=@document.html%></textarea></div>
 
-<div id="right_rail" class="rounded_border">
+<div id="right_rail" class="rounded_border" style="display:none">
   <table class="align_bottom" valign="bottom"><tr><td id="cards" valign="bottom">
     <!--<div class="card card_active rounded_border"><input type="checkbox" class="card_activation" />truncated test</div>
     <div class="card_focus card rounded_border">

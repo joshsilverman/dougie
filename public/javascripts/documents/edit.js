@@ -98,9 +98,14 @@ var cDoc = Class.create({
 
     onResize: function() {
 
+        /* set to visible */
+        var editorContainer = $('editor_container');
+        var rightRail = $('right_rail');
+        editorContainer.show();
+        rightRail.show();
+
         /* calculations */
         var bottomMargin = 20;
-        var editorContainer = $('editor_container');
         var editorContainerHeight = parseInt(editorContainer.getStyle('height'));
         var editorVerticalSpaceHeight = document.viewport.getDimensions()['height']
             - editorContainer.cumulativeOffset().top - bottomMargin;
@@ -111,7 +116,7 @@ var cDoc = Class.create({
 
         /* set heights */
         editorWhitespace.setStyle({height: editorVerticalSpaceHeight - 49 + 'px'});
-        $('right_rail').setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
+        rightRail.setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
         $('cke_editor').setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
 //        $('right_rail').setStyle({height: editorVerticalSpaceHeight + 'px !important'});
 
