@@ -133,7 +133,6 @@ var cCard = Class.create({
     
     initialize: function(data) {
 
-        console.log(data);
         this.lineId = data['id'];
         this.domId = data['domid'];
         this.memId = data['mems'][0]['id'];

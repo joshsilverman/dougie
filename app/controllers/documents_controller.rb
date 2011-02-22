@@ -83,6 +83,7 @@ class DocumentsController < ApplicationController
   def review
 
     # check params and document exists
+    id = params[:id]
     @document = current_user.documents.find_by_id(id)
     if @document.nil?
       redirect_to '/', :notice => "Error accessing that document."
