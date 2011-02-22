@@ -7,7 +7,7 @@ var cDoc = Class.create({
     editor: null,
     utilities: null,
 
-    newDoc:null,
+    newDoc: null,
 
     initialize: function() {
 
@@ -850,8 +850,8 @@ var cRightRail = Class.create({
         /* make call */
         this.updateFocusCardTimer =
             (function () {
+                doc.rightRail.cards.get(id).update(target, false, true);
                 doc.rightRail.focus(id);
-        doc.rightRail.cards.get(id).update(target, false, true);
             }).delay(.25)
     },
 
@@ -1036,11 +1036,6 @@ var cCard = Class.create({
 
     render: function(truncate) {
 
-        /* checkbox dom */
-        var checkbox;
-        if (this.active == true) checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
-        else checkbox = '<input type="checkbox" class="card_activation" />';
-
         /* attempt autoactivate */
         if (this.autoActivate) {
             this.autoActivated = true;
@@ -1050,6 +1045,11 @@ var cCard = Class.create({
             console.log('activate in render');
             doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
         }
+
+        /* checkbox dom */
+        var checkbox;
+        if (this.active == true) checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
+        else checkbox = '<input type="checkbox" class="card_activation" />';
 
         //is active
         if (!this.active)
