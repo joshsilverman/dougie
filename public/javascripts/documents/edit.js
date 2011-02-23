@@ -599,7 +599,30 @@ var cOutlineHandlers = Class.create({
 
         /* fire indent/outdent */
         if (event.shiftKey) doc.editor.execCommand('outdent');
-        else doc.editor.execCommand('indent');
+        else if (target.previousSibling && target.previousSibling.nodeName == "LI") doc.editor.execCommand('indent'); // handles indenting a not-first-child li
+        else if (   target.parentNode
+                 && target.parentNode.nodeName == "UL"
+                 && target.parentNode.previousSibling
+                 && target.parentNode.previousSibling.nodeName == "UL") { // handle indentation where two lists have not been joined properly
+
+            /* move second ul items to previous list; remove empty list */
+            var parentUL = target.parentNode;
+            var previousList = target.parentNode.previousSibling;
+            var childrenCount = parentUL.children.length;
+            for (var i = 0; i < childrenCount; i++) {
+                previousList.appendChild(parentUL.firstChild);
+            }
+            parentUL.parentNode.removeChild(parentUL);
+
+            /* focus and indent */
+            doc.editor.focus();
+            var element = doc.editor.document.getById(target.id);
+            doc.editor.getSelection().selectElement(element);
+            var nativeSelection = doc.editor.getSelection().getNative();
+            nativeSelection.collapseToStart();
+            doc.editor.focus();
+            (function () {doc.editor.execCommand('indent');}).delay(.1);
+        }
 
         /* autosave */
         console.log('tab autosave');
@@ -677,6 +700,7 @@ var cOutlineHandlers = Class.create({
 
         /* li handling */
         else if (target.tagName == 'LI') {
+            console.log(target);
             console.log('backspace li');
             doc.editor.execCommand('outdent');
             Event.stop(event);
@@ -1012,7 +1036,7 @@ var cCard = Class.create({
         this.active = node.getAttribute('active') == "true";
         
         /* parse and render */
-        this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
+        this.text = node.innerHTML.split(/<ul/)[0];
 
         // @todo for now ignore contextualizing active card
         parser.parse(this, false, true);
