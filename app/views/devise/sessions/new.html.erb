@@ -36,18 +36,33 @@
   </div>
 
   <div class="box">
+    <div class="line-bg"><span>&nbsp;&nbsp;Sign in or Sign up using&nbsp;&nbsp;</span></div>
+
+    <div class="authentications">
+      <!--<a href="/auth/twitter" class="auth_provider">
+        <%#= image_tag "logos/twitter_64.png", :size => "64x64", :alt => "Twitter" %>
+      </a>-->
+      <a href="/auth/facebook" class="auth_provider">
+        <%= image_tag "logos/facebook_64.png", :size => "64x64", :alt => "Facebook" %>
+      </a>
+      <a href="/auth/open_id?openid_url=gmail.com" class="auth_provider">
+        <%= image_tag "logos/google_64.png", :size => "64x64", :alt => "Google" %>
+      </a>
+    </div>
+
+    <div class="line-bg"><span>&nbsp;&nbsp;or use&nbsp;&nbsp;</span></div>
+
     <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-      <div><%= f.label :email %></div>
-      <div><%= f.text_field :email %></div>
+      <%= f.label :email, :class => "email_pass_label" %>
+      <%= f.text_field :email %>
 
-      <div><%= f.label :password %></div>
-      <div><%= f.password_field :password %></div>
-
-      <% if devise_mapping.rememberable? -%>
-        <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
-      <% end -%>
+      <%= f.label :password, :class => "email_pass_label" %>
+      <%= f.password_field :password %>
 
       <%= f.submit "Sign in" %>
+      <% if devise_mapping.rememberable? -%>
+        <%= f.check_box :remember_me %> <%= f.label :remember_me %>
+      <% end -%>
     <% end %>
 
     <a href="/users/password/new">Forgot your password?</a>

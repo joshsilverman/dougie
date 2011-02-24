@@ -1,5 +1,7 @@
 Dougie::Application.routes.draw do
 
+  resources :authentications
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -58,7 +60,8 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
   
   #devise
-  devise_for :users, :path_names => { :sign_in => '/welcome'}, :timeout_in => 7.days
+  devise_for :users, :path_names => { :sign_in => '/welcome'}, :timeout_in => 7.days,
+    :controllers => {:registrations => 'registrations'}
 
   #tags
   get "tag/index"
@@ -80,6 +83,10 @@ Dougie::Application.routes.draw do
 
   # login system
   root :to => "users#index"
+
+  # authentications
+  match '/auth/:provider/callback' => 'authentications#create'
+  resources :authentications
 
   # catch-all route for static pages
   Dougie::Application.routes.draw do |map|

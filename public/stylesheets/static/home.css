@@ -1,3 +1,8 @@
+.authentications {
+    text-align: center;
+    margin-bottom: -10px;
+}
+
 .wrapper {
     width:100%;
 }
@@ -150,10 +155,16 @@ div.img_review {
     min-height:210px;
 }
 
+.box .email_pass_label {
+    width:30%;
+    display:block;
+    float:left;
+}
+
 .box input[type=text], .box input[type=password] {
     border:#9e943a solid 1px;
-    width:100%;
-    clear:both;
+    width:69%;
+    clear:right;
 }
 
 .box div {
@@ -170,10 +181,33 @@ div.img_review {
 }
 
 .box a {
-    display:block;
     line-height:1.5em;
+}
+
+.box > a {
+    display:block;
+}
+
+.box #user_submit {
+    width:20%;
+    margin: 0 7% 0 0;
 }
 
 .footer_column:first-child {
     padding-left: 10px;
+}
+
+.auth_provider {
+  text-decoration: none;
+  margin: 0 10px;
+  text-align: center;
+}
+
+.line-bg {
+    background-image:url(/images/home/sign_in_bg.png);
+    text-align: center;
+}
+
+.line-bg span {
+    background-color: white;
 }
