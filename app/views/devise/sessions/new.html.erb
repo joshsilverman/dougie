@@ -1,6 +1,6 @@
 <% @page_specific_scripts_js = ["/javascripts/vendors/lightview/js/lightview.js"] %>
-<% @page_specific_scripts_css = ["/stylesheets/static/home", "/javascripts/vendors/lightview/css/lightview"] %>
-<div id="script_lightview"></div>
+<% @page_specific_scripts_css = ["/stylesheets/static/home", "/javascripts/vendors/lightview/css/lightview", "/stylesheets/registrations/new"] %>
+<!--<div id="script_lightview"></div>-->
 
 <div class="splash-wrapper">
   
@@ -15,7 +15,7 @@
       <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
         <%#= link_to "", '/', :class => "register_button"%>
         <div class="rounded_border video_button"><a href='http://www.youtube.com/v/hGpyPI2qdIg' class='lightview' rel='set[myset][flash]' title="Become a more efficient learner in under 3 minutes. :: :: width: 540, height: 360">Video Demo</a></div>
-        <div class="rounded_border register_button"><%= link_to "Sign up", new_registration_path(resource_name)%></div>
+        <div class="rounded_border register_button"><a href="#sign_up_inline" class="lightview" title=' ::  :: width: 540, height: 425'>Sign Up</a></div>
       <% end %>
     </div>
 
@@ -36,7 +36,7 @@
   </div>
 
   <div class="box">
-    <div class="line-bg"><span>&nbsp;&nbsp;Sign in or Sign up using&nbsp;&nbsp;</span></div>
+    <div class="line-bg"><span>&nbsp;&nbsp;Sign in using&nbsp;&nbsp;</span></div>
 
     <div class="authentications">
       <!--<a href="/auth/twitter" class="auth_provider">
@@ -65,7 +65,84 @@
       <% end -%>
     <% end %>
 
-    <a href="/users/password/new">Forgot your password?</a>
-    <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a>
+    <a href="/users/password/new" style="margin-left: 30%">Forgot your password?</a>
   </div>
+</div>
+
+
+
+
+
+
+
+<!--sign in - inline-->
+<div id="sign_up_inline" style="display:none">
+  <div class="restrictions">
+
+    <p><strong>Sign up through one of these services:</strong></p>
+
+    <!--<a href="/auth/twitter" class="auth_provider">
+      <%#= image_tag "logos/twitter_32.png", :size => "32x32", :alt => "Twitter" %>
+    </a>
+    <a href="/auth/open_id" class="auth_provider">
+      <%#= image_tag "logos/openid_32.png", :size => "32x32", :alt => "OpenID" %>
+    </a>-->
+    <a href="/auth/facebook" class="auth_provider">
+      <%= image_tag "logos/facebook_32.png", :size => "32x32", :alt => "Facebook" %>
+    </a>
+    <a href="/auth/open_id?openid_url=gmail.com" class="auth_provider">
+      <%= image_tag "logos/google_32.png", :size => "32x32", :alt => "Google" %>
+    </a>
+
+    <div class="clr"></div>
+
+    <strong>We're beta! So far we support:</strong>
+    <ul>
+      <li>Firefox 3</li>
+      <li>Chrome</li>
+      <li>Safari 5</li>
+      <li>Opera 11</li>
+      <li>IE 8</li>
+    </ul>
+  </div>
+
+  <div class="form_container">
+    <h2>Sign up!</h2>
+
+    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+      <%= devise_error_messages! %>
+
+      <p><%= f.label :first_name %><br />
+      <%= f.text_field :first_name %></p>
+
+      <p><%= f.label :last_name %><br />
+      <%= f.text_field :last_name %></p>
+
+      <p><%= f.label :email %><br />
+      <%= f.text_field :email %></p>
+
+      <% if @user.password_required? %>
+
+        <p><%= f.label :password %><br />
+        <%= f.password_field :password %></p>
+
+        <p><%= f.label :password_confirmation %><br />
+        <%= f.password_field :password_confirmation %></p>
+
+      <% end %>
+
+      <p><%= f.submit "Sign up" %></p>
+    <% end %>
+
+    <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+      <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+    <% end -%>
+
+    <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+      <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
+    <% end -%>
+
+  </div>
+
+  <div class="clr"></div>
 </div>

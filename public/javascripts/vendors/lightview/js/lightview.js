@@ -45,14 +45,14 @@ var Lightview = {
     overlay: {                                             // Overlay
       background: '#000',                                  // Background color, Mac Firefox & Mac Safari use overlay.png
       close: true,
-      opacity: 0.8,
+      opacity: 0.3,
       display: true
     },
     preloadHover: false,                                   // Preload images on mouseover
     radius: 12,                                            // Corner radius of the border
     removeTitles: true,                                    // Set to false if you want to keep title attributes intact
-    resizeDuration: 0.45,                                  // The duration of the resize effect in seconds
-    slideshowDelay: 5,                                     // Delay in seconds before showing the next slide
+    resizeDuration: 0.1,                                  // The duration of the resize effect in seconds
+    slideshowDelay: 0,                                     // Delay in seconds before showing the next slide
     titleSplit: '::',                                      // The characters you want to split title with
     transition: function(pos) {                            // Or your own transition
       return ((pos/=0.5) < 1 ? 0.5 * Math.pow(pos, 4) :
@@ -62,8 +62,8 @@ var Lightview = {
     zIndex: 5000,                                          // zIndex of #lightview, #overlay is this -1
 
     startDimensions: {                                     // Dimensions Lightview starts at
-      width: 100,
-      height: 100
+      width: 200,
+      height: 200
     },
     closeDimensions: {                                     // Modify if you've changed the close button images
       large: { width: 77, height: 22 },

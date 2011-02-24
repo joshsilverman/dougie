@@ -1,7 +1,25 @@
 <% @page_specific_scripts_css = "static/edit_account" %>
 
 <div class="restrictions">
-  We're beta! So far we support:
+
+  <p><strong>Sign up through one of these services:</strong></p>
+
+  <!--<a href="/auth/twitter" class="auth_provider">
+    <%#= image_tag "logos/twitter_32.png", :size => "32x32", :alt => "Twitter" %>
+  </a>
+  <a href="/auth/open_id" class="auth_provider">
+    <%#= image_tag "logos/openid_32.png", :size => "32x32", :alt => "OpenID" %>
+  </a>-->
+  <a href="/auth/facebook" class="auth_provider">
+    <%= image_tag "logos/facebook_32.png", :size => "32x32", :alt => "Facebook" %>
+  </a>
+  <a href="/auth/open_id?openid_url=gmail.com" class="auth_provider">
+    <%= image_tag "logos/google_32.png", :size => "32x32", :alt => "Google" %>
+  </a>
+
+  <div class="clr"></div>
+
+  <strong>We're beta! So far we support:</strong>
   <ul>
     <li><b>Firefox 3</b></li>
     <li><b>Chrome</b></li>
@@ -46,7 +64,14 @@
     <p><%= f.submit "Sign up" %></p>
   <% end %>
 
-  <%= render :partial => "devise/shared/links" %>
+  <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+    <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+  <% end -%>
+
+  <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+    <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
+  <% end -%>
+
 </div>
 
 <div class="clr"></div>
