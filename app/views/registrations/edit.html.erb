@@ -1,0 +1,71 @@
+<div class="authentications_container">
+
+  <% if @authentications %>
+    <% unless @authentications.empty? %>
+      <p>You can sign in to this account using:</p>
+      <div class="authentications">
+        <% for authentication in @authentications %>
+          <div class="authentication">
+            <%= image_tag "logos/#{authentication.provider}_32.png", :size => "32x32" %>
+            <div class="provider"><%= authentication.provider_name %></div>
+            <div class="uid"><%= authentication.uid %></div>
+            <%= link_to "X", authentication, :confirm => 'Are you sure you want to remove this authentication option?', :method => :delete, :class => "remove" %>
+          </div>
+        <% end %>
+        <div class="clear"></div>
+      </div>
+    <% end %>
+    <p>Add another service to sign in with:</p>
+  <% else %>
+    <p><strong>Sign in through one of these services:</strong></p>
+  <% end %>
+
+  <!--<a href="/auth/twitter" class="auth_provider">
+    <%#= image_tag "logos/twitter_32.png", :size => "32x32", :alt => "Twitter" %>
+  </a>
+  <a href="/auth/open_id" class="auth_provider">
+    <%#= image_tag "logos/openid_32.png", :size => "32x32", :alt => "OpenID" %>
+  </a>-->
+  <a href="/auth/facebook" class="auth_provider">
+    <%= image_tag "logos/facebook_32.png", :size => "32x32", :alt => "Facebook" %>
+  </a>
+  <a href="/auth/google_apps" class="auth_provider">
+    <%= image_tag "logos/google_32.png", :size => "32x32", :alt => "Google" %>
+  </a>
+  
+</div>
+
+<div class="form_container">
+  <h2>Edit <%= resource_name.to_s.humanize %></h2>
+
+  <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
+    <%= devise_error_messages! %>
+
+    <p><%= f.label :first_name %><br />
+    <%= f.text_field :first_name %></p>
+
+    <p><%= f.label :last_name %><br />
+    <%= f.text_field :last_name %></p>
+
+    <p><%= f.label :email %><br />
+    <%= f.text_field :email %></p>
+
+    <p><%= f.label :password %> <br /><i>(leave blank if you don't want to change it)</i><br />
+    <%= f.password_field :password %></p>
+
+    <p><%= f.label :password_confirmation %><br />
+    <%= f.password_field :password_confirmation %></p>
+
+    <p><%= f.label :current_password %> <br /><i>(we need your current password to confirm your changes)</i><br />
+    <%= f.password_field :current_password %></p>
+
+    <p><%= f.submit "Update" %></p>
+  <% end %>
+
+  <p><%= link_to "Cancel my account", registration_path(resource_name), :confirm => "Are you sure?", :method => :delete %>.</p>
+
+  <%= link_to "Back", :back %>
+
+</div>
+
+<div class="clr"></div>
