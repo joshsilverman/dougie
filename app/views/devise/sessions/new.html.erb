@@ -1,148 +1,18 @@
-<% @page_specific_scripts_js = ["/javascripts/vendors/lightview/js/lightview.js"] %>
-<% @page_specific_scripts_css = ["/stylesheets/static/home", "/javascripts/vendors/lightview/css/lightview", "/stylesheets/registrations/new"] %>
-<!--<div id="script_lightview"></div>-->
+<% @page_specific_scripts_css = "static/devise" %>
+<h2>Sign in</h2>
 
-<div class="splash-wrapper">
-  
-  <div class="headline" id="headline">
-    <h1><span style="color:#009CFF;">Efficient </span> learning for <span style="color:#009CFF;">passionate</span> students</h1>
-    <!--<h5>Roll over the images below to see how</h5>-->
-  </div>
+<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+  <p><%= f.label :email %><br />
+  <%= f.text_field :email %></p>
 
-  <div class="splash-img-wrapper">
+  <p><%= f.label :password %><br />
+  <%= f.password_field :password %></p>
 
-    <div class="buttons">
-      <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-        <%#= link_to "", '/', :class => "register_button"%>
-        <div class="rounded_border video_button"><a href='http://www.youtube.com/v/hGpyPI2qdIg' class='lightview' rel='set[myset][flash]' title="Become a more efficient learner in under 3 minutes. :: :: width: 540, height: 360">Video Demo</a></div>
-        <div class="rounded_border register_button"><a href="#sign_up_inline" class="lightview" title=' ::  :: width: 540, height: 425'>Sign Up</a></div>
-      <% end %>
-    </div>
+  <% if devise_mapping.rememberable? -%>
+    <p><%= f.check_box :remember_me %> <%= f.label :remember_me %></p>
+  <% end -%>
 
-    <div class="splash"><img id="img_notes" src="/images/home/notes.png" /></div>
-    <div class="splash img_flashcards"><img id="img_flashcards" src="/images/home/flashcards.png" /></div>
-    <div class="splash img_review"><img id="img_review" src="/images/home/review.png" /></div>
-  </div>
+  <p><%= f.submit "Sign in" %></p>
+<% end %>
 
-</div>
-
-<div class="box_container">
-  <div class="box">
-    We are students and <span class="box_title">our Mission</span> is to become more efficient learners. We want to spend less time studying and know our material much better. And, we want commit the most essential information we come across to long-term memory.
-  </div>
-
-  <div class="box">
-    Zen.do is in <span class="box_title">Beta</span> and we hope to find out from our users what works, what does't and where we should go next. Please send us your comments and suggestions!
-  </div>
-
-  <div class="box">
-    <div class="line-bg"><span>&nbsp;&nbsp;Sign in using&nbsp;&nbsp;</span></div>
-
-    <div class="authentications">
-      <!--<a href="/auth/twitter" class="auth_provider">
-        <%#= image_tag "logos/twitter_64.png", :size => "64x64", :alt => "Twitter" %>
-      </a>-->
-      <a href="/auth/facebook" class="auth_provider">
-        <%= image_tag "logos/facebook_64.png", :size => "64x64", :alt => "Facebook" %>
-      </a>
-      <a href="/auth/open_id?openid_url=gmail.com" class="auth_provider">
-        <%= image_tag "logos/google_64.png", :size => "64x64", :alt => "Google" %>
-      </a>
-    </div>
-
-    <div class="line-bg"><span>&nbsp;&nbsp;or use&nbsp;&nbsp;</span></div>
-
-    <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-      <%= f.label :email, :class => "email_pass_label" %>
-      <%= f.text_field :email %>
-
-      <%= f.label :password, :class => "email_pass_label" %>
-      <%= f.password_field :password %>
-
-      <%= f.submit "Sign in" %>
-      <% if devise_mapping.rememberable? -%>
-        <%= f.check_box :remember_me %> <%= f.label :remember_me %>
-      <% end -%>
-    <% end %>
-
-    <a href="/users/password/new" style="margin-left: 30%">Forgot your password?</a>
-  </div>
-</div>
-
-
-
-
-
-
-
-<!--sign in - inline-->
-<div id="sign_up_inline" style="display:none">
-  <div class="restrictions">
-
-    <p><strong>Sign up through one of these services:</strong></p>
-
-    <!--<a href="/auth/twitter" class="auth_provider">
-      <%#= image_tag "logos/twitter_32.png", :size => "32x32", :alt => "Twitter" %>
-    </a>
-    <a href="/auth/open_id" class="auth_provider">
-      <%#= image_tag "logos/openid_32.png", :size => "32x32", :alt => "OpenID" %>
-    </a>-->
-    <a href="/auth/facebook" class="auth_provider">
-      <%= image_tag "logos/facebook_32.png", :size => "32x32", :alt => "Facebook" %>
-    </a>
-    <a href="/auth/open_id?openid_url=gmail.com" class="auth_provider">
-      <%= image_tag "logos/google_32.png", :size => "32x32", :alt => "Google" %>
-    </a>
-
-    <div class="clr"></div>
-
-    <strong>We're beta! So far we support:</strong>
-    <ul>
-      <li>Firefox 3</li>
-      <li>Chrome</li>
-      <li>Safari 5</li>
-      <li>Opera 11</li>
-      <li>IE 8</li>
-    </ul>
-  </div>
-
-  <div class="form_container">
-    <h2>Sign up!</h2>
-
-    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-      <%= devise_error_messages! %>
-
-      <p><%= f.label :first_name %><br />
-      <%= f.text_field :first_name %></p>
-
-      <p><%= f.label :last_name %><br />
-      <%= f.text_field :last_name %></p>
-
-      <p><%= f.label :email %><br />
-      <%= f.text_field :email %></p>
-
-      <% if @user.password_required? %>
-
-        <p><%= f.label :password %><br />
-        <%= f.password_field :password %></p>
-
-        <p><%= f.label :password_confirmation %><br />
-        <%= f.password_field :password_confirmation %></p>
-
-      <% end %>
-
-      <p><%= f.submit "Sign up" %></p>
-    <% end %>
-
-    <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-      <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
-    <% end -%>
-
-    <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
-      <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
-    <% end -%>
-
-  </div>
-
-  <div class="clr"></div>
-</div>
+<%= render :partial => "devise/shared/links" %>

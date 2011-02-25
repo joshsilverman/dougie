@@ -60,11 +60,12 @@ Dougie::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
   
   #devise
-  devise_for :users, :path_names => { :sign_in => '/welcome'}, :timeout_in => 7.days,
+  devise_for :users, :timeout_in => 7.days,
     :controllers => {:registrations => 'registrations'}
 
   #tags
-  get "tag/index"
+  get "tag/index" # ???
+  match "/explore" => "tags#index" #** public **#
 
   # documents
   match "/documents/create/:tag_id" => "documents#create"
@@ -78,11 +79,10 @@ Dougie::Application.routes.draw do
   
   # organizer
   resources :tags, :only => [:destroy, :create, :update]
-  match "/" => "tags#index" #** public **#
   match "/tags/json" => "tags#json"
 
   # login system
-  root :to => "users#index"
+  root :to => "users#home"
 
   # authentications
   match '/auth/:provider/callback' => 'authentications#create'
