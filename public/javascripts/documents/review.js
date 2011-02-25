@@ -41,6 +41,7 @@ var cDoc = Class.create({
 var cReviewer = Class.create({
 
     progressBar: null,
+    reviewHandlers: null,
 
     cards: [],
     currentCardIndex: 0,
@@ -66,6 +67,9 @@ var cReviewer = Class.create({
         $('back_button').observe('click', this.back.bind(this, false));
         $('next_button').observe('click', this.next.bind(this, false));
 
+        /* review handlers */
+        this.reviewHandlers = new cReviewHandlers();
+
         /* progress bar */
         this.progressBar = new cProgressBar();
         $('progress_fraction').update("0/"+this.cards.length);
@@ -88,7 +92,7 @@ var cReviewer = Class.create({
         $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
     },
 
-    back: function(grade) {
+    back: function() {
 
         /* check boundary */
         if (this.currentCardIndex == 0) return;
@@ -96,12 +100,53 @@ var cReviewer = Class.create({
         /* back */
         this.currentCardIndex--;
         if (this.cards[this.currentCardIndex]) {
-            this.cards[this.currentCardIndex].cue();
+            this.cards[this.currentCardIndex].showAll();
         }
 
         /* update progress bar */
         this.progressBar.update((this.currentCardIndex)/this.cards.length);
         $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+    }
+});
+
+var cReviewHandlers = Class.create({
+
+    initialize: function() {
+        console.log("rh init");
+        document.observe("keydown", this.delegateKeystrokeHandler.bind(this));
+    },
+
+    delegateKeystrokeHandler: function(event) {
+
+        switch (event.keyCode) {
+            case (32):
+                this.onSpace(event);
+                break;
+            case (37):
+                this.onLeft(event);
+                break;
+            case (39):
+                this.onRight(event);
+                break;
+            default:
+                console.log(event.keyCode);
+        }
+    },
+
+    onSpace: function(event) {
+        /* show card sides */
+        doc.reviewer.cards[doc.reviewer.currentCardIndex].showAll();
+        event.stop();
+    },
+
+    onLeft: function(event) {
+        doc.reviewer.back();
+        event.stop();
+    },
+
+    onRight: function(event) {
+        doc.reviewer.next();
+        event.stop();
     }
 });
 
