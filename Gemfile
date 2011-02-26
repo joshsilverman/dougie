@@ -15,9 +15,11 @@ gem 'mysql', :groups => [:development, :test, :production]
 gem 'nokogiri'
 gem 'acts_as_tree'
 gem 'libxml-ruby', '1.1.3'
-gem 'devise'
-gem 'warden', '0.10.7'
+gem 'devise', :git => "http://github.com/plataformatec/devise.git"
+gem 'warden', '1.0.3'
 gem 'cancan', '1.4.1'
+gem 'omniauth'
+gem 'nifty-generators'
 gem 'smurf'
 # gem 'ruby-prof'
 # gem 'simple_captcha', :git => 'git://github.com/galetahub/simple-captcha.git'
@@ -40,3 +42,4 @@ gem 'smurf'
 # group :development, :test do
 #   gem 'webrat'
 # end
+gem "mocha", :group => :test

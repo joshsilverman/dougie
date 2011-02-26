@@ -76,6 +76,16 @@ td {
     line-height: 18px;
 }
 
+#card_show {
+    width:207px;
+    height:41px;
+    background-color:transparent;
+    background-position: 0 3px;
+    background-image: url(/images/reviewer/spacebar.png);
+    background-repeat: no-repeat;
+    border:none;
+}
+
 .grade {
     width: 200px;
     vertical-align: bottom;
@@ -86,11 +96,24 @@ td {
 }
 
 .grade button {
-    margin:20px 2px;
+    height:48px;
+    width:48px;
+    text-align: center;
+    margin:6px 0 6px 50px;
+    float:left;
+    clear:both;
+    padding:15px;
+    border-color:lightgrey;
+    font-size: 15px;
+}
+
+.grade button.chosen {
+    border: #007AC7 solid 1px;
+    background-color: lightgrey;
 }
 
 .grade_hide button {
-    display:none;
+    visibility:hidden;
 }
 
 #edit_buttons {
@@ -111,25 +134,24 @@ td {
     display:none;
 }
 
-.grade_top_left button, .grade_top_right button, .grade_bottom_left button, .grade_bottom_right button {
-    border-color:lightgrey;
-    padding:2px;
+.arrows_up_down {
+    position: relative;
+    top:145px;
+    left: -5px;
 }
 
-.grade_top_left button, .grade_top_left button:hover {
-    background-color:#C4DEBF;
+#back_button, #next_button {
+    background-repeat: no-repeat;
+    width:37px;
+    height: 37px;
+    border:none;
+    background-color: transparent;
 }
 
-.grade_top_right button, .grade_top_right button:hover {
-    background-color:#32DE10;
-    font-weight:bold;
+#back_button {
+    background-image: url(/images/reviewer/left.png);
 }
 
-.grade_bottom_left button, .grade_bottom_left button:hover {
-    background-color:#F2DAB6;
-}
-
-.grade_bottom_right button, .grade_bottom_right button:hover {
-    background-color:#F29500;
-    font-weight:bold;
+#next_button {
+    background-image: url(/images/reviewer/right.png);
 }

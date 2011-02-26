@@ -6,7 +6,8 @@ var cParser = Class.create({
     parse: function(Card, contextualize, ellipsize) {
 
         //definition
-        var defParts = Card.text.match(/(^[\w\W]+) - ([\s\S]+)$/);
+        console.log(Card.text);
+        var defParts = Card.text.match(/(^[^-]+) - ([\s\S]+)$/);
         if (defParts) {
 
             //set autoActivate member if this is the first time text has been parsable

@@ -7,7 +7,7 @@ var cDoc = Class.create({
     editor: null,
     utilities: null,
 
-    newDoc:null,
+    newDoc: null,
 
     initialize: function() {
 
@@ -79,6 +79,7 @@ var cDoc = Class.create({
                     /* sample node, clear */
                     var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
                     sampleNode.innerHTML = '<br />';
+//                    doc.editor.focus();
 
                     /* update card when interpreter available */
                     var card = doc.rightRail.cards.get(sampleNode.id);
@@ -98,9 +99,14 @@ var cDoc = Class.create({
 
     onResize: function() {
 
+        /* set to visible */
+        var editorContainer = $('editor_container');
+        var rightRail = $('right_rail');
+        editorContainer.show();
+        rightRail.show();
+
         /* calculations */
         var bottomMargin = 20;
-        var editorContainer = $('editor_container');
         var editorContainerHeight = parseInt(editorContainer.getStyle('height'));
         var editorVerticalSpaceHeight = document.viewport.getDimensions()['height']
             - editorContainer.cumulativeOffset().top - bottomMargin;
@@ -111,7 +117,7 @@ var cDoc = Class.create({
 
         /* set heights */
         editorWhitespace.setStyle({height: editorVerticalSpaceHeight - 49 + 'px'});
-        $('right_rail').setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
+        rightRail.setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
         $('cke_editor').setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
 //        $('right_rail').setStyle({height: editorVerticalSpaceHeight + 'px !important'});
 
@@ -412,11 +418,10 @@ var cOutlineHandlers = Class.create({
             target = range.parentElement();
         }
         //gecko, webkit, others?
-        else if (this.iDoc.window.getSelection) {
+        else if (this.iDoc.window.getSelection && this.iDoc.window.getSelection().rangeCount > 0) {
             range = this.iDoc.window.getSelection().getRangeAt(0);
             var rangeParent = range.commonAncestorContainer;
             var rangeGrandParent = range.commonAncestorContainer.parentNode;
-
 
             //common select valid target
             if (rangeParent.tagName == 'LI' || rangeParent.tagName == 'P')
@@ -594,7 +599,30 @@ var cOutlineHandlers = Class.create({
 
         /* fire indent/outdent */
         if (event.shiftKey) doc.editor.execCommand('outdent');
-        else doc.editor.execCommand('indent');
+        else if (target.previousSibling && target.previousSibling.nodeName == "LI") doc.editor.execCommand('indent'); // handles indenting a not-first-child li
+        else if (   target.parentNode
+                 && target.parentNode.nodeName == "UL"
+                 && target.parentNode.previousSibling
+                 && target.parentNode.previousSibling.nodeName == "UL") { // handle indentation where two lists have not been joined properly
+
+            /* move second ul items to previous list; remove empty list */
+            var parentUL = target.parentNode;
+            var previousList = target.parentNode.previousSibling;
+            var childrenCount = parentUL.children.length;
+            for (var i = 0; i < childrenCount; i++) {
+                previousList.appendChild(parentUL.firstChild);
+            }
+            parentUL.parentNode.removeChild(parentUL);
+
+            /* focus and indent */
+            doc.editor.focus();
+            var element = doc.editor.document.getById(target.id);
+            doc.editor.getSelection().selectElement(element);
+            var nativeSelection = doc.editor.getSelection().getNative();
+            nativeSelection.collapseToStart();
+            doc.editor.focus();
+            (function () {doc.editor.execCommand('indent');}).delay(.1);
+        }
 
         /* autosave */
         console.log('tab autosave');
@@ -642,8 +670,13 @@ var cOutlineHandlers = Class.create({
         /* run delete to handle cases where text is being overwritten */
         this.onDelete(event, null, range, spansMultiple);
 
-        /* take no action if not at beginning of node */
-        if (range.startOffset != 0) return;
+        /* just update card if not at beginning of node */
+        if (range.startOffset != 0) {
+            /* update node */
+            var id = Element.readAttribute(target, 'id') || null;
+            if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, target);
+            return;
+        }
 
         /* indented paragraph handling */
         else if (target.tagName == 'P') {
@@ -667,6 +700,7 @@ var cOutlineHandlers = Class.create({
 
         /* li handling */
         else if (target.tagName == 'LI') {
+            console.log(target);
             console.log('backspace li');
             doc.editor.execCommand('outdent');
             Event.stop(event);
@@ -707,6 +741,10 @@ var cOutlineHandlers = Class.create({
                 doc.outline.unsavedChanges.push(target.id);
                 console.log('setting changed. target: ' + target);
                 target.setAttribute('changed', 1);
+
+                /* update node */
+                var id = Element.readAttribute(target, 'id') || null;
+                if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, target);
             }
         }
 
@@ -836,8 +874,8 @@ var cRightRail = Class.create({
         /* make call */
         this.updateFocusCardTimer =
             (function () {
+                doc.rightRail.cards.get(id).update(target, false, true);
                 doc.rightRail.focus(id);
-        doc.rightRail.cards.get(id).update(target, false, true);
             }).delay(.25)
     },
 
@@ -998,7 +1036,7 @@ var cCard = Class.create({
         this.active = node.getAttribute('active') == "true";
         
         /* parse and render */
-        this.text = node.innerHTML.match(/^([^<]*)<?/)[1];
+        this.text = node.innerHTML.split(/<ul/)[0];
 
         // @todo for now ignore contextualizing active card
         parser.parse(this, false, true);
@@ -1022,11 +1060,6 @@ var cCard = Class.create({
 
     render: function(truncate) {
 
-        /* checkbox dom */
-        var checkbox;
-        if (this.active == true) checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
-        else checkbox = '<input type="checkbox" class="card_activation" />';
-
         /* attempt autoactivate */
         if (this.autoActivate) {
             this.autoActivated = true;
@@ -1036,6 +1069,11 @@ var cCard = Class.create({
             console.log('activate in render');
             doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
         }
+
+        /* checkbox dom */
+        var checkbox;
+        if (this.active == true) checkbox = '<input type="checkbox" class="card_activation" checked="yes" />';
+        else checkbox = '<input type="checkbox" class="card_activation" />';
 
         //is active
         if (!this.active)

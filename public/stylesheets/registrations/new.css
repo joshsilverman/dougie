@@ -1,0 +1,93 @@
+.sign_up_inline_container {
+    padding-left: 220px;
+}
+
+#sign_up_inline {
+    width:524px;
+}
+
+#sign_up_inline .restrictions, #sign_up_inline .form_container, #sign_up_inline .authentications_container {
+    padding:0 10px 10px;
+    float:left;
+}
+
+#sign_up_inline .restrictions {
+    width: 230px;
+    margin:41px 0 0;
+    clear:left;
+}
+
+#sign_up_inline .form_container {
+    width: 230px;
+    border-left:1px solid grey;
+}
+
+#sign_up_inline .authentications_container {
+    width: 230px;
+    margin:33px 0 0;
+}
+
+#sign_up_inline .authentications_container p {
+    clear:both;
+    padding-top:10px;
+}
+
+#sign_up_inline .authentications {
+  margin-bottom: 30px;
+}
+
+#sign_up_inline .authentication {
+  width: 190px;
+  float: left;
+  background-color: #EEE;
+  border: solid 1px #999;
+  padding: 5px 10px;
+  margin:5px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  position: relative;
+  margin-right: 10px;
+}
+
+#sign_up_inline .authentication .remove {
+  text-decoration: none;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  color: #333;
+  padding: 2px 4px;
+  font-size: 10px;
+}
+
+#sign_up_inline .authentication .remove:hover {
+  color: #CCC;
+  background-color: #777;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+}
+
+#sign_up_inline .authentication img {
+  float: left;
+  margin-right: 10px;
+}
+
+#sign_up_inline .authentication .provider {
+  font-weight: bold;
+}
+
+#sign_up_inline .authentication .uid {
+  color: #666;
+  font-size: 11px;
+  overflow:hidden;
+}
+
+#sign_up_inline .auth_provider img {
+  display: block;
+}
+
+#sign_up_inline .auth_provider {
+  float: left;
+  text-decoration: none;
+  margin: 10px 10px;
+  text-align: center;
+}

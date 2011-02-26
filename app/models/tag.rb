@@ -4,7 +4,7 @@ class Tag < ActiveRecord::Base
                                :maximum => 30,
                                :message => "Name must be between 1-30 characters"},
                    :format => {:with => /[a-zA-Z0-9-&%$\#+\(\)*^@!.]/,
-                               :message => "Pleas use only letters numbers and (!@#\$%^&*-+)"}
+                               :message => "Please use only letters numbers and (!@#\$%^&*-+)"}
   
   has_many :documents, :dependent => :destroy
   belongs_to :user

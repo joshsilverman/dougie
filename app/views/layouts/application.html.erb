@@ -27,8 +27,9 @@
     </div>
 
     <!--flash messages-->
-    <% unless flash[:notice].blank? && flash[:error].blank? %>
+    <% unless flash[:notice].blank? && flash[:error].blank? && flash[:alert].blank? %>
       <div class="flash_container">
+        <% unless flash[:alert].blank? %><span class="error rounded_border"><%= flash[:alert] %></span><% end %>
         <% unless flash[:notice].blank? %><span class="notice rounded_border"><%= flash[:notice] %></span><% end %>
         <% unless flash[:error].blank? %><span class="error rounded_border"><%= flash[:error] %></span><% end %>
       </div>
@@ -64,7 +65,7 @@
         <div class="footer_column">
           
           <h5>Facebook</h5>
-          <div style="height:25px;"><fb:like href="zen.do" show_faces="true" width="350" action="recommend"></fb:like></div>
+          <div style="height:25px;"><fb:like href="http://zen.do" show_faces="false" width="350" height="63" action="recommend"></fb:like></div>
 
           <h5>Twitter</h5><div id="script_twitter1"></div><div id="script_twitter2"></div>
           <a href="http://twitter.com/zendo_notes">
@@ -78,7 +79,8 @@
   </div>
   <div id="script_userecho"></div>
   <div id="script_facebook"></div>
-  <%= javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/prototype/1/prototype.js', :cache => false %>
+  <%#= javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/prototype/1/prototype.js', :cache => false %>
+  <%= javascript_include_tag '/javascripts/vendors/prototype.js', :cache => false %>
   <%= javascript_include_tag ['/javascripts/vendors/scriptaculous/src/scriptaculous.js?load=effects,dragdrop,controls', 'rails', 'application', '/javascripts/vendors/scriptaculous/src/effects', '/javascripts/vendors/scriptaculous/src/dragdrop', '/javascripts/vendors/scriptaculous/src/controls'], :cache => '/cache/all' %>
   <!--auto-include js if exists-->
   <% auto_js_full =  RAILS_ROOT + '/public/javascripts/' + controller.controller_name + '/' + controller.action_name + '.js'  %>

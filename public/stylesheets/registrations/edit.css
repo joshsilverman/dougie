@@ -1,0 +1,79 @@
+.authentications_container, .form_container {
+    padding:40px 10px 10px;
+    float:left;
+}
+
+.authentications_container {
+    width: 230px;
+    margin:33px 0 0 220px;
+}
+
+.authentications_container p {
+    clear:both;
+    padding-top:10px;
+}
+
+.form_container {
+    width: 300px;
+    border-left:1px solid grey;
+}
+
+.authentications {
+  margin-bottom: 30px;
+}
+
+.authentication {
+  width: 190px;
+  float: left;
+  background-color: #EEE;
+  border: solid 1px #999;
+  padding: 5px 10px;
+  margin:5px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  position: relative;
+  margin-right: 10px;
+}
+
+.authentication .remove {
+  text-decoration: none;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  color: #333;
+  padding: 2px 4px;
+  font-size: 10px;
+}
+
+.authentication .remove:hover {
+  color: #CCC;
+  background-color: #777;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+}
+
+.authentication img {
+  float: left;
+  margin-right: 10px;
+}
+
+.authentication .provider {
+  font-weight: bold;
+}
+
+.authentication .uid {
+  color: #666;
+  font-size: 11px;
+  overflow:hidden;
+}
+
+.auth_provider img {
+  display: block;
+}
+
+.auth_provider {
+  float: left;
+  text-decoration: none;
+  margin: 10px 10px;
+  text-align: center;
+}
