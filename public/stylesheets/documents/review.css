@@ -86,11 +86,24 @@ td {
 }
 
 .grade button {
-    margin:20px 2px;
+    height:48px;
+    width:48px;
+    text-align: center;
+    margin:6px 0 6px 50px;
+    float:left;
+    clear:both;
+    padding:15px;
+    border-color:lightgrey;
+    font-size: 15px;
+}
+
+.grade button.chosen {
+    border: #007AC7 solid 1px;
+    background-color: lightgrey;
 }
 
 .grade_hide button {
-    display:none;
+    visibility:hidden;
 }
 
 #edit_buttons {
@@ -109,27 +122,4 @@ td {
 
 .outline_node {
     display:none;
-}
-
-.grade_top_left button, .grade_top_right button, .grade_bottom_left button, .grade_bottom_right button {
-    border-color:lightgrey;
-    padding:2px;
-}
-
-.grade_top_left button, .grade_top_left button:hover {
-    background-color:#C4DEBF;
-}
-
-.grade_top_right button, .grade_top_right button:hover {
-    background-color:#32DE10;
-    font-weight:bold;
-}
-
-.grade_bottom_left button, .grade_bottom_left button:hover {
-    background-color:#F2DAB6;
-}
-
-.grade_bottom_right button, .grade_bottom_right button:hover {
-    background-color:#F29500;
-    font-weight:bold;
 }

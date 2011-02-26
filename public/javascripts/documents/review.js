@@ -43,6 +43,12 @@ var cReviewer = Class.create({
     progressBar: null,
     reviewHandlers: null,
 
+    grade_a: 9,
+    grade_b: 8,
+    grade_c: 7,
+    grade_d: 6,
+    grade_f: 4,
+
     cards: [],
     currentCardIndex: 0,
 
@@ -58,10 +64,11 @@ var cReviewer = Class.create({
         else $('card_front').update("<i>No cards to review</i>");
         
         /* next listeners */
-        $('strength_1').observe('click', this.next.bind(this, 1));
-        $('strength_2').observe('click', this.next.bind(this, 2));
-        $('strength_3').observe('click', this.next.bind(this, 3));
-        $('strength_4').observe('click', this.next.bind(this, 4));
+        $('grade_a').observe('click', this.next.bind(this, 9));
+        $('grade_b').observe('click', this.next.bind(this, 8));
+        $('grade_c').observe('click', this.next.bind(this, 7));
+        $('grade_d').observe('click', this.next.bind(this, 6));
+        $('grade_f').observe('click', this.next.bind(this, 4));
 
         /* nav listeners */
         $('back_button').observe('click', this.back.bind(this, false));
@@ -106,6 +113,21 @@ var cReviewer = Class.create({
         /* update progress bar */
         this.progressBar.update((this.currentCardIndex)/this.cards.length);
         $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+    },
+
+    displayGrade: function(grade) {
+
+        /* remove all chosen classnames */
+        $$(".grade button").each(function(element) {
+            element.removeClassName('chosen');
+        })
+
+        /* display grade */
+        if (grade == this.grade_a) $("grade_a").addClassName("chosen");
+        else if (grade == this.grade_b) $("grade_b").addClassName("chosen");
+        else if (grade == this.grade_c) $("grade_c").addClassName("chosen");
+        else if (grade == this.grade_d) $("grade_d").addClassName("chosen");
+        else if (grade == this.grade_f) $("grade_f").addClassName("chosen");
     }
 });
 
@@ -119,14 +141,23 @@ var cReviewHandlers = Class.create({
     delegateKeystrokeHandler: function(event) {
 
         switch (event.keyCode) {
+            case (13):
+                this.onEnter(event);
+                break;
             case (32):
                 this.onSpace(event);
                 break;
             case (37):
                 this.onLeft(event);
                 break;
+            case (38):
+                this.onUp(event);
+                break;
             case (39):
                 this.onRight(event);
+                break;
+            case (40):
+                this.onDown(event);
                 break;
             default:
                 console.log(event.keyCode);
@@ -147,19 +178,38 @@ var cReviewHandlers = Class.create({
     onRight: function(event) {
         doc.reviewer.next();
         event.stop();
+    },
+
+    onUp: function(event) {
+
+        /* increment current card's grade and display */
+        var card = doc.reviewer.cards[doc.reviewer.currentCardIndex];
+        card.increment();
+        doc.reviewer.displayGrade(card.confidence);
+        event.stop();
+    },
+
+    onDown: function(event) {
+
+        /* decrement current card's grade and display */
+        var card = doc.reviewer.cards[doc.reviewer.currentCardIndex];
+        card.decrement();
+        doc.reviewer.displayGrade(card.confidence);
+        event.stop();
+    },
+
+    onEnter: function() {
+
+        /* invoke next with current card's confidence */
+        doc.reviewer.next(doc.reviewer.cards[doc.reviewer.currentCardIndex].confidence);
     }
 });
 
 var cCard = Class.create({
 
-    GRADE_KNOW: 4,
-    GRADE_MUSTLEARN: 3,
-    GRADE_KNOWBUT: 2,
-    GRADE_DONTCARE: 1,
-
     /* out of ten for easy url  */
-    importance: 5,
-    confidence: 5,
+    importance: 8,
+    confidence: 8,
 
     memId: null,
     lineId: null,
@@ -212,6 +262,9 @@ var cCard = Class.create({
         /* show grading buttons */
         $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
 
+        /* set grade associated with current card */
+        doc.reviewer.displayGrade(doc.reviewer.cards[doc.reviewer.currentCardIndex].confidence);
+
         /* edit button and listener */
         $('button_edit').observe('click', this.makeEditable.bind(this));
         $('button_edit').show();
@@ -219,30 +272,8 @@ var cCard = Class.create({
 
     grade: function(grade) {
 
-        /* set confidence and importance */
-        switch (grade) {
-            case this.GRADE_KNOW:
-                this.confidence = 8;
-                this.importance = 8;
-                break;
-            case this.GRADE_MUSTLEARN:
-                this.confidence = 2;
-                this.importance = 8;
-                break;
-            case this.GRADE_KNOWBUT:
-                this.confidence = 8;
-                this.importance = 2;
-                break;
-            case this.GRADE_DONTCARE:
-                this.confidence = 2;
-                this.importance = 2;
-                break;
-
-            /* catch if not a grade - ie person has pressed next button */
-            default:
-                return;
-                break;
-        }
+        /* set confidence */
+        this.confidence = grade
 
         /* save grade */
         var requestUrl = '/mems/update/'+this.memId+'/'+this.confidence+'/'+this.importance;
@@ -304,6 +335,22 @@ var cCard = Class.create({
 
             onComplete: function(transport) {this.showAll();}.bind(this)
         });
+    },
+
+    increment: function() {
+
+        if (this.confidence == doc.reviewer.grade_b) this.confidence = doc.reviewer.grade_a;
+        else if (this.confidence == doc.reviewer.grade_c) this.confidence = doc.reviewer.grade_b;
+        else if (this.confidence == doc.reviewer.grade_d) this.confidence = doc.reviewer.grade_c;
+        else if (this.confidence == doc.reviewer.grade_f) this.confidence = doc.reviewer.grade_d;
+    },
+
+    decrement: function() {
+
+        if (this.confidence == doc.reviewer.grade_a) this.confidence = doc.reviewer.grade_b;
+        else if (this.confidence == doc.reviewer.grade_b) this.confidence = doc.reviewer.grade_c;
+        else if (this.confidence == doc.reviewer.grade_c) this.confidence = doc.reviewer.grade_d;
+        else if (this.confidence == doc.reviewer.grade_d) this.confidence = doc.reviewer.grade_f;
     }
 });
 
