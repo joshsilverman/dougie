@@ -10,7 +10,8 @@ gem 'rails', '3.0.3'
 # Use unicorn as the web server
 # gem 'unicorn'
 # gem 'heroku_s3_backup'
-gem 'mysql'
+gem 'ruby-mysql', :group => :jason
+gem 'mysql', :groups => [:development, :test, :production]
 gem 'nokogiri'
 gem 'acts_as_tree'
 gem 'libxml-ruby', '1.1.3'
