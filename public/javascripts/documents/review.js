@@ -28,7 +28,7 @@ var cDoc = Class.create({
         var titlerOffsetY = title.cumulativeOffset()[1];
 
         var maxContentsY = viewportY - titlerOffsetY - footerY;
-        var extraY = maxContentsY - 455;
+        var extraY = maxContentsY - 492;
 
         var titleMargin = extraY / 2;
         if (titleMargin > 0) $('title').setStyle({'marginTop': titleMargin + 'px'})
@@ -245,11 +245,12 @@ var cCard = Class.create({
         $('card_front_text').update(this.front);
 
         /* back */
-        $('card_back').update('<button id="card_show">Show</button>');
+        $('card_back').update('<button id="card_show">Show (space bar)</button>');
         $('card_show').observe('click', this.showAll.bind(this));
 
         /* hide grade buttons */
         $$('.grade').each(function (td) {td.addClassName('grade_hide')});
+        $$('.arrows_up_down')[0].hide();
     },
 
     showAll: function() {
@@ -261,6 +262,7 @@ var cCard = Class.create({
 
         /* show grading buttons */
         $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
+        $$('.arrows_up_down')[0].show();
 
         /* set grade associated with current card */
         doc.reviewer.displayGrade(doc.reviewer.cards[doc.reviewer.currentCardIndex].confidence);

@@ -76,6 +76,16 @@ td {
     line-height: 18px;
 }
 
+#card_show {
+    width:207px;
+    height:41px;
+    background-color:transparent;
+    background-position: 0 3px;
+    background-image: url(/images/reviewer/spacebar.png);
+    background-repeat: no-repeat;
+    border:none;
+}
+
 .grade {
     width: 200px;
     vertical-align: bottom;
@@ -122,4 +132,26 @@ td {
 
 .outline_node {
     display:none;
+}
+
+.arrows_up_down {
+    position: relative;
+    top:145px;
+    left: -5px;
+}
+
+#back_button, #next_button {
+    background-repeat: no-repeat;
+    width:37px;
+    height: 37px;
+    border:none;
+    background-color: transparent;
+}
+
+#back_button {
+    background-image: url(/images/reviewer/left.png);
+}
+
+#next_button {
+    background-image: url(/images/reviewer/right.png);
 }

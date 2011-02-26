@@ -24,6 +24,7 @@
         <button id="grade_a" class="rounded_border">A</button>
         <button id="grade_b" class="rounded_border">B</button>
         <button id="grade_c" class="rounded_border">C</button>
+        <img class="arrows_up_down" style="display:none" src="/images/reviewer/up_down.png" />
       </td>
     </tr>
     <tr>
@@ -37,14 +38,15 @@
   </table>
   
   <div id="progress_bar_container">
-    <a id="back_button">< Back</a>
+    <button id="back_button"></button>
     &nbsp;&nbsp;|&nbsp;&nbsp;
     <span id="progress_bar"></span>&nbsp;&nbsp;&nbsp;
     <span id="progress_fraction"></span>
     &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a id="next_button">Next ></a>
+    <button id="next_button"></button>
   </div>
 </div>
+<div class="clr"></div>
 
 <div id="card_json" style="display:none;"><%=@lines_json%></div>
 
