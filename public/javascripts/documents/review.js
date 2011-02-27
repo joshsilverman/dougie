@@ -92,7 +92,35 @@ var cReviewer = Class.create({
         if (this.cards[this.currentCardIndex]) {
             this.cards[this.currentCardIndex].cue();
         }
-        else alert('No more cards for this document');
+        else {
+
+            var cardsToLearn = 0;
+            this.cards.each( function(card) {
+
+                console.log("Card importance: " + card.importance + ", card confidence: " + card.confidence);
+
+                if (card.confidence < 9) {
+
+                    cardsToLearn++;
+                    console.log("Cards to learn: " + cardsToLearn);
+
+                }
+
+            });
+            var chartURL = "https://chart.googleapis.com/chart?cht=p3&chs=500x200&chd=t:" + (this.cards.length - cardsToLearn) + "," + cardsToLearn + "&chl=Correct"
+            $('grade_a').hide();
+            $('grade_b').hide();
+            $('grade_c').hide();
+            $('grade_d').hide();
+            $('grade_f').hide();
+            $('progress_fraction').hide();
+            $('card_front').update("Your score: " + (Math.round((((this.cards.length - cardsToLearn)/this.cards.length) * 100))) + "%");
+            $('card_back').update("<img src=" + chartURL + "></img>");
+
+            
+            //alert('No more cards for this document... Ballinn');
+
+        }
 
         /* update progress bar */
         this.progressBar.update((this.currentCardIndex)/this.cards.length);
@@ -171,6 +199,16 @@ var cReviewHandlers = Class.create({
     },
 
     onLeft: function(event) {
+
+        //added to enable back key after completion
+        $('card_back').show();
+        $('grade_a').show();
+        $('grade_b').show();
+        $('grade_c').show();
+        $('grade_d').show();
+        $('grade_f').show();
+
+
         doc.reviewer.back();
         event.stop();
     },
