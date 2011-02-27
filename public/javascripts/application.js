@@ -17,7 +17,7 @@ var cAppUtilities = Class.create({
     },
 
     resizeContents: function() {
-
+        
         /* calculations */
         var footer = $$('.footer')[0];
         var footerY = footer.getHeight();

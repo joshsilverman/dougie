@@ -79,8 +79,8 @@
   </div>
   <div id="script_userecho"></div>
   <div id="script_facebook"></div>
-  <%#= javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/prototype/1/prototype.js', :cache => false %>
-  <%= javascript_include_tag '/javascripts/vendors/prototype.js', :cache => false %>
+  <%= javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/prototype/1/prototype.js', :cache => false %>
+  <%#= javascript_include_tag '/javascripts/vendors/prototype.js', :cache => false %>
   <%= javascript_include_tag ['/javascripts/vendors/scriptaculous/src/scriptaculous.js?load=effects,dragdrop,controls', 'rails', 'application', '/javascripts/vendors/scriptaculous/src/effects', '/javascripts/vendors/scriptaculous/src/dragdrop', '/javascripts/vendors/scriptaculous/src/controls'], :cache => '/cache/all' %>
   <!--auto-include js if exists-->
   <% auto_js_full =  RAILS_ROOT + '/public/javascripts/' + controller.controller_name + '/' + controller.action_name + '.js'  %>

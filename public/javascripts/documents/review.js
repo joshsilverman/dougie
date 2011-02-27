@@ -28,7 +28,7 @@ var cDoc = Class.create({
         var titlerOffsetY = title.cumulativeOffset()[1];
 
         var maxContentsY = viewportY - titlerOffsetY - footerY;
-        var extraY = maxContentsY - 492;
+        var extraY = maxContentsY - 502;
 
         var titleMargin = extraY / 2;
         if (titleMargin > 0) $('title').setStyle({'marginTop': titleMargin + 'px'})
@@ -64,11 +64,11 @@ var cReviewer = Class.create({
         else $('card_front').update("<i>No cards to review</i>");
         
         /* next listeners */
-        $('grade_a').observe('click', this.next.bind(this, 9));
-        $('grade_b').observe('click', this.next.bind(this, 8));
-        $('grade_c').observe('click', this.next.bind(this, 7));
-        $('grade_d').observe('click', this.next.bind(this, 6));
-        $('grade_f').observe('click', this.next.bind(this, 4));
+        $('grade_a').observe('click', this.next.bind(this, this.grade_a));
+        $('grade_b').observe('click', this.next.bind(this, this.grade_b));
+        $('grade_c').observe('click', this.next.bind(this, this.grade_c));
+        $('grade_d').observe('click', this.next.bind(this, this.grade_d));
+        $('grade_f').observe('click', this.next.bind(this, this.grade_f));
 
         /* nav listeners */
         $('back_button').observe('click', this.back.bind(this, false));
@@ -90,7 +90,9 @@ var cReviewer = Class.create({
 
         /* advance */
         if (this.cards[this.currentCardIndex]) {
-            this.cards[this.currentCardIndex].cue();
+            if (this.cards[this.currentCardIndex].confidence == -1)
+                this.cards[this.currentCardIndex].cue();
+            else this.cards[this.currentCardIndex].showAll();
         }
         else alert('No more cards for this document');
 
@@ -107,7 +109,9 @@ var cReviewer = Class.create({
         /* back */
         this.currentCardIndex--;
         if (this.cards[this.currentCardIndex]) {
-            this.cards[this.currentCardIndex].showAll();
+            if (this.cards[this.currentCardIndex].confidence == -1) 
+                this.cards[this.currentCardIndex].cue();
+            else this.cards[this.currentCardIndex].showAll();
         }
 
         /* update progress bar */
@@ -141,24 +145,40 @@ var cReviewHandlers = Class.create({
     delegateKeystrokeHandler: function(event) {
 
         switch (event.keyCode) {
-            case (13):
-                this.onEnter(event);
-                break;
+//            case (13):
+//                this.onEnter(event);
+//                break;
             case (32):
                 this.onSpace(event);
                 break;
             case (37):
                 this.onLeft(event);
                 break;
-            case (38):
-                this.onUp(event);
-                break;
+//            case (38):
+//                this.onUp(event);
+//                break;
             case (39):
                 this.onRight(event);
                 break;
-            case (40):
-                this.onDown(event);
+//            case (40):
+//                this.onDown(event);
+//                break;
+            case (65):
+                this.onA(event);
                 break;
+            case (66):
+                this.onB(event);
+                break;
+            case (67):
+                this.onC(event);
+                break;
+            case (68):
+                this.onD(event);
+                break;
+            case (70):
+                this.onF(event);
+                break;
+
             default:
                 console.log(event.keyCode);
         }
@@ -202,6 +222,36 @@ var cReviewHandlers = Class.create({
 
         /* invoke next with current card's confidence */
         doc.reviewer.next(doc.reviewer.cards[doc.reviewer.currentCardIndex].confidence);
+    },
+
+    onA: function() {
+        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_a);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_a)
+    },
+
+    onB: function() {
+        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_b);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_b)
+    },
+
+    onC: function() {
+        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_c);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_c)
+    },
+
+    onD: function() {
+        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_d);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_d)
+    },
+
+    onF: function() {
+        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_f);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_f)
     }
 });
 
@@ -209,8 +259,7 @@ var cCard = Class.create({
 
     /* out of ten for easy url  */
     importance: 8,
-    confidence: 8,
-
+    confidence: -1,
     memId: null,
     lineId: null,
     domId: null,
@@ -250,7 +299,8 @@ var cCard = Class.create({
 
         /* hide grade buttons */
         $$('.grade').each(function (td) {td.addClassName('grade_hide')});
-        $$('.arrows_up_down')[0].hide();
+        $$('.grade_yourself')[0].hide();
+//        $$('.arrows_up_down')[0].hide();
     },
 
     showAll: function() {
@@ -262,7 +312,8 @@ var cCard = Class.create({
 
         /* show grading buttons */
         $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
-        $$('.arrows_up_down')[0].show();
+        $$('.grade_yourself')[0].show();
+//        $$('.arrows_up_down')[0].show();
 
         /* set grade associated with current card */
         doc.reviewer.displayGrade(doc.reviewer.cards[doc.reviewer.currentCardIndex].confidence);

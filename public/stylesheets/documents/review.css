@@ -96,24 +96,33 @@ td {
 }
 
 .grade button {
-    height:48px;
-    width:48px;
+    height:37px;
+    width:36px;
     text-align: center;
-    margin:6px 0 6px 50px;
+    margin:6px 0 6px 35px;
     float:left;
     clear:both;
-    padding:15px;
-    border-color:lightgrey;
+    padding:10px;
+    border:none !important;
     font-size: 15px;
+    background-image: url(/images/reviewer/key.png);
 }
 
 .grade button.chosen {
-    border: #007AC7 solid 1px;
-    background-color: lightgrey;
+    background-color: #F6FFA8;
+}
+
+.grade button:hover {
+    background-color: #B3E1FF;
 }
 
 .grade_hide button {
     visibility:hidden;
+}
+
+.grade_yourself {
+    text-align:left;
+    padding: 0 0 0 13px;
 }
 
 #edit_buttons {
@@ -124,10 +133,11 @@ td {
 }
 
 #progress_bar_container {
-    margin:5px;
+    margin:15px 5px 5px;
     text-align: center;
     font-size:13px;
     color:#737357;
+    position: relative;
 }
 
 .outline_node {
@@ -136,8 +146,21 @@ td {
 
 .arrows_up_down {
     position: relative;
-    top:145px;
-    left: -5px;
+    top:92px;
+    left:-38px;
+}
+
+.enter {
+    float:left;
+    clear:both;
+    margin:15px 35px;
+    background-image: url(/images/reviewer/enter.png) !important;
+    width:81px !important;
+    height:38px !important;
+    border: none !important;
+    background-color: transparent !important;
+    padding: 11px 31px 0px 0px !important;
+    font-size: 12px !important;
 }
 
 #back_button, #next_button {
@@ -146,6 +169,9 @@ td {
     height: 37px;
     border:none;
     background-color: transparent;
+    margin:5px 10px;
+    position: relative;
+    top:-10px;
 }
 
 #back_button {
