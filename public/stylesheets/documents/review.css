@@ -95,34 +95,45 @@ td {
     vertical-align: top;
 }
 
-.grade button {
+.button_container {
+    height:50px;
+}
+
+.grade .button_container button {
     height:37px;
     width:36px;
     text-align: center;
     margin:6px 0 6px 35px;
     float:left;
-    clear:both;
     padding:10px;
     border:none !important;
     font-size: 15px;
     background-image: url(/images/reviewer/key.png);
 }
 
-.grade button.chosen {
+.grade .button_container button.chosen {
     background-color: #F6FFA8;
 }
 
-.grade button:hover {
+.grade .button_container button:hover {
     background-color: #B3E1FF;
 }
 
-.grade_hide button {
+.grade_hide {
     visibility:hidden;
 }
 
 .grade_yourself {
     text-align:left;
     padding: 0 0 0 13px;
+}
+
+.grade .button_container label {
+    margin-top:18px;
+    display: block;
+    width:115px;
+    text-align: left;
+    float:right;
 }
 
 #edit_buttons {

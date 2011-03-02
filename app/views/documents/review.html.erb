@@ -18,23 +18,39 @@
 <div class="card_container">
   <table>
     <tr>
-      <td class="grade grade_hide grade_top_left"><button id="strength_2" style="display:none" class="rounded_border">I got it, but who cares</button></td>
+      <td class="grade grade_top_left"><button id="strength_2" style="display:none" class="rounded_border">I got it, but who cares</button></td>
       <td class="rounded_border card_side" id="card_front"></td>
-      <td class="grade grade_hide grade_top_right">
-        <div class="grade_yourself" style="display:none">Grade yourself</div>
+      <td class="grade grade_top_right">
+        <div class="grade_yourself grade_hide">How well do you know it?</div>
         <div class="clr"></div>
-        <button id="grade_a" class="rounded_border">A</button>
-        <button id="grade_b" class="rounded_border">B</button>
+
+        <div class="button_container grade_hide">
+          <label for="grade_4">Got it!</label>
+          <button id="grade_4" class="rounded_border">4</button>
+        </div>
+
+        <div class="button_container grade_hide">
+          <label for="grade_3">Kinda</label>
+          <button id="grade_3" class="rounded_border">3</button>
+        </div>
         <!--<img class="arrows_up_down" style="display:none" src="/images/reviewer/up_down.png" />-->
       </td>
     </tr>
     <tr>
-      <td class="grade grade_hide grade_lower grade_bottom_left"><button id="strength_1" style="display:none" class="rounded_border">A</button></td>
+      <td class="grade grade_lower grade_bottom_left"><button id="strength_1" style="display:none" class="rounded_border">A</button></td>
       <td class="rounded_border card_side" id="card_back"></td>
-      <td class="grade grade_hide grade_lower grade_bottom_right">
-        <button id="grade_c" class="rounded_border">C</button>
-        <button id="grade_d" class="rounded_border">D</button>
-        <button id="grade_f" class="rounded_border">F</button>
+      <td class="grade grade_lower grade_bottom_right">
+
+        <div class="button_container grade_hide">
+          <label for="grade_2">Barely</label>
+          <button id="grade_2" class="rounded_border">2</button>
+        </div>
+
+        <div class="button_container grade_hide">
+          <label for="grade_1">No clue</label>
+          <button id="grade_1" class="rounded_border">1</button>
+        </div>
+
         <!--<button class="enter" style="display:block" >Grade</button>-->
       </td>
     </tr>

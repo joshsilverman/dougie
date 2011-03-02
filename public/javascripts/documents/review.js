@@ -43,11 +43,10 @@ var cReviewer = Class.create({
     progressBar: null,
     reviewHandlers: null,
 
-    grade_a: 9,
-    grade_b: 8,
-    grade_c: 7,
-    grade_d: 6,
-    grade_f: 4,
+    grade_4: 9,
+    grade_3: 6.5,
+    grade_2: 4,
+    grade_1: 1.5,
 
     cards: [],
     currentCardIndex: 0,
@@ -64,11 +63,10 @@ var cReviewer = Class.create({
         else $('card_front').update("<i>No cards to review</i>");
         
         /* next listeners */
-        $('grade_a').observe('click', this.next.bind(this, this.grade_a));
-        $('grade_b').observe('click', this.next.bind(this, this.grade_b));
-        $('grade_c').observe('click', this.next.bind(this, this.grade_c));
-        $('grade_d').observe('click', this.next.bind(this, this.grade_d));
-        $('grade_f').observe('click', this.next.bind(this, this.grade_f));
+        $('grade_4').observe('click', this.next.bind(this, this.grade_4));
+        $('grade_3').observe('click', this.next.bind(this, this.grade_3));
+        $('grade_2').observe('click', this.next.bind(this, this.grade_2));
+        $('grade_1').observe('click', this.next.bind(this, this.grade_1));
 
         /* nav listeners */
         $('back_button').observe('click', this.back.bind(this, false));
@@ -127,11 +125,10 @@ var cReviewer = Class.create({
         })
 
         /* display grade */
-        if (grade == this.grade_a) $("grade_a").addClassName("chosen");
-        else if (grade == this.grade_b) $("grade_b").addClassName("chosen");
-        else if (grade == this.grade_c) $("grade_c").addClassName("chosen");
-        else if (grade == this.grade_d) $("grade_d").addClassName("chosen");
-        else if (grade == this.grade_f) $("grade_f").addClassName("chosen");
+        if (grade == this.grade_4) $("grade_4").addClassName("chosen");
+        else if (grade == this.grade_3) $("grade_3").addClassName("chosen");
+        else if (grade == this.grade_2) $("grade_2").addClassName("chosen");
+        else if (grade == this.grade_1) $("grade_1").addClassName("chosen");
     }
 });
 
@@ -163,20 +160,17 @@ var cReviewHandlers = Class.create({
 //            case (40):
 //                this.onDown(event);
 //                break;
-            case (65):
-                this.onA(event);
+            case (52):
+                this.on4(event);
                 break;
-            case (66):
-                this.onB(event);
+            case (51):
+                this.on3(event);
                 break;
-            case (67):
-                this.onC(event);
+            case (50):
+                this.on2(event);
                 break;
-            case (68):
-                this.onD(event);
-                break;
-            case (70):
-                this.onF(event);
+            case (49):
+                this.on1(event);
                 break;
 
             default:
@@ -224,34 +218,28 @@ var cReviewHandlers = Class.create({
         doc.reviewer.next(doc.reviewer.cards[doc.reviewer.currentCardIndex].confidence);
     },
 
-    onA: function() {
-        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
-        doc.reviewer.displayGrade(doc.reviewer.grade_a);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_a)
+    on4: function() {
+        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_4);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_4)
     },
 
-    onB: function() {
-        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
-        doc.reviewer.displayGrade(doc.reviewer.grade_b);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_b)
+    on3: function() {
+        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_3);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_3)
     },
 
-    onC: function() {
-        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
-        doc.reviewer.displayGrade(doc.reviewer.grade_c);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_c)
+    on2: function() {
+        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_2);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_2)
     },
 
-    onD: function() {
-        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
-        doc.reviewer.displayGrade(doc.reviewer.grade_d);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_d)
-    },
-
-    onF: function() {
-        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
-        doc.reviewer.displayGrade(doc.reviewer.grade_f);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_f)
+    on1: function() {
+        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        doc.reviewer.displayGrade(doc.reviewer.grade_1);
+        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_1)
     }
 });
 
@@ -298,8 +286,7 @@ var cCard = Class.create({
         $('card_show').observe('click', this.showAll.bind(this));
 
         /* hide grade buttons */
-        $$('.grade').each(function (td) {td.addClassName('grade_hide')});
-        $$('.grade_yourself')[0].hide();
+        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
 //        $$('.arrows_up_down')[0].hide();
     },
 
@@ -311,8 +298,7 @@ var cCard = Class.create({
         $('card_back').update( "<div id='card_back_text'>"+this.back+"</div>");
 
         /* show grading buttons */
-        $$('.grade').each(function (td) {td.removeClassName('grade_hide')});
-        $$('.grade_yourself')[0].show();
+        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.removeClassName('grade_hide')});
 //        $$('.arrows_up_down')[0].show();
 
         /* set grade associated with current card */
@@ -392,18 +378,16 @@ var cCard = Class.create({
 
     increment: function() {
 
-        if (this.confidence == doc.reviewer.grade_b) this.confidence = doc.reviewer.grade_a;
-        else if (this.confidence == doc.reviewer.grade_c) this.confidence = doc.reviewer.grade_b;
-        else if (this.confidence == doc.reviewer.grade_d) this.confidence = doc.reviewer.grade_c;
-        else if (this.confidence == doc.reviewer.grade_f) this.confidence = doc.reviewer.grade_d;
+        if (this.confidence == doc.reviewer.grade_3) this.confidence = doc.reviewer.grade_4;
+        else if (this.confidence == doc.reviewer.grade_2) this.confidence = doc.reviewer.grade_3;
+        else if (this.confidence == doc.reviewer.grade_1) this.confidence = doc.reviewer.grade_2;
     },
 
     decrement: function() {
 
-        if (this.confidence == doc.reviewer.grade_a) this.confidence = doc.reviewer.grade_b;
-        else if (this.confidence == doc.reviewer.grade_b) this.confidence = doc.reviewer.grade_c;
-        else if (this.confidence == doc.reviewer.grade_c) this.confidence = doc.reviewer.grade_d;
-        else if (this.confidence == doc.reviewer.grade_d) this.confidence = doc.reviewer.grade_f;
+        if (this.confidence == doc.reviewer.grade_4) this.confidence = doc.reviewer.grade_3;
+        else if (this.confidence == doc.reviewer.grade_3) this.confidence = doc.reviewer.grade_2;
+        else if (this.confidence == doc.reviewer.grade_2) this.confidence = doc.reviewer.grade_1;
     }
 });
 
