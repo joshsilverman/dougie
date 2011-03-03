@@ -82,7 +82,7 @@ Dougie::Application.routes.draw do
   match "/tags/json" => "tags#json"
 
   # home page
-  match "/welcome" => "users#home"
+  match "users/welcome" => "users#home"
   root :to => "users#home"
 
   # authentications
