@@ -6,7 +6,6 @@ class RegistrationsController < Devise::RegistrationsController
 
     if resource.save
       set_flash_message :notice, :signed_up
-      logger.info(resource.to_yaml)
 
       # check if confirmation token set
       if (resource[:confirmation_token])
