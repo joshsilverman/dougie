@@ -44,9 +44,9 @@ var cReviewer = Class.create({
     reviewHandlers: null,
 
     grade_4: 9,
-    grade_3: 6.5,
+    grade_3: 6,
     grade_2: 4,
-    grade_1: 1.5,
+    grade_1: 1,
 
     cards: [],
     currentCardIndex: 0,
@@ -219,27 +219,39 @@ var cReviewHandlers = Class.create({
     },
 
     on4: function() {
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
         doc.reviewer.displayGrade(doc.reviewer.grade_4);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_4)
+        (function () {
+            $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+            doc.reviewer.displayGrade(-1);
+            doc.reviewer.next(doc.reviewer.grade_4);
+        }).delay(.4);
     },
 
     on3: function() {
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
         doc.reviewer.displayGrade(doc.reviewer.grade_3);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_3)
+        (function () {
+            $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+            doc.reviewer.displayGrade(-1);
+            doc.reviewer.next(doc.reviewer.grade_3);
+        }).delay(.4);
     },
 
     on2: function() {
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
         doc.reviewer.displayGrade(doc.reviewer.grade_2);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_2)
+        (function () {
+            $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+            doc.reviewer.displayGrade(-1);
+            doc.reviewer.next(doc.reviewer.grade_2);
+        }).delay(.4);
     },
 
     on1: function() {
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
         doc.reviewer.displayGrade(doc.reviewer.grade_1);
-        doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_1)
+        (function () {
+            doc.reviewer.displayGrade(-1);
+            $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+            doc.reviewer.next(doc.reviewer.grade_1);
+        }).delay(.4);
     }
 });
 

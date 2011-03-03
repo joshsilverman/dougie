@@ -113,6 +113,7 @@ td {
 
 .grade .button_container button.chosen {
     background-color: #F6FFA8;
+    visibility:visible !important;
 }
 
 .grade .button_container button:hover {
