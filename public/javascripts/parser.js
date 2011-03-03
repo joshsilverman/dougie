@@ -7,14 +7,16 @@ var cParser = Class.create({
 
         //definition
         console.log(Card.text);
-        var defParts = Card.text.match(/(^[^-]+) - ([\s\S]+)$/);
-        if (defParts) {
+        var defParts = Card.text.split(' - ');
 
+        if (defParts.length > 1) {
+
+            console.log("here");
             //set autoActivate member if this is the first time text has been parsable
             if (!Card.back && !Card.active) Card.autoActivate = true;
 
-            Card.front = defParts[1];
-            Card.back = defParts[2];
+            Card.front = defParts[0];
+            Card.back = defParts.slice(1).join(' - ');
         }
 
         //fill in the blank
