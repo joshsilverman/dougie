@@ -25,19 +25,20 @@
 }
 
 div.img_flashcards {
-    margin-left:0;
+    margin-left:-12px;
     margin-right:0;
     width:330px;
 }
 
 div.img_review {
-    margin-left:-118px;
+    margin-left:-127px;
 }
 
 .splash-wrapper{
     display:block;
     text-align:center;
     height:362px;
+    overflow:hidden;
 
     margin:0 0 20px;
 
@@ -77,7 +78,7 @@ div.img_review {
 
 .buttons {
     margin:10px 0;
-    width: 240px;
+    width: 230px;
     height: 60px;
     float:left;
 
