@@ -82,7 +82,8 @@ var cReviewer = Class.create({
 
     next: function(grade) {
 
-
+		//To do:
+		//   Prevent counter from augmenting on right arrow after completion.
         /* grade current */
         if (grade) this.cards[this.currentCardIndex].grade(grade);
         this.currentCardIndex++;
@@ -95,36 +96,58 @@ var cReviewer = Class.create({
         }
 
         else {
-            //Set grade values here (value of A: count, value of B: count, etc..)
-            var gradeHash = $H({9: 0, 8: 0, 7: 0, 6: 0, 4: 0});
+        
+            //Set grade values here (got it: count, kinda: count, etc..)
+            var gradeHash = $H({9: 0, 6.5: 0, 4: 0, 1.5: 0});
 
             var score = 0;
+            
+            //Collect confidence of each card.
             this.cards.each( function(card) {
-                gradeHash.set(card.confidence, (gradeHash.get(card.confidence) + 1));
-                score = score + card.confidence;
+            	//Skips ungraded cards.
+            	if (card.confidence > 0) {
+                	gradeHash.set(card.confidence, (gradeHash.get(card.confidence) + 1));
+                	score = score + card.confidence;
+            	}
             });
+			
+			//Prevent chart page when no cards were reviews
+			if (score <= 0) {
+			
+				alert("No more cards to review!");
+				
+			} else {
+			
+            	//Largest value in hash times # of cards
+            	var total = 9 * this.cards.length;
+            	var chartURL = "http://chart.apis.google.com/chart?chs=500x225&cht=p3&chco=16BE16|7FE97F|FD6666|E03838&chd=t:"
+                	+ gradeHash.get(9) + "," + gradeHash.get(6.5) + "," + gradeHash.get(4) + "," + gradeHash.get(1.5) + 
+                	"&chdl=Got%20it+-+" + gradeHash.get(9) + "|Kinda+-+" + gradeHash.get(6.5) +
+                	"|Barely+-+" + gradeHash.get(4) + "|No%20clue+-+" + gradeHash.get(1.5) + "&chma=|2"
 
-            //Largest value in hash times # of cards
-            var total = gradeHash.keys().pop() * this.cards.length;
-            var chartURL = "http://chart.apis.google.com/chart?chs=500x225&cht=p3&chco=16BE16|7FE97F|EA4D4D|AB2828|730606&chd=t:"
-                + gradeHash.values().reverse() + "&chdl=A+-+" + gradeHash.get(9) + "|B+-+" + gradeHash.get(8) +
-                "|C+-+" + gradeHash.get(7) + "|D+-+" + gradeHash.get(6) + "|F+-+" + gradeHash.get(4) + "&chma=|2"
+            	//Hide graphical elements.
+            	//$('grade_a').hide();
+            	//$('grade_b').hide();
+            	//$('grade_c').hide();
+            	//$('grade_d').hide();
+            	//$('grade_f').hide();
+            	//$('progress_fraction').hide();
+            	//$$('.arrows_up_down')[0].hide();
+            	$('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1>");
+            	$('card_back').update("<img src=" + chartURL + "></img>");			
+			
+			}			
 
-            //Hide graphical elements.
-            $('grade_a').hide();
-            $('grade_b').hide();
-            $('grade_c').hide();
-            $('grade_d').hide();
-            $('grade_f').hide();
-            $('progress_fraction').hide();
-            $$('.arrows_up_down')[0].hide();
-            $('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1>");
-            $('card_back').update("<img src=" + chartURL + "></img>");
         }
 
         /* update progress bar */
-        this.progressBar.update((this.currentCardIndex)/this.cards.length);
-        $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+        if (this.currentCardIndex <= this.cards.length) {
+        
+        	this.progressBar.update((this.currentCardIndex)/this.cards.length);
+        	$('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+        	
+        }
+       
     },
 
     back: function() {
@@ -215,12 +238,12 @@ var cReviewHandlers = Class.create({
     onLeft: function(event) {
 
         //added to enable back key after completion
-        $('card_back').show();
-        $('grade_a').show();
-        $('grade_b').show();
-        $('grade_c').show();
-        $('grade_d').show();
-        $('grade_f').show();
+        //$('card_back').show();
+        //$('grade_a').show();
+        //$('grade_b').show();
+        //$('grade_c').show();
+        //$('grade_d').show();
+        //$('grade_f').show();
 
 
         doc.reviewer.back();
