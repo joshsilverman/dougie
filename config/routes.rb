@@ -81,7 +81,8 @@ Dougie::Application.routes.draw do
   resources :tags, :only => [:destroy, :create, :update]
   match "/tags/json" => "tags#json"
 
-  # login system
+  # home page
+  match "/welcome" => "users#home"
   root :to => "users#home"
 
   # authentications

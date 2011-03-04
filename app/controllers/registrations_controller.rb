@@ -1,7 +1,27 @@
 class RegistrationsController < Devise::RegistrationsController
 
+  # POST /resource/sign_up
   def create
-    super
+    build_resource
+
+    if resource.save
+      set_flash_message :notice, :signed_up
+      logger.info(resource.to_yaml)
+
+      # check if confirmation token set
+      if (resource[:confirmation_token])
+        flash[:notice] = "An email has been sent to your account. Please confirm your account to complete your sign up process."
+        redirect_to "/welcome"
+
+      # attempt sign-in if no confirmation token
+      else
+        sign_in(resource_name, resource)
+      end
+    else
+      clean_up_passwords(resource)
+      render_with_scope :new
+    end
+
     session[:omniauth] = nil unless @user.new_record?
   end
 
