@@ -84,6 +84,7 @@ var cReviewer = Class.create({
 
     next: function(grade) {
 
+
         /* grade current */
         if (grade) this.cards[this.currentCardIndex].grade(grade);
         this.currentCardIndex++;
@@ -92,34 +93,33 @@ var cReviewer = Class.create({
         if (this.cards[this.currentCardIndex]) {
             this.cards[this.currentCardIndex].cue();
         }
+
         else {
+            //Set grade values here (value of A: count, value of B: count, etc..)
+            var gradeHash = $H({9: 0, 8: 0, 7: 0, 6: 0, 4: 0});
 
-            var cardsToLearn = 0;
+            var score = 0;
             this.cards.each( function(card) {
-
-                console.log("Card importance: " + card.importance + ", card confidence: " + card.confidence);
-
-                if (card.confidence < 9) {
-
-                    cardsToLearn++;
-                    console.log("Cards to learn: " + cardsToLearn);
-
-                }
-
+                gradeHash.set(card.confidence, (gradeHash.get(card.confidence) + 1));
+                score = score + card.confidence;
             });
-            var chartURL = "https://chart.googleapis.com/chart?cht=p3&chs=500x200&chd=t:" + (this.cards.length - cardsToLearn) + "," + cardsToLearn + "&chl=Correct"
+
+            //Largest value in hash times # of cards
+            var total = gradeHash.keys().pop() * this.cards.length;
+            var chartURL = "http://chart.apis.google.com/chart?chs=500x225&cht=p3&chco=16BE16|7FE97F|EA4D4D|AB2828|730606&chd=t:"
+                + gradeHash.values().reverse() + "&chdl=A+-+" + gradeHash.get(9) + "|B+-+" + gradeHash.get(8) +
+                "|C+-+" + gradeHash.get(7) + "|D+-+" + gradeHash.get(6) + "|F+-+" + gradeHash.get(4) + "&chma=|2"
+
+            //Hide graphical elements.
             $('grade_a').hide();
             $('grade_b').hide();
             $('grade_c').hide();
             $('grade_d').hide();
             $('grade_f').hide();
             $('progress_fraction').hide();
-            $('card_front').update("Your score: " + (Math.round((((this.cards.length - cardsToLearn)/this.cards.length) * 100))) + "%");
+            $$('.arrows_up_down')[0].hide();
+            $('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1>");
             $('card_back').update("<img src=" + chartURL + "></img>");
-
-            
-            //alert('No more cards for this document... Ballinn');
-
         }
 
         /* update progress bar */
