@@ -82,11 +82,9 @@ var cReviewer = Class.create({
 
     next: function(grade) {
 
-		//To do:
-		//   Prevent counter from augmenting on right arrow after completion.
         /* grade current */
         if (grade) this.cards[this.currentCardIndex].grade(grade);
-        this.currentCardIndex++;
+        if (this.cards.length >= (this.currentCardIndex + 1)) this.currentCardIndex++;
 
         /* advance */
         if (this.cards[this.currentCardIndex]) {
@@ -97,9 +95,11 @@ var cReviewer = Class.create({
 
         else {
         
+        	//Hide grade buttons.
+        	$$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+
             //Set grade values here (got it: count, kinda: count, etc..)
             var gradeHash = $H({9: 0, 6.5: 0, 4: 0, 1.5: 0});
-
             var score = 0;
             
             //Collect confidence of each card.
@@ -111,11 +111,9 @@ var cReviewer = Class.create({
             	}
             });
 			
-			//Prevent chart page when no cards were reviews
+			//Prevent chart page when no cards were reviewed
 			if (score <= 0) {
-			
 				alert("No more cards to review!");
-				
 			} else {
 			
             	//Largest value in hash times # of cards
@@ -125,14 +123,6 @@ var cReviewer = Class.create({
                 	"&chdl=Got%20it+-+" + gradeHash.get(9) + "|Kinda+-+" + gradeHash.get(6.5) +
                 	"|Barely+-+" + gradeHash.get(4) + "|No%20clue+-+" + gradeHash.get(1.5) + "&chma=|2"
 
-            	//Hide graphical elements.
-            	//$('grade_a').hide();
-            	//$('grade_b').hide();
-            	//$('grade_c').hide();
-            	//$('grade_d').hide();
-            	//$('grade_f').hide();
-            	//$('progress_fraction').hide();
-            	//$$('.arrows_up_down')[0].hide();
             	$('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1>");
             	$('card_back').update("<img src=" + chartURL + "></img>");			
 			
@@ -142,7 +132,7 @@ var cReviewer = Class.create({
 
         /* update progress bar */
         if (this.currentCardIndex <= this.cards.length) {
-        
+        	console.log("In blah");
         	this.progressBar.update((this.currentCardIndex)/this.cards.length);
         	$('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
         	
@@ -236,16 +226,6 @@ var cReviewHandlers = Class.create({
     },
 
     onLeft: function(event) {
-
-        //added to enable back key after completion
-        //$('card_back').show();
-        //$('grade_a').show();
-        //$('grade_b').show();
-        //$('grade_c').show();
-        //$('grade_d').show();
-        //$('grade_f').show();
-
-
         doc.reviewer.back();
         event.stop();
     },
@@ -280,25 +260,25 @@ var cReviewHandlers = Class.create({
     },
 
     on4: function() {
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        //$$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
         doc.reviewer.displayGrade(doc.reviewer.grade_4);
         doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_4)
     },
 
     on3: function() {
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        //$$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
         doc.reviewer.displayGrade(doc.reviewer.grade_3);
         doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_3)
     },
 
     on2: function() {
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        //$$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
         doc.reviewer.displayGrade(doc.reviewer.grade_2);
         doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_2)
     },
 
     on1: function() {
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        //$$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
         doc.reviewer.displayGrade(doc.reviewer.grade_1);
         doc.reviewer.next.bind(doc.reviewer).delay(.4, doc.reviewer.grade_1)
     }
