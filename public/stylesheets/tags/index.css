@@ -56,9 +56,12 @@
     margin-bottom:4px;
     border-bottom: lightgrey solid 1px;
     padding-bottom:4px;
+    height:16px;
 }
 
-#directory_name {}
+#directory_name {
+    float:left;
+}
 
 #sort_options {
     float:right;
