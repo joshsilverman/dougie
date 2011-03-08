@@ -6,10 +6,10 @@
   <img id="sync_button" class="sync" src="/images/editor/sync-icon.png" alt=""/>
 </div>
 
-<% if @new_doc %>
-  <% @document.html = '<ul><li>zendo - meditation hall</li></ul>'%>
-  <%= "<span id='new_document' style='display:hidden'></span>".html_safe %>
-<% end %>
+<%# if @new_doc %>
+  <%# @document.html = '<ul><li>zendo - meditation hall</li></ul>'%>
+  <%#= "<span id='new_document' style='display:hidden'></span>".html_safe %>
+<%# end %>
 
 <div id="editor_container" style="display:none"><textarea id="editor" name="editor" style="display:none;"><%=@document.html%></textarea></div>
 

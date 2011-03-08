@@ -72,24 +72,24 @@ var cDoc = Class.create({
             /* initialize right rail once editor loaded */
             this.rightRail = new cRightRail();
 
-            /* focus and select sample node if exists */
-            if (this.newDoc) {
-                var handler = function() {
-
-                    /* sample node, clear */
-                    var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
-                    sampleNode.innerHTML = '<br />';
-//                    doc.editor.focus();
-
-                    /* update card when interpreter available */
-                    var card = doc.rightRail.cards.get(sampleNode.id);
-                    card.update.bind(card).defer(sampleNode);
-
-                    /* stop observing */
-                    Element.stopObserving.defer(doc.outline.iDoc.document, 'click', handler);
-                };
-                Element.observe(doc.outline.iDoc.document, 'click', handler);
-            }
+//            /* focus and select sample node if exists */
+//            if (this.newDoc) {
+//                var handler = function() {
+//
+//                    /* sample node, clear */
+//                    var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
+//                    sampleNode.innerHTML = '<br />';
+////                    doc.editor.focus();
+//
+//                    /* update card when interpreter available */
+//                    var card = doc.rightRail.cards.get(sampleNode.id);
+//                    card.update.bind(card).defer(sampleNode);
+//
+//                    /* stop observing */
+//                    Element.stopObserving.defer(doc.outline.iDoc.document, 'click', handler);
+//                };
+//                Element.observe(doc.outline.iDoc.document, 'click', handler);
+//            }
         }.bind(this)).delay(.1);
 
         /* resize listener */
@@ -615,6 +615,7 @@ var cOutlineHandlers = Class.create({
             parentUL.parentNode.removeChild(parentUL);
 
             /* focus and indent */
+            // @ugly way to focus after changing dom
             doc.editor.focus();
             var element = doc.editor.document.getById(target.id);
             doc.editor.getSelection().selectElement(element);
@@ -728,12 +729,36 @@ var cOutlineHandlers = Class.create({
         //check target because this may be invoked when pasting on top of something, etc..
         if (html == '' && target) {
 
+            /* ie doesn't always recieve obj */
+            if (!target || !target.firstChild || ! range) {}
+
             /* end of node? */
-            if (   target.firstChild.nodeName == '#text' && range.endOffset == target.firstChild.length
+            else if (   target.firstChild.nodeName == '#text' && range.endOffset == target.firstChild.length
                 || target.firstChild.nodeName != '#text' && range.endOffset == 0) {
 
                 // @todo implement delete at end of line - must push deleted node into delete queue
-                Event.stop(event);
+
+                /* empty target if only br present */
+                if (   target.innerHTML == '<br>'
+                    || target.innerHTML == '<br />'
+                    || target.innerHTML == '<br/>')
+                    
+                    target.innerHTML = '';
+
+                /* case 1: empty */
+                if (target.innerHTML == '') {
+
+                    // @ugly way to focus after changing dom
+                    (function () {
+                        var element = doc.editor.document.getById(target.id);
+                        doc.editor.getSelection().selectElement(element);
+                        var nativeSelection = doc.editor.getSelection().getNative();
+                        nativeSelection.collapseToStart();
+                    }).defer();
+                }
+
+                /* case 2: not empty */
+                else {/*Event.stop(event);*/}
             }
 
             /* not end of node */
