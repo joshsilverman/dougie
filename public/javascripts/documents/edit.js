@@ -758,7 +758,55 @@ var cOutlineHandlers = Class.create({
                 }
 
                 /* case 2: not empty */
-                else {/*Event.stop(event);*/}
+                else {
+
+                    /* must move children of joined node in chrome... perform whole action manually */
+                    if (Prototype.Browser.WebKit == true) {
+                        var nextNode;
+                        var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
+                        outlineNodes.each(function(node, i) {
+                            if (node.id == target.id && outlineNodes.length > i + 1) {
+                                nextNode = outlineNodes[i + 1]
+                            }
+                        });
+
+                        if (Element.childElements(nextNode).length > 0) {
+                            var childUl = Element.childElements(nextNode)[0];
+                            var formerChildUlParent = Element.childElements(nextNode)[0].parentNode
+
+                            /* store selection range */
+                            var selRangesInitial = doc.editor.getSelection().getRanges().clone();
+//                            selRanges[0]['startOffset'] -= 1;
+//                            selRanges[0]['endOffset'] -= 1;
+//                            doc.editor.getSelection().selectRanges(selRanges);
+//                            console.log(Object.clone(doc.editor.getSelection()));
+
+
+                            /* move text content */
+                            $A(nextNode.childNodes).each(function(node) {
+                                if (node.nodeName == "#text") {
+                                    doc.editor.insertHtml(node.textContent);
+//                                    target.textContent += node.textContent
+                                    Element.remove(node);
+                                }
+                            });
+
+                            /* move children */
+                            target.appendChild(childUl);
+                            Element.remove(formerChildUlParent);
+
+                            /* stop event */
+                            Event.stop(event);
+
+                            /* create new selection after changing target node */
+                            var selection = doc.editor.getSelection();
+                            var selRangesAfterInsert = selection.getRanges();
+                            selRangesAfterInsert[0]['startOffset'] = selRangesInitial[0]['startOffset'];
+                            selRangesAfterInsert[0]['endOffset'] = selRangesInitial[0]['startOffset'];
+                            selection.selectRanges(selRangesAfterInsert);
+                        }
+                    }
+                }
             }
 
             /* not end of node */

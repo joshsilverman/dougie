@@ -1,4 +1,4 @@
-<% @page_specific_scripts_js = ["parser", "ckeditor/lang/en.js"] %>
+<% @page_specific_scripts_js = ["parser", "vendors/ckeditor/lang/en.js"] %>
 
 <div class="rounded_border doc_options">
   <span>/<%= link_to @tag.name, '/#%i' % @tag.id %>/<input id="document_name" value="<%=@document.name%>"></input></span>
@@ -28,7 +28,7 @@
 <div id="document_id" style="display:none;"><%=@document.id%></div>
 <div id="line_ids" style="display:none;"><%=@line_ids%></div>
 
-<%= javascript_include_tag ["ckeditor/ckeditor"], :cache => false %>
+<%= javascript_include_tag ["vendors/ckeditor/ckeditor"], :cache => false %>
 <!--<script type="text/javascript">
 //<![CDATA[
   var CKEDITOR_BASEPATH = '/javascripts/ckeditor/';
