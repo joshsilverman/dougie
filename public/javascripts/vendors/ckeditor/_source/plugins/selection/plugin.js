@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -79,21 +79,20 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 			{
 				case 'wysiwyg' :
 					editor.document.$.execCommand( 'SelectAll', false, null );
-					// Force triggering selectionChange (#7008)
-					editor.forceNextSelectionCheck();
-					editor.selectionChange();
 					break;
 				case 'source' :
 					// Select the contents of the textarea
-					var textarea = editor.textarea.$;
+					var textarea = editor.textarea.$ ;
 					if ( CKEDITOR.env.ie )
-						textarea.createTextRange().execCommand( 'SelectAll' );
+					{
+						textarea.createTextRange().execCommand( 'SelectAll' ) ;
+					}
 					else
 					{
-						textarea.selectionStart = 0;
-						textarea.selectionEnd = textarea.value.length;
+						textarea.selectionStart = 0 ;
+						textarea.selectionEnd = textarea.value.length ;
 					}
-					textarea.focus();
+					textarea.focus() ;
 			}
 		},
 		canUndo : false
@@ -327,9 +326,6 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 					}
 				});
 
-			// Clear the cached range path before unload. (#7174)
-			editor.on( 'contentDomUnload', editor.forceNextSelectionCheck, editor );
-
 			editor.addCommand( 'selectAll', selectAllCmd );
 			editor.ui.addButton( 'SelectAll',
 				{
@@ -560,8 +556,6 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 			var func = CKEDITOR.env.ie ?
 				( function()
 				{
-					function getNodeIndex( node ) { return new CKEDITOR.dom.node( node ).getIndex(); }
-
 					// Finds the container and offset for a specific boundary
 					// of an IE range.
 					var getBoundaryInformation = function( range, start )
@@ -572,103 +566,76 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 						// Gets the element that encloses the range entirely.
 						var parent = range.parentElement();
+						var siblings = parent.childNodes;
 
-						// Empty parent element, e.g. <i>^</i>
-						if ( !parent.hasChildNodes() )
-							return  { container : parent, offset : 0 };
+						var testRange;
 
-						var siblings = parent.children,
-							child,
-							testRange = range.duplicate(),
-							startIndex = 0,
-							endIndex = siblings.length - 1,
-							index = -1,
-							position,
-							distance;
-
-						// Binary search over all element childs to test the range to see whether
-						// range is right on the boundary of one element.
-						while ( startIndex <= endIndex )
+						for ( var i = 0 ; i < siblings.length ; i++ )
 						{
-							index = Math.floor( ( startIndex + endIndex ) / 2 );
-							child = siblings[ index ];
-							testRange.moveToElementText( child );
-							position = testRange.compareEndPoints( 'StartToStart', range );
+							var child = siblings[ i ];
+							if ( child.nodeType == 1 )
+							{
+								testRange = range.duplicate();
 
-							if ( position > 0 )
-								endIndex = index - 1;
-							else if ( position < 0 )
-								startIndex = index + 1;
-							else
-								return { container : parent, offset : getNodeIndex( child ) };
+								testRange.moveToElementText( child );
+
+								var comparisonStart = testRange.compareEndPoints( 'StartToStart', range ),
+									comparisonEnd = testRange.compareEndPoints( 'EndToStart', range );
+
+								testRange.collapse();
+
+								if ( comparisonStart > 0 )
+									break;
+								// When selection stay at the side of certain self-closing elements, e.g. BR,
+								// our comparison will never shows an equality. (#4824)
+								else if ( !comparisonStart
+									|| comparisonEnd == 1 && comparisonStart == -1 )
+									return { container : parent, offset : i };
+								else if ( !comparisonEnd )
+									return { container : parent, offset : i + 1 };
+
+								testRange = null;
+							}
 						}
 
-						// All childs are text nodes,
-						// or to the right hand of test range are all text nodes. (#6992)
-						if ( index == -1 || index == siblings.length - 1 && position < 0 )
+						if ( !testRange )
 						{
-							// Adapt test range to embrace the entire parent contents.
+							testRange = range.duplicate();
 							testRange.moveToElementText( parent );
-							testRange.setEndPoint( 'StartToStart', range );
+							testRange.collapse( false );
+						}
 
-							// IE report line break as CRLF with range.text but
-							// only LF with textnode.nodeValue, normalize them to avoid
-							// breaking character counting logic below. (#3949)
-							distance = testRange.text.replace( /(\r\n|\r)/g, '\n' ).length;
+						testRange.setEndPoint( 'StartToStart', range );
+						// IE report line break as CRLF with range.text but
+						// only LF with textnode.nodeValue, normalize them to avoid
+						// breaking character counting logic below. (#3949)
+						var distance = testRange.text.replace( /(\r\n|\r)/g, '\n' ).length;
 
-							siblings = parent.childNodes;
-
-							// Actual range anchor right beside test range at the boundary of text node.
-							if ( !distance )
-							{
-								child = siblings[ siblings.length - 1 ];
-
-								if ( child.nodeType == CKEDITOR.NODE_ELEMENT )
-									return { container : parent, offset : siblings.length };
-								else
-									return { container : child, offset : child.nodeValue.length };
-							}
-
-							// Start the measuring until distance overflows, meanwhile count the text nodes.
-							var i = siblings.length;
+						try
+						{
 							while ( distance > 0 )
 								distance -= siblings[ --i ].nodeValue.length;
-
-							return  { container : siblings[ i ], offset : -distance };
 						}
-						// Test range was one offset beyond OR behind the anchored text node.
+						// Measurement in IE could be somtimes wrong because of <select> element. (#4611)
+						catch( e )
+						{
+							distance = 0;
+						}
+
+
+						if ( distance === 0 )
+						{
+							return {
+								container : parent,
+								offset : i
+							};
+						}
 						else
 						{
-							// Adapt one side of test range to the actual range
-							// for measuring the offset between them.
-							testRange.collapse( position > 0 ? true : false );
-							testRange.setEndPoint( position > 0 ? 'StartToStart' : 'EndToStart', range );
-
-							// IE report line break as CRLF with range.text but
-							// only LF with textnode.nodeValue, normalize them to avoid
-							// breaking character counting logic below. (#3949)
-							distance = testRange.text.replace( /(\r\n|\r)/g, '\n' ).length;
-
-							// Actual range anchor right beside test range at the inner boundary of text node.
-							if ( !distance )
-								return { container : parent, offset : getNodeIndex( child ) + ( position > 0 ? 0 : 1 ) };
-
-							// Start the measuring until distance overflows, meanwhile count the text nodes.
-							while ( distance > 0 )
-							{
-								child = child[ position > 0 ? 'previousSibling' : 'nextSibling' ];
-								try
-								{
-									distance -= child.nodeValue.length;
-								}
-								// Measurement in IE could be somtimes wrong because of <select> element. (#4611)
-								catch( e )
-								{
-									return { container : parent, offset : getNodeIndex( child ) };
-								}
-							}
-
-							return { container : child, offset : position > 0 ? -distance : child.nodeValue.length + distance };
+							return {
+								container : siblings[ i ],
+								offset : -distance
+							};
 						}
 					};
 
@@ -830,7 +797,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 						walker.evaluator = function( node )
 						{
 							if ( node.type == CKEDITOR.NODE_ELEMENT
-								&& node.isReadOnly() )
+								&& node.getAttribute( 'contenteditable' ) == 'false' )
 							{
 								var newRange = range.clone();
 								range.setEndBefore( node );
@@ -1159,13 +1126,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 						if ( !between.collapsed )
 						{
 							between.shrink( CKEDITOR.NODE_ELEMENT, true );
-							var ancestor = between.getCommonAncestor(),
-								enclosed = between.getEnclosedNode();
-
-							// The following cases has to be considered:
-							// 1. <span contenteditable="false">[placeholder]</span>
-							// 2. <input contenteditable="false"  type="radio"/> (#6621)
-							if ( ancestor.isReadOnly() || enclosed && enclosed.isReadOnly() )
+							if ( between.getCommonAncestor().isReadOnly())
 							{
 								right.setStart( left.startContainer, left.startOffset );
 								ranges.splice( i--, 1 );
@@ -1408,11 +1369,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 				}
 
 				var selection = this.document.getSelection().getNative();
-				// getSelection() returns null in case when iframe is "display:none" in FF. (#6577)
-				if ( selection )
-				{
-					selection.removeAllRanges();
-					selection.addRange( nativeRange );
-				}
+				selection.removeAllRanges();
+				selection.addRange( nativeRange );
 			};
 } )();

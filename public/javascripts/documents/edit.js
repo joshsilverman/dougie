@@ -776,17 +776,11 @@ var cOutlineHandlers = Class.create({
 
                             /* store selection range */
                             var selRangesInitial = doc.editor.getSelection().getRanges().clone();
-//                            selRanges[0]['startOffset'] -= 1;
-//                            selRanges[0]['endOffset'] -= 1;
-//                            doc.editor.getSelection().selectRanges(selRanges);
-//                            console.log(Object.clone(doc.editor.getSelection()));
-
 
                             /* move text content */
                             $A(nextNode.childNodes).each(function(node) {
                                 if (node.nodeName == "#text") {
                                     doc.editor.insertHtml(node.textContent);
-//                                    target.textContent += node.textContent
                                     Element.remove(node);
                                 }
                             });

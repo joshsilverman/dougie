@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -367,7 +367,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 				// Setup the submit function because it doesn't fire the
 				// "submit" event.
-				if ( !form.$.submit.nodeName && !form.$.submit.length )
+				if ( !form.$.submit.nodeName )
 				{
 					form.$.submit = CKEDITOR.tools.override( form.$.submit, function( originalSubmit )
 						{
@@ -547,9 +547,44 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 			if ( !noUpdate )
 				this.updateElement();
 
-			this.fire( 'destroy' );
-			this.theme && this.theme.destroy( this );
+			if ( this.mode )
+			{
+				// ->		currentMode.unload( holderElement );
+				this._.modes[ this.mode ].unload( this.getThemeSpace( 'contents' ) );
+			}
 
+			this.theme.destroy( this );
+
+			var toolbars,
+				index = 0,
+				j,
+				items,
+				instance;
+
+			if ( this.toolbox )
+			{
+				toolbars = this.toolbox.toolbars;
+				for ( ; index < toolbars.length ; index++ )
+				{
+					items = toolbars[ index ].items;
+					for ( j = 0 ; j < items.length ; j++ )
+					{
+						instance = items[ j ];
+						if ( instance.clickFn ) CKEDITOR.tools.removeFunction( instance.clickFn );
+						if ( instance.keyDownFn ) CKEDITOR.tools.removeFunction( instance.keyDownFn );
+
+						if ( instance.index ) CKEDITOR.ui.button._.instances[ instance.index ] = null;
+					}
+				}
+			}
+
+			if ( this.contextMenu )
+				CKEDITOR.tools.removeFunction( this.contextMenu._.functionId );
+
+			if ( this._.filebrowserFn )
+				CKEDITOR.tools.removeFunction( this._.filebrowserFn );
+
+			this.fire( 'destroy' );
 			CKEDITOR.remove( this );
 			CKEDITOR.fire( 'instanceDestroyed', null, this );
 		},
@@ -684,7 +719,6 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 		 *		editor.
 		 * @param {Function} callback Function to be called after the setData
 		 *		is completed.
-		 *@param {Boolean} internal Whether suppress  any event firing when copying data internally inside editor.
 		 * @example
 		 * CKEDITOR.instances.editor1.<b>setData</b>( '&lt;p&gt;This is the editor data.&lt;/p&gt;' );
 		 * @example
@@ -693,7 +727,7 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 		 *         this.checkDirty();    // true
 		 *     });
 		 */
-		setData : function( data , callback, internal )
+		setData : function( data , callback )
 		{
 			if( callback )
 			{
@@ -706,11 +740,11 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 
 			// Fire "setData" so data manipulation may happen.
 			var eventData = { dataValue : data };
-			!internal && this.fire( 'setData', eventData );
+			this.fire( 'setData', eventData );
 
 			this._.data = eventData.dataValue;
 
-			!internal && this.fire( 'afterSetData', eventData );
+			this.fire( 'afterSetData', eventData );
 		},
 
 		/**
@@ -858,9 +892,9 @@ CKEDITOR.on( 'loaded', function()
 
 /**
  * Fired when all plugins are loaded and initialized into the editor instance.
- * @name CKEDITOR.editor#pluginsLoaded
+ * @name CKEDITOR#pluginsLoaded
  * @event
- * @param {CKEDITOR.editor} editor This editor instance.
+ * @param {CKEDITOR.editor} editor The editor instance that has been destroyed.
  */
 
 /**
@@ -906,80 +940,4 @@ CKEDITOR.on( 'loaded', function()
  * @example
  * if( editor.config.fullPage )
  *     alert( 'This is a full page editor' );
- */
-
-/**
- * Fired when this editor instance is destroyed. The editor at this
- * point isn't usable and this event should be used to perform clean up
- * in any plugin.
- * @name CKEDITOR.editor#destroy
- * @event
- */
-
-/**
- * Internal event to get the current data.
- * @name CKEDITOR.editor#beforeGetData
- * @event
- */
-
-/**
- * Internal event to perform the #getSnapshot call.
- * @name CKEDITOR.editor#getSnapshot
- * @event
- */
-
-/**
- * Internal event to perform the #loadSnapshot call.
- * @name CKEDITOR.editor#loadSnapshot
- * @event
- */
-
-
-/**
- * Event fired before the #getData call returns allowing additional manipulation.
- * @name CKEDITOR.editor#getData
- * @event
- * @param {CKEDITOR.editor} editor This editor instance.
- * @param {String} data.dataValue The data that will be returned.
- */
-
-/**
- * Event fired before the #setData call is executed allowing additional manipulation.
- * @name CKEDITOR.editor#setData
- * @event
- * @param {CKEDITOR.editor} editor This editor instance.
- * @param {String} data.dataValue The data that will be used.
- */
-
-/**
- * Event fired at the end of the #setData call is executed. Usually it's better to use the
- * {@link CKEDITOR.editor.prototype.dataReady} event.
- * @name CKEDITOR.editor#afterSetData
- * @event
- * @param {CKEDITOR.editor} editor This editor instance.
- * @param {String} data.dataValue The data that has been set.
- */
-
-/**
- * Internal event to perform the #insertHtml call
- * @name CKEDITOR.editor#insertHtml
- * @event
- * @param {CKEDITOR.editor} editor This editor instance.
- * @param {String} data The HTML to insert.
- */
-
-/**
- * Internal event to perform the #insertText call
- * @name CKEDITOR.editor#insertText
- * @event
- * @param {CKEDITOR.editor} editor This editor instance.
- * @param {String} text The text to insert.
- */
-
-/**
- * Internal event to perform the #insertElement call
- * @name CKEDITOR.editor#insertElement
- * @event
- * @param {CKEDITOR.editor} editor This editor instance.
- * @param {Object} element The element to insert.
  */

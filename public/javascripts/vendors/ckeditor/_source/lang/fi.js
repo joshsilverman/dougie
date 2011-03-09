@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -55,8 +55,8 @@ CKEDITOR.lang['fi'] =
 	subscript		: 'Alaindeksi',
 	superscript		: 'Yläindeksi',
 	horizontalrule	: 'Lisää murtoviiva',
-	pagebreak		: 'Lisää sivunvaihto',
-	pagebreakAlt		: 'Sivunvaihto',
+	pagebreak		: 'Lisää sivun vaihto',
+	pagebreakAlt		: 'Page Break', // MISSING
 	unlink			: 'Poista linkki',
 	undo			: 'Kumoa',
 	redo			: 'Toista',
@@ -601,11 +601,11 @@ CKEDITOR.lang['fi'] =
 
 	iframe :
 	{
-		title		: 'IFrame-kehyksen ominaisuudet',
-		toolbar		: 'IFrame-kehys',
-		noUrl		: 'Anna IFrame-kehykselle lähdeosoite (src)',
-		scrolling	: 'Näytä vierityspalkit',
-		border		: 'Näytä kehyksen reunat'
+		title		: 'iFrame Properties', // MISSING
+		toolbar		: 'iFrame', // MISSING
+		noUrl		: 'Please type the iFrame URL', // MISSING
+		scrolling	: 'Enable scrollbars', // MISSING
+		border		: 'Show frame border' // MISSING
 	},
 
 	font :
@@ -725,8 +725,8 @@ CKEDITOR.lang['fi'] =
 	{
 		anchor		: 'Ankkuri',
 		flash		: 'Flash animaatio',
-		iframe		: 'IFrame-kehys',
-		hiddenfield	: 'Piilokenttä',
+		iframe		: 'iFrame', // MISSING
+		hiddenfield	: 'Hidden Field', // MISSING
 		unknown		: 'Tuntematon objekti'
 	},
 

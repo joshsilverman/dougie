@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -194,9 +194,10 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 							container.setCustomData( 'maximize_saved_styles', saveStyles( container, true ) );
 
 							// Hide scroll bars.
+							var viewPaneSize = mainWindow.getViewPaneSize();
 							var styles =
 								{
-									overflow : CKEDITOR.env.webkit ? '' : 'hidden',		// #6896
+									overflow : 'hidden',
 									width : 0,
 									height : 0
 								};
@@ -267,13 +268,6 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 							// Remove cke_maximized class.
 							container.removeClass( 'cke_maximized' );
 
-							// Webkit requires a re-layout on editor chrome. (#6695)
-							if ( CKEDITOR.env.webkit )
-							{
-								container.setStyle( 'display', 'inline' );
-								setTimeout( function(){ container.setStyle( 'display', 'block' ); }, 0 );
-							}
-
 							if ( shim )
 							{
 								shim.remove();
@@ -289,16 +283,12 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 						// Toggle button label.
 						var button = this.uiItems[ 0 ];
-						// Only try to change the button if it exists (#6166)
-						if( button )
-						{
-							var label = ( this.state == CKEDITOR.TRISTATE_OFF )
-								? lang.maximize : lang.minimize;
-							var buttonNode = editor.element.getDocument().getById( button._.id );
-							buttonNode.getChild( 1 ).setHtml( label );
-							buttonNode.setAttribute( 'title', label );
-							buttonNode.setAttribute( 'href', 'javascript:void("' + label + '");' );
-						}
+						var label = ( this.state == CKEDITOR.TRISTATE_OFF )
+							? lang.maximize : lang.minimize;
+						var buttonNode = editor.element.getDocument().getById( button._.id );
+						buttonNode.getChild( 1 ).setHtml( label );
+						buttonNode.setAttribute( 'title', label );
+						buttonNode.setAttribute( 'href', 'javascript:void("' + label + '");' );
 
 						// Restore selection and scroll position in editing area.
 						if ( editor.mode == 'wysiwyg' )

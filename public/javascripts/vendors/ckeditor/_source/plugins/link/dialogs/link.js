@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -225,11 +225,7 @@ CKEDITOR.dialog.add( 'link', function( editor )
 			advAttr( 'advId', 'id' );
 			advAttr( 'advLangDir', 'dir' );
 			advAttr( 'advAccessKey', 'accessKey' );
-
-			retval.adv.advName =
-				element.data( 'cke-saved-name' )
-				|| element.getAttribute( 'name' )
-				|| '';
+			advAttr( 'advName', 'name' );
 			advAttr( 'advLangCode', 'lang' );
 			advAttr( 'advTabIndex', 'tabindex' );
 			advAttr( 'advTitle', 'title' );
@@ -454,8 +450,8 @@ CKEDITOR.dialog.add( 'link', function( editor )
 											this.allowOnChange = false;
 											var	protocolCmb = this.getDialog().getContentElement( 'info', 'protocol' ),
 												url = this.getValue(),
-												urlOnChangeProtocol = /^(http|https|ftp|news):\/\/(?=.)/i,
-												urlOnChangeTestOther = /^((javascript:)|[#\/\.\?])/i;
+												urlOnChangeProtocol = /^(http|https|ftp|news):\/\/(?=.)/gi,
+												urlOnChangeTestOther = /^((javascript:)|[#\/\.\?])/gi;
 
 											var protocol = urlOnChangeProtocol.exec( url );
 											if ( protocol )
@@ -764,7 +760,7 @@ CKEDITOR.dialog.add( 'link', function( editor )
 								setup : function( data )
 								{
 									if ( data.target )
-										this.setValue( data.target.type || 'notSet' );
+										this.setValue( data.target.type );
 									targetChanged.call( this );
 								},
 								commit : function( data )
@@ -1165,9 +1161,9 @@ CKEDITOR.dialog.add( 'link', function( editor )
 		},
 		onOk : function()
 		{
-			var attributes = {},
+			var attributes = { href : 'javascript:void(0)/*' + CKEDITOR.tools.getNextNumber() + '*/' },
 				removeAttributes = [],
-				data = {},
+				data = { href : attributes.href },
 				me = this,
 				editor = this.getParentEditor();
 
@@ -1287,18 +1283,11 @@ CKEDITOR.dialog.add( 'link', function( editor )
 						removeAttributes.push( attrName );
 				};
 
-				advAttr( 'advId', 'id' );
+				if ( this._.selectedElement )
+					advAttr( 'advId', 'id' );
 				advAttr( 'advLangDir', 'dir' );
 				advAttr( 'advAccessKey', 'accessKey' );
-
-				if ( data.adv[ 'advName' ] )
-				{
-					attributes[ 'name' ] = attributes[ 'data-cke-saved-name' ] = data.adv[ 'advName' ];
-					attributes[ 'class' ] = ( attributes[ 'class' ] ? attributes[ 'class' ] + ' ' : '' ) + 'cke_anchor';
-				}
-				else
-					removeAttributes = removeAttributes.concat( [ 'data-cke-saved-name', 'name' ] );
-
+				advAttr( 'advName', 'name' );
 				advAttr( 'advLangCode', 'lang' );
 				advAttr( 'advTabIndex', 'tabindex' );
 				advAttr( 'advTitle', 'title' );
@@ -1307,10 +1296,6 @@ CKEDITOR.dialog.add( 'link', function( editor )
 				advAttr( 'advCharset', 'charset' );
 				advAttr( 'advStyles', 'style' );
 			}
-
-
-			// Browser need the "href" fro copy/paste link to work. (#6641)
-			attributes.href = attributes[ 'data-cke-saved-href' ];
 
 			if ( !this._.selectedElement )
 			{
@@ -1331,6 +1316,20 @@ CKEDITOR.dialog.add( 'link', function( editor )
 				var style = new CKEDITOR.style( { element : 'a', attributes : attributes } );
 				style.type = CKEDITOR.STYLE_INLINE;		// need to override... dunno why.
 				style.apply( editor.document );
+
+				// Id. Apply only to the first link.
+				if ( data.adv && data.adv.advId )
+				{
+					var links = this.getParentEditor().document.$.getElementsByTagName( 'a' );
+					for ( i = 0 ; i < links.length ; i++ )
+					{
+						if ( links[i].href == attributes.href )
+						{
+							links[i].id = data.adv.advId;
+							break;
+						}
+					}
+				}
 			}
 			else
 			{
@@ -1348,8 +1347,8 @@ CKEDITOR.dialog.add( 'link', function( editor )
 
 					selection = editor.getSelection();
 
-					element.copyAttributes( newElement, { name : 1 } );
 					element.moveChildren( newElement );
+					element.copyAttributes( newElement, { name : 1 } );
 					newElement.replace( element );
 					element = newElement;
 

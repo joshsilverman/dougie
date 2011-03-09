@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -452,8 +452,7 @@ CKEDITOR.tools.extend( CKEDITOR.dom.element.prototype,
 						}
 
 						case 'hspace':
-						case 'value':
-							return this.$[ name ];
+							return this.$.hspace;
 
 						case 'style':
 							// IE does not return inline styles via getAttribute(). See #2947.
@@ -921,9 +920,6 @@ CKEDITOR.tools.extend( CKEDITOR.dom.element.prototype,
 			}
 		},
 
-		/**
-		 * @param {Boolean} [inlineOnly=true] Allow only inline elements to be merged.
-		 */
 		mergeSiblings : ( function()
 		{
 			function mergeElements( element, sibling, isNext )
@@ -963,14 +959,11 @@ CKEDITOR.tools.extend( CKEDITOR.dom.element.prototype,
 				}
 			}
 
-			return function( inlineOnly )
+			return function()
 				{
-					if ( ! ( inlineOnly === false
-							|| CKEDITOR.dtd.$removeEmpty[ this.getName() ]
-							|| this.is( 'a' ) ) )	// Merge empty links and anchors also. (#5567)
-					{
+					// Merge empty links and anchors also. (#5567)
+					if ( !( CKEDITOR.dtd.$removeEmpty[ this.getName() ] || this.is( 'a' ) ) )
 						return;
-					}
 
 					mergeElements( this, this.getNext(), true );
 					mergeElements( this, this.getPrevious() );
@@ -1567,8 +1560,6 @@ CKEDITOR.tools.extend( CKEDITOR.dom.element.prototype,
 				this.removeAttribute( name );
 			else
 				this.setAttribute( name, value );
-
-			return null;
 		}
 	});
 

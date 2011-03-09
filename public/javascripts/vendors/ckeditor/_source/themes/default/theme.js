@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -26,9 +26,7 @@ CKEDITOR.themes.add( 'default', (function()
 		{
 			// Creates an HTML structure that reproduces the editor class hierarchy.
 			var html =
-				'<span class="cke_shared "' +
-				' dir="'+ editor.lang.dir + '"' +
-				'>' +
+				'<span class="cke_shared">' +
 				'<span class="' + editor.skinClass + ' ' + editor.id + ' cke_editor_' + editor.name + '">' +
 				'<span class="' + CKEDITOR.env.cssClass + '">' +
 				'<span class="cke_wrapper cke_' + editor.lang.dir + '">' +
@@ -243,21 +241,17 @@ CKEDITOR.themes.add( 'default', (function()
 
 		destroy : function( editor )
 		{
-			var container = editor.container,
-				element = editor.element;
+			var container = editor.container;
+			container.clearCustomData();
+			editor.element.clearCustomData();
 
 			if ( container )
-			{
-				container.clearCustomData();
 				container.remove();
-			}
 
-			if ( element )
-			{
-				element.clearCustomData();
-				editor.elementMode == CKEDITOR.ELEMENT_MODE_REPLACE && element.show();
-				delete editor.element;
-			}
+			if ( editor.elementMode == CKEDITOR.ELEMENT_MODE_REPLACE )
+				editor.element.show();
+
+			delete editor.element;
 		}
 	};
 })() );
@@ -337,7 +331,7 @@ CKEDITOR.editor.prototype.resize = function( width, height, isContentHeight, res
  */
 CKEDITOR.editor.prototype.getResizable = function()
 {
-	return this.container;
+	return this.container.getChild( 1 );
 };
 
 /**
@@ -369,6 +363,6 @@ CKEDITOR.editor.prototype.getResizable = function()
 /**
  * Fired after the editor instance is resized through
  * the {@link CKEDITOR.editor.prototype.resize} method.
- * @name CKEDITOR.editor#resize
+ * @name CKEDITOR#resize
  * @event
  */
