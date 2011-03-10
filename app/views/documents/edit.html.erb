@@ -6,11 +6,6 @@
   <img id="sync_button" class="sync" src="/images/editor/sync-icon.png" alt=""/>
 </div>
 
-<%# if @new_doc %>
-  <%# @document.html = '<ul><li>zendo - meditation hall</li></ul>'%>
-  <%#= "<span id='new_document' style='display:hidden'></span>".html_safe %>
-<%# end %>
-
 <div id="editor_container" style="display:none"><textarea id="editor" name="editor" style="display:none;"><%=@document.html%></textarea></div>
 
 <div id="right_rail" class="rounded_border" style="display:none">
@@ -29,33 +24,4 @@
 <div id="line_ids" style="display:none;"><%=@line_ids%></div>
 
 <%= javascript_include_tag ["vendors/ckeditor/ckeditor"], :cache => false %>
-<!--<script type="text/javascript">
-//<![CDATA[
-  var CKEDITOR_BASEPATH = '/javascripts/ckeditor/';
-  CKEDITOR.replace( 'editor', {
-    startupFocus : <%#= !@new_doc%>,
-    customConfig: '',
-    contentsCss: '/stylesheets/documents/edit_contents.css',
-    removePlugins: 'elementspath',
-    resize_enabled: false,
-    startupFocus: true,
-    language: 'en',
-
-    toolbar:  [
-
-        ['BulletedList','-','Outdent','Indent'],
-        ['Bold','Italic','Underline'],//,'Strike'],
-        ['JustifyLeft','JustifyCenter','JustifyRight']//,'JustifyBlock'],
-        //['Undo','Redo'],
-        //['Cut','Copy','Paste','-','Print', 'SpellChecker'],
-        //['Link','Unlink'],
-        //['SpecialChar']
-    ],
-
-    on: {
-      instanceReady : function(e) {Event.fire(document, 'CKEDITOR:ready');},
-      paste: function(e) {doc.outline.outlineHandlers.onPaste(e)}
-    }
-  });
-//]]>
-</script>-->
+<a href="http://zen.do" style="position:absolute; top:-1000px;">tab</a>

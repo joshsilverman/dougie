@@ -587,7 +587,9 @@ var cOutlineHandlers = Class.create({
 
     onTab: function(event, target, range) {
 
-        console.log('tab');
+        /* stop event */
+        event.preventDefault();
+        Event.stop(event);
 
         /* ignore if not at beginning of node */
         if (range.startOffset != 0) {
