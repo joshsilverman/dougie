@@ -8,10 +8,12 @@ if (!window.console) console = {log: function() {/* burppp */}};
 var cAppUtilities = Class.create({
 
     Cookies: null,
+    Dom: null,
 
     initialize: function() {
         
         this.Cookies = new this.cCookies;
+        this.Dom = new this.cDom;
 
         document.observe('app:loaded', function() {this.loadVendorScripts.defer()}.bind(this));
     },
@@ -106,6 +108,24 @@ var cAppUtilities = Class.create({
 
         erase: function (name) {
                 this.create(name,"",-1);
+        }
+    }),
+
+    cDom: Class.create({
+
+        joinTextNodes: function(element) {
+
+            var firstTextNode;
+            $A(element.childNodes).each(function(node, i) {
+                if (i == 0 && node.nodeName && node.nodeName == "#text") {
+                    firstTextNode = node;
+                }
+                else if (node.nodeName && node.nodeName == "#text") {
+                    firstTextNode.nodeValue += node.nodeValue;
+                    element.removeChild(node);
+                }
+                else throw $break;
+            });
         }
     })
 });

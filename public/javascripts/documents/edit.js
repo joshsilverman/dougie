@@ -268,20 +268,21 @@ var cOutline = Class.create({
 
             onFailure: function() {
 
-                /* add unsuccessfully saved changes back to unsaved changes and set attributes */
-                this.unsavedChanges = this.unsavedChanges.concat(this.savingChanges).uniq();
-                this.unsavedChanges.each(function(domId) {
-                    if (this.iDoc.document.getElementById(domId))
-                        Element.writeAttribute(this.iDoc.document.getElementById(domId), {'changed': '1'});
-                }.bind(this));
-
-                /* add unsuccessfully deleted back to deleteNodes */
-                this.deleteNodes = this.deleteNodes.concat(this.deletingNodes);
-
-                /* save button styling */
-                saveButton.disabled = false;
-                saveButton.innerHTML = 'Save';
-                this.autosave();
+                alert("unable to save");
+//                /* add unsuccessfully saved changes back to unsaved changes and set attributes */
+//                this.unsavedChanges = this.unsavedChanges.concat(this.savingChanges).uniq();
+//                this.unsavedChanges.each(function(domId) {
+//                    if (this.iDoc.document.getElementById(domId))
+//                        Element.writeAttribute(this.iDoc.document.getElementById(domId), {'changed': '1'});
+//                }.bind(this));
+//
+//                /* add unsuccessfully deleted back to deleteNodes */
+//                this.deleteNodes = this.deleteNodes.concat(this.deletingNodes);
+//
+//                /* save button styling */
+//                saveButton.disabled = false;
+//                saveButton.innerHTML = 'Save';
+//                this.autosave();
 
                 console.log('error: unable to save');
             }.bind(this),
@@ -673,8 +674,10 @@ var cOutlineHandlers = Class.create({
         /* run delete to handle cases where text is being overwritten */
         this.onDelete(event, null, range, spansMultiple);
 
-        /* just update card if not at beginning of node */
-        if (range.startOffset != 0) {
+        /* just update card if not at beginning of node or selection */
+        var selection = doc.editor.getSelection();
+        var selRanges = selection.getRanges();
+        if (selRanges[0].startOffset != 0 || selRanges[0].collapsed == false) {
             /* update node */
             var id = Element.readAttribute(target, 'id') || null;
             if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, target);
@@ -683,6 +686,7 @@ var cOutlineHandlers = Class.create({
 
         /* indented paragraph handling */
         else if (target.tagName == 'P') {
+
             //indented
             if (Element.getStyle(target, 'margin-left') != '0px') {
                 doc.editor.execCommand('outdent');
@@ -693,20 +697,112 @@ var cOutlineHandlers = Class.create({
             else {
 
                 //first element in body - stop event
-                console.log(Element.previousSiblings(target).length);
                 if (Element.previousSiblings(target).length == 0) Event.stop(event);
 
                 //delete node/card
-                else doc.rightRail.sync.bind(doc.rightRail).delay(.25);
+                else {
+
+                    /* must change selection in firefox back to text node */
+                    if (Prototype.Browser.Gecko == true) {
+
+                        /* reset start and end containers */
+                        if (target.firstChild) {
+                            var selection = doc.editor.getSelection();
+                            var ckTextNode = CKEDITOR.dom.element.get(target.firstChild);
+                            var selRanges = selection.getRanges();
+                            selRanges[0]['startContainer'] = ckTextNode;
+                            selRanges[0]['endContainer'] = ckTextNode;
+                            selection.selectRanges(selRanges);
+                        }
+                    }
+
+                    doc.rightRail.sync.bind(doc.rightRail).delay(.25);
+                }
             }
         }
 
         /* li handling */
         else if (target.tagName == 'LI') {
-            console.log(target);
-            console.log('backspace li');
-            doc.editor.execCommand('outdent');
-            Event.stop(event);
+
+            /* if there are no children and parent has no siblings (can't acquire
+             * children), allow outdent */
+            if (   Element.select(target, "ul").length == 0
+                && Element.nextSiblings(target).length == 0) {
+
+                doc.editor.execCommand('outdent');
+                Event.stop(event);
+            }
+
+            /* otherwise, override native backspace because it doesn't work in cke3.5! */
+            else if (   Prototype.Browser.WebKit == true
+                     || Prototype.Browser.Gecko == true) {
+
+                Event.stop(event);
+
+                /* move selection */
+                //find previous outlineNode
+                var prevNode;
+                var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
+                outlineNodes.each(function(node, i) {
+                    if (node.id == target.id && i > 0) {
+                        console.log(outlineNodes[i]);
+                        prevNode = outlineNodes[i - 1]
+                    }
+                });
+
+                if (prevNode) {
+                    console.log(prevNode);
+                    var selection = doc.editor.getSelection();
+                    var ckPrevNode = CKEDITOR.dom.element.get(prevNode.firstChild);
+
+                    var selRanges = selection.getRanges();
+                    AppUtilities.Dom.joinTextNodes(prevNode);
+                    selRanges[0]['startOffset'] = prevNode.firstChild.length;
+                    selRanges[0]['endOffset'] = prevNode.firstChild.length;
+                    selRanges[0]['startContainer'] = ckPrevNode;
+                    selRanges[0]['endContainer'] = ckPrevNode;
+                    selection.selectRanges(selRanges);
+//                    this.onDelete(event, prevNode, range, spansMultiple);
+
+                    /* move text content */
+                    $A(target.childNodes).each(function(node) {
+                        if (node.nodeName == "#text") {
+                            doc.editor.insertHtml(node.textContent);
+                            Element.remove(node);
+                        }
+                    });
+
+                    /* get/combine ul/s */
+                    var childUl;
+                    Element.childElements(target).each(function(child) {
+                        if (!child.tagName || child.tagName != "UL") return;
+                        if (!childUl) childUl = child;
+                        else {
+                            Element.childElements(child).each(function(li) {
+                                childUl.appendChild(li);
+                            });
+                            Element.remove(child);
+                        }
+                    });
+
+                    /* move childUl if exist */
+                    if (childUl) prevNode.appendChild(childUl);
+
+                    /* remove old target node and reset selection */
+                    Element.remove(target);
+                    var ckPrevNode = CKEDITOR.dom.element.get(prevNode.firstChild);
+                    selRanges[0]['startContainer'] = ckPrevNode;
+                    selRanges[0]['endContainer'] = ckPrevNode;
+                    selection.selectRanges(selRanges);
+
+                    /* update node */
+                    var id = Element.readAttribute(prevNode, 'id') || null;
+                    if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, prevNode);
+                }
+
+                /* first node, beginning of list, fire outdent */
+                else doc.editor.execCommand('outdent');
+            }
         }
 
         /* autosave */
@@ -729,8 +825,10 @@ var cOutlineHandlers = Class.create({
 
         /* delete with nothing highlighted */
         //check target because this may be invoked when pasting on top of something, etc..
+        console.log(target);
         if (html == '' && target) {
-
+            
+            console.log(target);
             /* ie doesn't always recieve obj */
             if (!target || !target.firstChild || ! range) {}
 
@@ -753,9 +851,11 @@ var cOutlineHandlers = Class.create({
                     // @ugly way to focus after changing dom
                     (function () {
                         var element = doc.editor.document.getById(target.id);
-                        doc.editor.getSelection().selectElement(element);
-                        var nativeSelection = doc.editor.getSelection().getNative();
-                        nativeSelection.collapseToStart();
+                        if (element) {
+                            doc.editor.getSelection().selectElement(element);
+                            var nativeSelection = doc.editor.getSelection().getNative();
+                            nativeSelection.collapseToStart();
+                        }
                     }).defer();
                 }
 
@@ -943,8 +1043,10 @@ var cRightRail = Class.create({
         /* make call */
         this.updateFocusCardTimer =
             (function () {
-                doc.rightRail.cards.get(id).update(target, false, true);
-                doc.rightRail.focus(id);
+                if (doc.rightRail.cards.get(id)) {
+                    doc.rightRail.cards.get(id).update(target, false, true);
+                    doc.rightRail.focus(id);
+                }
             }).delay(.25)
     },
 
