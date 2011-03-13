@@ -811,7 +811,7 @@ var cOutlineHandlers = Class.create({
     },
 
     onDelete: function(event, target, range, spansMultiple) {
-
+        
         /* autosave */
         console.log('onDelete autosave');
         doc.outline.autosave(true);
@@ -859,48 +859,48 @@ var cOutlineHandlers = Class.create({
                     }).defer();
                 }
 
-                /* case 2: not empty */
+                /**
+                 * case 2: not empty
+                 * completely override native delete
+                 **/
                 else {
+                    var nextNode;
+                    var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
+                    outlineNodes.each(function(node, i) {
+                        if (node.id == target.id && outlineNodes.length > i + 1) {
+                            nextNode = outlineNodes[i + 1]
+                        }
+                    });
 
-                    /* must move children of joined node in chrome... perform whole action manually */
-                    if (Prototype.Browser.WebKit == true) {
-                        var nextNode;
-                        var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
-                        outlineNodes.each(function(node, i) {
-                            if (node.id == target.id && outlineNodes.length > i + 1) {
-                                nextNode = outlineNodes[i + 1]
+                    var childUls = Element.select(nextNode, "ul");
+                    if (childUls.length > 0) {
+                        var childUl = childUls[0];
+                        var formerChildUlParent = Element.childElements(nextNode)[0].parentNode
+
+                        /* store selection range */
+                        var selRangesInitial = doc.editor.getSelection().getRanges().clone();
+
+                        /* move text content */
+                        $A(nextNode.childNodes).each(function(node) {
+                            if (node.nodeName == "#text") {
+                                doc.editor.insertHtml(node.textContent);
+                                Element.remove(node);
                             }
                         });
 
-                        if (Element.childElements(nextNode).length > 0) {
-                            var childUl = Element.childElements(nextNode)[0];
-                            var formerChildUlParent = Element.childElements(nextNode)[0].parentNode
+                        /* move children */
+                        target.appendChild(childUl);
+                        Element.remove(formerChildUlParent);
 
-                            /* store selection range */
-                            var selRangesInitial = doc.editor.getSelection().getRanges().clone();
+                        /* stop event */
+                        Event.stop(event);
 
-                            /* move text content */
-                            $A(nextNode.childNodes).each(function(node) {
-                                if (node.nodeName == "#text") {
-                                    doc.editor.insertHtml(node.textContent);
-                                    Element.remove(node);
-                                }
-                            });
-
-                            /* move children */
-                            target.appendChild(childUl);
-                            Element.remove(formerChildUlParent);
-
-                            /* stop event */
-                            Event.stop(event);
-
-                            /* create new selection after changing target node */
-                            var selection = doc.editor.getSelection();
-                            var selRangesAfterInsert = selection.getRanges();
-                            selRangesAfterInsert[0]['startOffset'] = selRangesInitial[0]['startOffset'];
-                            selRangesAfterInsert[0]['endOffset'] = selRangesInitial[0]['startOffset'];
-                            selection.selectRanges(selRangesAfterInsert);
-                        }
+                        /* create new selection after changing target node */
+                        var selection = doc.editor.getSelection();
+                        var selRangesAfterInsert = selection.getRanges();
+                        selRangesAfterInsert[0]['startOffset'] = selRangesInitial[0]['startOffset'];
+                        selRangesAfterInsert[0]['endOffset'] = selRangesInitial[0]['startOffset'];
+                        selection.selectRanges(selRangesAfterInsert);
                     }
                 }
             }
