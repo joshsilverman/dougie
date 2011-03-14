@@ -531,13 +531,11 @@ var cOutlineHandlers = Class.create({
             /* undo/redo trigger save */
             //redo
             else if (89 == event.keyCode && event.ctrlKey) {
-                console.log('redo autosave');
                 doc.outline.autosave(true);
             }
 
             //undo
             else if (90 == event.keyCode && event.ctrlKey) {
-                console.log('undo autosave');
                 doc.outline.autosave(true);
             }
 
@@ -639,7 +637,6 @@ var cOutlineHandlers = Class.create({
     onLetter: function(event, target, range) {
 
         /* autosave */
-        console.log('onLetter autosave');
         doc.outline.autosave(true);
 
         /* card creation, card update, catch invalid targets */
@@ -813,7 +810,6 @@ var cOutlineHandlers = Class.create({
     onDelete: function(event, target, range, spansMultiple) {
         
         /* autosave */
-        console.log('onDelete autosave');
         doc.outline.autosave(true);
 
         /* string representation of deleted text */
@@ -825,18 +821,17 @@ var cOutlineHandlers = Class.create({
 
         /* delete with nothing highlighted */
         //check target because this may be invoked when pasting on top of something, etc..
-        console.log(target);
         if (html == '' && target) {
             
-            console.log(target);
-            /* ie doesn't always recieve obj */
+            /* ie doesn't always receive obj */
             if (!target || !target.firstChild || ! range) {}
 
             /* end of node? */
             else if (   target.firstChild.nodeName == '#text' && range.endOffset == target.firstChild.length
                 || target.firstChild.nodeName != '#text' && range.endOffset == 0) {
 
-                // @todo implement delete at end of line - must push deleted node into delete queue
+                /* stop event */
+                Event.stop(event);
 
                 /* empty target if only br present */
                 if (   target.innerHTML == '<br>'
@@ -845,70 +840,46 @@ var cOutlineHandlers = Class.create({
                     
                     target.innerHTML = '';
 
-                /* case 1: empty */
-                if (target.innerHTML == '') {
+                var nextNode;
+                var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
+                outlineNodes.each(function(node, i) {
+                    if (node.id == target.id && outlineNodes.length > i + 1) {
+                        nextNode = outlineNodes[i + 1]
+                    }
+                });
 
-                    // @ugly way to focus after changing dom
-                    (function () {
-                        var element = doc.editor.document.getById(target.id);
-                        if (element) {
-                            doc.editor.getSelection().selectElement(element);
-                            var nativeSelection = doc.editor.getSelection().getNative();
-                            nativeSelection.collapseToStart();
-                        }
-                    }).defer();
-                }
-
-                /**
-                 * case 2: not empty
-                 * completely override native delete
-                 **/
-                else {
-                    var nextNode;
-                    var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
-                    outlineNodes.each(function(node, i) {
-                        if (node.id == target.id && outlineNodes.length > i + 1) {
-                            nextNode = outlineNodes[i + 1]
+                /* if there is a next node to join... */
+                if (nextNode) {
+                    
+                    /* move text content of next node */
+                    var newContentLength = 0;
+                    $A(nextNode.childNodes).each(function(node) {
+                        if (node.nodeName == "#text") {
+                            doc.editor.insertHtml(node.textContent);
+                            newContentLength += node.textContent.length;
+                            Element.remove(node);
                         }
                     });
 
-                    var childUls = Element.select(nextNode, "ul");
-                    if (childUls.length > 0) {
-                        var childUl = childUls[0];
-                        var formerChildUlParent = Element.childElements(nextNode)[0].parentNode
+                    /* move children of next node */
+                    if (Element.select(nextNode, "ul").length > 0)
+                        target.appendChild(AppUtilities.Dom.joinUlNodes(Element.childElements(nextNode)));
 
-                        /* store selection range */
-                        var selRangesInitial = doc.editor.getSelection().getRanges().clone();
+                    /* remove next node */
+                    Element.remove(nextNode);
 
-                        /* move text content */
-                        $A(nextNode.childNodes).each(function(node) {
-                            if (node.nodeName == "#text") {
-                                doc.editor.insertHtml(node.textContent);
-                                Element.remove(node);
-                            }
-                        });
-
-                        /* move children */
-                        target.appendChild(childUl);
-                        Element.remove(formerChildUlParent);
-
-                        /* stop event */
-                        Event.stop(event);
-
-                        /* create new selection after changing target node */
-                        var selection = doc.editor.getSelection();
-                        var selRangesAfterInsert = selection.getRanges();
-                        selRangesAfterInsert[0]['startOffset'] = selRangesInitial[0]['startOffset'];
-                        selRangesAfterInsert[0]['endOffset'] = selRangesInitial[0]['startOffset'];
-                        selection.selectRanges(selRangesAfterInsert);
-                    }
+                    /* create new selection of cursors original position */
+                    var selection = doc.editor.getSelection();
+                    var selRanges = selection.getRanges();
+                    selRanges[0]['startOffset'] -= newContentLength;
+                    selRanges[0]['endOffset'] -= newContentLength;
+                    selection.selectRanges(selRanges);
                 }
             }
 
             /* not end of node */
             else {
                 doc.outline.unsavedChanges.push(target.id);
-                console.log('setting changed. target: ' + target);
                 target.setAttribute('changed', 1);
 
                 /* update node */
@@ -940,7 +911,6 @@ var cOutlineHandlers = Class.create({
         if (spansMultiple) doc.rightRail.sync.bind(doc.rightRail).defer();
 
         /* autosave */
-        console.log('delete (or before char) autosave');
         doc.outline.autosave();
     },
 

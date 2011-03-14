@@ -126,6 +126,20 @@ var cAppUtilities = Class.create({
                 }
                 else throw $break;
             });
+        },
+
+        joinUlNodes: function(children) {
+            var firstUl;
+            $(children).each(function(child, i) {
+                if (!firstUl && child.tagName == "UL") firstUl = child;
+                else {
+                    Element.childElements(child).each(function(li) {
+                        firstUl.appendChild(li);
+                    });
+                }
+            });
+            
+            return firstUl;
         }
     })
 });
