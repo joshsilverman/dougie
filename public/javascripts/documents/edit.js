@@ -463,35 +463,36 @@ var cOutlineHandlers = Class.create({
                 this.onHyphen(event, target, range);
 
             /* special backspace handling for highlighted text and beginning of nodes */
-            else if (Event.KEY_BACKSPACE == event.keyCode)
+            else if (Event.KEY_BACKSPACE == event.keyCode) {
                 // @browser fire on keydown for all but opera
                 if (!Prototype.Browser.Opera) this.onBackspace(event, target, range, spansMultiple);
+            }
 
-            /* intercept arrow events */
-            else if (   Event.KEY_UP == event.keyCode
-                     || Event.KEY_DOWN == event.keyCode
-                     || Event.KEY_LEFT == event.keyCode
-                     || Event.KEY_RIGHT == event.keyCode) ;
-
-            /* treat like letter */
-            else if (Event.KEY_RETURN == event.keyCode)
-                this.onLetter(event, target, range);
-
-            /* intecept certain letters - take no action here */
-            else if (67 == event.keyCode && event.ctrlKey) ; //copy
-            else if (86 == event.keyCode && event.ctrlKey) ; //paste
-            else if (88 == event.keyCode && event.ctrlKey) ; //cut
-            else if (89 == event.keyCode && event.ctrlKey) ; //redo
-            else if (90 == event.keyCode && event.ctrlKey) ; //undo
-
-            /* letter like */
-            else if (   event.keyCode == 32 /* space */
-                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
-                     || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
-                     || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
-                     || event.keyCode >= 107 && event.keyCode <= 111) /* math */
-
-                this.onDelete(event, target, range, spansMultiple);
+//            /* intercept arrow events */
+//            else if (   Event.KEY_UP == event.keyCode
+//                     || Event.KEY_DOWN == event.keyCode
+//                     || Event.KEY_LEFT == event.keyCode
+//                     || Event.KEY_RIGHT == event.keyCode) ;
+//
+//            /* treat like letter */
+//            else if (Event.KEY_RETURN == event.keyCode)
+//                this.onEnter(event, target, range);
+//
+//            /* intecept certain letters - take no action here */
+//            else if (67 == event.keyCode && event.ctrlKey) ; //copy
+//            else if (86 == event.keyCode && event.ctrlKey) ; //paste
+//            else if (88 == event.keyCode && event.ctrlKey) ; //cut
+//            else if (89 == event.keyCode && event.ctrlKey) ; //redo
+//            else if (90 == event.keyCode && event.ctrlKey) ; //undo
+//
+//            /* letter like */
+//            else if (   event.keyCode == 32 /* space */
+//                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
+//                     || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
+//                     || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
+//                     || event.keyCode >= 107 && event.keyCode <= 111) /* math */
+//
+//                this.onDelete(event, target, range, spansMultiple);
         }
 
         //keyup events
@@ -555,12 +556,16 @@ var cOutlineHandlers = Class.create({
         //keypress events
         else if (event.type == "keypress") {
 
+            /* up arrow */
+            if (Event.KEY_UP == event.keyCode)
+                this.onUp(event, target, range);
+
             /* @browser weird ckeditor in OPERA - must intersept keyCode 45!!! */
             if (45 == event.keyCode && range.startOffset == 0) 
                 if (Prototype.Browser.Opera) Event.stop(event);
 
             /* @browser opera silence backspace for keypress (unless beginning of line) */
-             if (Event.KEY_BACKSPACE == event.keyCode)
+            if (Event.KEY_BACKSPACE == event.keyCode)
                 if (Prototype.Browser.Opera) this.onBackspace(event, target, range, spansMultiple);
         }
     },
@@ -648,6 +653,21 @@ var cOutlineHandlers = Class.create({
         if (target.tagName != 'P' && target.tagName != 'LI') {
             console.log('error: invalid target tag type');
             return;
+        }
+
+        /* if chrome, remove any extra br elements */
+        if (Prototype.Browser.WebKit == true) {
+            (function() {
+                var brCount = 0;
+                Element.childElements(target).each(function(child) {
+                    if (child.tagName == "BR") {
+                        brCount++;
+                        if (brCount > 1) {
+                            Element.remove(child);
+                        }
+                    }
+                });
+            }).defer();
         }
 
         /* set outline changed attribute, unsaved changes list */
@@ -742,20 +762,18 @@ var cOutlineHandlers = Class.create({
                 var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
                 outlineNodes.each(function(node, i) {
                     if (node.id == target.id && i > 0) {
-                        console.log(outlineNodes[i]);
                         prevNode = outlineNodes[i - 1]
                     }
                 });
 
                 if (prevNode) {
-                    console.log(prevNode);
                     var selection = doc.editor.getSelection();
                     var ckPrevNode = CKEDITOR.dom.element.get(prevNode.firstChild);
 
                     var selRanges = selection.getRanges();
                     AppUtilities.Dom.joinTextNodes(prevNode);
-                    selRanges[0]['startOffset'] = prevNode.firstChild.length;
-                    selRanges[0]['endOffset'] = prevNode.firstChild.length;
+                    selRanges[0]['startOffset'] = prevNode.firstChild.length || 0;
+                    selRanges[0]['endOffset'] = prevNode.firstChild.length || 0;
                     selRanges[0]['startContainer'] = ckPrevNode;
                     selRanges[0]['endContainer'] = ckPrevNode;
                     selection.selectRanges(selRanges);
@@ -764,10 +782,21 @@ var cOutlineHandlers = Class.create({
                     /* move text content */
                     $A(target.childNodes).each(function(node) {
                         if (node.nodeName == "#text") {
-                            doc.editor.insertHtml(node.textContent);
-                            Element.remove(node);
+                            try {doc.editor.insertHtml(node.textContent);}
+                            catch(err) {}
+                            target.removeChild(node);
                         }
                     });
+
+                    /* first desc uls */
+                    var firstDescUls = function(element) {
+                        var childUls = [];
+                        Element.childElements(element).each(function(child) {
+                            if (!child.tagName || child.tagName != "UL") return;
+                            else childUls.push(child);
+                        });
+                        return childUls;
+                    };
 
                     /* get/combine ul/s */
                     var childUl;
@@ -783,7 +812,22 @@ var cOutlineHandlers = Class.create({
                     });
 
                     /* move childUl if exist */
-                    if (childUl) prevNode.appendChild(childUl);
+                    if (childUl) {
+                        var prevNodeUls = firstDescUls(prevNode);
+                        if (prevNodeUls.length > 0) {
+                            prevNode.insertBefore(childUl, prevNodeUls[0]);
+                        }
+                        else prevNode.appendChild(childUl);
+                    }
+
+                    /* if ff, make sure that first node is an empty text node */
+                    if (Prototype.Browser.Gecko == true) {
+                        if (prevNode.firstChild.tagName == "BR") {
+                            prevNode.insertBefore(
+                                document.createTextNode(""),
+                                prevNode.firstChild);
+                        }
+                    }
 
                     /* remove old target node and reset selection */
                     Element.remove(target);
@@ -803,7 +847,6 @@ var cOutlineHandlers = Class.create({
         }
 
         /* autosave */
-        console.log('backspace autosave');
         doc.outline.autosave();
     },
 
@@ -914,6 +957,10 @@ var cOutlineHandlers = Class.create({
         doc.outline.autosave();
     },
 
+    onEnter: function(event, target, range) {
+        this.onLetter(event, target, range);
+    },
+
     // @note listener set in view on editor creation
     onPaste: function(event) {
 
@@ -972,6 +1019,19 @@ var cOutlineHandlers = Class.create({
 
         /* exec bulletlist ckeditor command */
         doc.editor.execCommand('bulletedlist');
+    },
+
+    onUp: function(event, target, range) {
+
+        /* stop event in firefox if there are no preceding lines */
+        if (Prototype.Browser.Gecko == true) {
+            if (   target.tagName == "LI"
+                && target.parentNode.parentNode.tagName == "BODY"
+                && !target.previousSibling
+                && !target.parentNode.previousSibling)
+
+                Event.stop(event);
+        }
     }
 });
 
@@ -1207,7 +1267,6 @@ var cCard = Class.create({
             this.autoActivate = false;
             this.activate();
             this.elmntCard.down('input').checked = 'yes';
-            console.log('activate in render');
             doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
         }
 
@@ -1245,7 +1304,6 @@ var cCard = Class.create({
                 this.autoActivated = false;
                 this.deactivate();
                 this.elmntCard.down('input').checked = '';
-                console.log('activate in render');
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', false);
             }
         }
