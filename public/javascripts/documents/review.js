@@ -84,7 +84,7 @@ var cReviewer = Class.create({
 
         /* grade current */
         if (grade) this.cards[this.currentCardIndex].grade(grade);
-        this.currentCardIndex++;
+        if (this.cards.length >= (this.currentCardIndex + 1)) this.currentCardIndex++;
 
         /* advance */
         if (this.cards[this.currentCardIndex]) {
@@ -92,11 +92,52 @@ var cReviewer = Class.create({
                 this.cards[this.currentCardIndex].cue();
             else this.cards[this.currentCardIndex].showAll();
         }
-        else alert('No more cards for this document');
+
+        else {
+        
+        	//Hide grade buttons.
+        	$$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+
+            //Set grade values here (got it: count, kinda: count, etc..)
+            var gradeHash = $H({9: 0, 6.5: 0, 4: 0, 1.5: 0});
+            var score = 0;
+            
+            //Collect confidence of each card.
+            this.cards.each( function(card) {
+            	//Skips ungraded cards.
+            	if (card.confidence > 0) {
+                	gradeHash.set(card.confidence, (gradeHash.get(card.confidence) + 1));
+                	score = score + card.confidence;
+            	}
+            });
+			
+			//Prevent chart page when no cards were reviewed
+			if (score <= 0) {
+				alert("No more cards to review!");
+			} else {
+			
+            	//Largest value in hash times # of cards
+            	var total = 9 * this.cards.length;
+            	var chartURL = "http://chart.apis.google.com/chart?chs=500x225&cht=p3&chco=16BE16|7FE97F|FD6666|E03838&chd=t:"
+                	+ gradeHash.get(9) + "," + gradeHash.get(6.5) + "," + gradeHash.get(4) + "," + gradeHash.get(1.5) + 
+                	"&chdl=Got%20it+-+" + gradeHash.get(9) + "|Kinda+-+" + gradeHash.get(6.5) +
+                	"|Barely+-+" + gradeHash.get(4) + "|No%20clue+-+" + gradeHash.get(1.5) + "&chma=|2"
+
+            	$('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1> <a href=http://www.zen.do/explore>Back to my notes</a>");
+            	$('card_back').update("<img src=" + chartURL + "></img>");			
+			
+			}			
+
+        }
 
         /* update progress bar */
-        this.progressBar.update((this.currentCardIndex)/this.cards.length);
-        $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+        if (this.currentCardIndex <= this.cards.length) {
+        	console.log("In blah");
+        	this.progressBar.update((this.currentCardIndex)/this.cards.length);
+        	$('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+        	
+        }
+       
     },
 
     back: function() {
@@ -237,6 +278,7 @@ var cReviewHandlers = Class.create({
     },
 
     on2: function() {
+
         doc.reviewer.displayGrade(doc.reviewer.grade_2);
         (function () {
             $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
@@ -246,6 +288,7 @@ var cReviewHandlers = Class.create({
     },
 
     on1: function() {
+
         doc.reviewer.displayGrade(doc.reviewer.grade_1);
         (function () {
             doc.reviewer.displayGrade(-1);
