@@ -12,3 +12,4 @@ public/javascripts/all.js
 *.psd
 *.xcf
 Gemfile
+Gemfile.lock
