@@ -123,7 +123,7 @@ var cReviewer = Class.create({
                 	"&chdl=Got%20it+-+" + gradeHash.get(9) + "|Kinda+-+" + gradeHash.get(6.5) +
                 	"|Barely+-+" + gradeHash.get(4) + "|No%20clue+-+" + gradeHash.get(1.5) + "&chma=|2"
 
-            	$('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1>");
+            	$('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1> <a href=http://www.zen.do/explore>Back to my notes</a>");
             	$('card_back').update("<img src=" + chartURL + "></img>");			
 			
 			}			
