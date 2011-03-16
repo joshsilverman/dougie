@@ -91,12 +91,13 @@ var cReviewer = Class.create({
             if (this.cards[this.currentCardIndex].confidence == -1)
                 this.cards[this.currentCardIndex].cue();
             else this.cards[this.currentCardIndex].showAll();
+            this.progressBar.update(this.currentCardIndex, this.cards.length);
         }
-        else alert('No more cards for this document');
-
-        /* update progress bar */
-        this.progressBar.update((this.currentCardIndex)/this.cards.length);
-        $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+        else {
+            alert('No more cards for this document');
+            this.progressBar.update(this.currentCardIndex, this.cards.length);
+            this.currentCardIndex--;
+        }
     },
 
     back: function() {
@@ -111,10 +112,10 @@ var cReviewer = Class.create({
                 this.cards[this.currentCardIndex].cue();
             else this.cards[this.currentCardIndex].showAll();
         }
+        else if (this.currentCardIndex > 0) this.currentCardIndex++;
 
         /* update progress bar */
-        this.progressBar.update((this.currentCardIndex)/this.cards.length);
-        $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+        this.progressBar.update(this.currentCardIndex, this.cards.length);
     },
 
     displayGrade: function(grade) {
@@ -420,10 +421,13 @@ var cProgressBar = Class.create({
             barImage	: '/images/progressbar/custom1_bar.gif'});
     },
 
-    update: function(progress) {
+    update: function(currentCardIndex, cardCount) {
 
-        var percentage = Math.round(progress * 100);
-        this.bramusBrogressBar.setPercentage(percentage);
+        if (currentCardIndex >= 0 && currentCardIndex <= cardCount) {
+            var percentage = Math.round(currentCardIndex / cardCount * 100);
+            this.bramusBrogressBar.setPercentage(percentage);
+            $('progress_fraction').update(currentCardIndex + "/" + cardCount);
+        }
     }
 });
 

@@ -156,10 +156,15 @@ var cOutline = Class.create({
         //save button
         Event.observe($("save_button"),"click",function(e){this.save(e);}.bind(this));
 
+        //review button
+        Event.observe($("review_button"),"click",function(e){
+            window.location = "/review/" + this.documentId;
+        }.bind(this));
+
         /* outline title observer */
         $("document_name").observe('keypress', this.autosave.bind(this));
 
-        /*  */
+        /* hide instructions background onclick */
         var iDocHtmlTags = this.iDoc.document.getElementsByTagName("html");
         if (iDocHtmlTags.length > 0) {
             var iDocHtml = iDocHtmlTags[0];
