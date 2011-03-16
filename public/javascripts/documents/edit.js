@@ -225,8 +225,6 @@ var cOutline = Class.create({
             return;
         }
 
-        console.log('save');
-
         /* sync */
         // @todo this may become unnecessary later on
         doc.rightRail.sync();
@@ -281,25 +279,31 @@ var cOutline = Class.create({
                 window.onbeforeunload = null;
             }.bind(this),
 
-            onFailure: function() {
+            onFailure: function(transport) {
 
-                alert("unable to save");
-//                /* add unsuccessfully saved changes back to unsaved changes and set attributes */
-//                this.unsavedChanges = this.unsavedChanges.concat(this.savingChanges).uniq();
-//                this.unsavedChanges.each(function(domId) {
-//                    if (this.iDoc.document.getElementById(domId))
-//                        Element.writeAttribute(this.iDoc.document.getElementById(domId), {'changed': '1'});
-//                }.bind(this));
-//
-//                /* add unsuccessfully deleted back to deleteNodes */
-//                this.deleteNodes = this.deleteNodes.concat(this.deletingNodes);
-//
-//                /* save button styling */
-//                saveButton.disabled = false;
-//                saveButton.innerHTML = 'Save';
-//                this.autosave();
+                /* add unsuccessfully saved changes back to unsaved changes and set attributes */
+                this.unsavedChanges = this.unsavedChanges.concat(this.savingChanges).uniq();
+                this.unsavedChanges.each(function(domId) {
+                    if (this.iDoc.document.getElementById(domId))
+                        Element.writeAttribute(this.iDoc.document.getElementById(domId), {'changed': '1'});
+                }.bind(this));
 
-                console.log('error: unable to save');
+                /* add unsuccessfully deleted back to deleteNodes */
+                this.deleteNodes = this.deleteNodes.concat(this.deletingNodes);
+
+                /* save button styling */
+                saveButton.disabled = false;
+                saveButton.innerHTML = 'Save';
+                this.autosave();
+
+                /* signed out */
+                if (transport.status == 401) {
+                    alert("Please sign in again.");
+                }
+                else {
+                    alert("There was an error saving your document. Please try saving again.");
+                }
+
             }.bind(this),
 
             onComplete: function() {
