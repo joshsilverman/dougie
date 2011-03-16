@@ -12,14 +12,12 @@ var cDoc = Class.create({
     initialize: function() {
 
         /* set new document attr */
-        var newDoc = $('new_document');
-        if (newDoc) {
-
+        this.newDoc = $('new_doc').innerHTML == "true";
+        if (this.newDoc) {
             /* set attr and remove node (in case there are edits followed by reload) */
-            this.newDoc = true;
-            newDoc.remove();
+            $('new_doc').innerHTML = "false";
         }
-        else newDoc = false;
+        else this.newDoc = false;
 
         /* load editor */
         this.loadEditor();
@@ -72,24 +70,15 @@ var cDoc = Class.create({
             /* initialize right rail once editor loaded */
             this.rightRail = new cRightRail();
 
-//            /* focus and select sample node if exists */
-//            if (this.newDoc) {
-//                var handler = function() {
-//
-//                    /* sample node, clear */
-//                    var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
-//                    sampleNode.innerHTML = '<br />';
-////                    doc.editor.focus();
-//
-//                    /* update card when interpreter available */
-//                    var card = doc.rightRail.cards.get(sampleNode.id);
-//                    card.update.bind(card).defer(sampleNode);
-//
-//                    /* stop observing */
-//                    Element.stopObserving.defer(doc.outline.iDoc.document, 'click', handler);
-//                };
-//                Element.observe(doc.outline.iDoc.document, 'click', handler);
-//            }
+            /* set bg instructions if new doc */
+            if (this.newDoc) {
+                console.log(this.outline.iDoc);
+                var iDocBodyTags = this.outline.iDoc.document.getElementsByTagName("body");
+                if (iDocBodyTags.length > 0) {
+                    var iDocBody = iDocBodyTags[0];
+                    Element.addClassName(iDocBody, "instructions");
+                }
+            }
         }.bind(this)).delay(.1);
 
         /* resize listener */
@@ -147,6 +136,9 @@ var cOutline = Class.create({
 
     lineIds: null,
 
+    /* initially, instructions are shown */
+    instructionsBg:true,
+
     initialize: function() {
 
         /* document members */
@@ -166,6 +158,15 @@ var cOutline = Class.create({
 
         /* outline title observer */
         $("document_name").observe('keypress', this.autosave.bind(this));
+
+        /*  */
+        var iDocHtmlTags = this.iDoc.document.getElementsByTagName("html");
+        if (iDocHtmlTags.length > 0) {
+            var iDocHtml = iDocHtmlTags[0];
+            Event.observe(iDocHtml, "click", function(event) {
+                this.hideBg();
+            }.bind(this));
+        }
     },
 
     autosave: function(force) {
@@ -387,6 +388,18 @@ var cOutline = Class.create({
             /* new nodes */
             if (!node.getAttribute('line_id')) this.newNodes = true;
         }.bind(this));
+    },
+
+    hideBg: function() {
+
+        if (this.instructionsBg == true) {
+            var iDocBodyTags = this.iDoc.document.getElementsByTagName("body");
+            if (iDocBodyTags.length > 0) {
+                var iDocBody = iDocBodyTags[0];
+                Element.removeClassName(iDocBody, "instructions");
+                this.instructionsBg = false;
+            }
+        }
     }
 });
 
@@ -643,6 +656,9 @@ var cOutlineHandlers = Class.create({
 
         /* autosave */
         doc.outline.autosave(true);
+
+        /* hide bg instructions if visible */
+        doc.outline.hideBg();
 
         /* card creation, card update, catch invalid targets */
 
