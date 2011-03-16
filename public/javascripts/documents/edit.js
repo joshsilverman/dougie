@@ -19,6 +19,14 @@ var cDoc = Class.create({
         }
         else this.newDoc = false;
 
+        /* check for reload cookie */
+        var reload = AppUtilities.Cookies.read('reloadEditor') == 'true';
+        if (reload) {
+            AppUtilities.Cookies.create('reloadEditor', 'false', 3);
+            self.document.location.reload(true);
+            return;
+        }
+
         /* load editor */
         this.loadEditor();
 
@@ -158,6 +166,7 @@ var cOutline = Class.create({
 
         //review button
         Event.observe($("review_button"),"click",function(e){
+            AppUtilities.Cookies.create('reloadEditor', 'true', 3);
             window.location = "/review/" + this.documentId;
         }.bind(this));
 

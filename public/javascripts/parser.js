@@ -6,7 +6,7 @@ var cParser = Class.create({
     parse: function(Card, contextualize, ellipsize) {
 
         //definition
-        var defParts = Card.text.split(' - ');
+        var defParts = Card.text.split(/(?:\s+-+\s+|-+\s+|\s+-+)/);
 
         if (defParts.length > 1) {
 
