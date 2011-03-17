@@ -899,7 +899,6 @@ var cOutlineHandlers = Class.create({
         /* delete with nothing highlighted */
         //check target because this may be invoked when pasting on top of something, etc..
         if (html == '' && target) {
-            
             /* ie doesn't always receive obj */
             if (!target || !target.firstChild || ! range) {}
 
@@ -927,30 +926,59 @@ var cOutlineHandlers = Class.create({
 
                 /* if there is a next node to join... */
                 if (nextNode) {
+
+                    /* for webkit, ckeditor requires a first text node to user
+                     * the insertHtml function. therefore, one is created
+                     * and focus is reestablished */
+                    if (   Prototype.Browser.WebKit == true
+                        && target.nodeName == "P"
+                        && target.innerHTML == "") {
+
+                        /* track selection and ranges before re-establishing focus */
+                        var selection = doc.editor.getSelection();
+                        var selRanges = selection.getRanges();
+
+                        /* remove target */
+                        Element.remove(target);
+
+                        /* recreate selection */
+                        var targetCK = CKEDITOR.dom.element.get(nextNode.firstChild);
+                        var selection = doc.editor.getSelection();
+                        var selRanges = selection.getRanges();
+                        selRanges[0]['startOffset'] = 0;
+                        selRanges[0]['endOffset'] = 0;
+                        selRanges[0]['startContainer'] = targetCK;
+                        selRanges[0]['endContainer'] = targetCK;
+                        selection.selectRanges(selRanges);
+                    }
                     
-                    /* move text content of next node */
-                    var newContentLength = 0;
-                    $A(nextNode.childNodes).each(function(node) {
-                        if (node.nodeName == "#text") {
-                            doc.editor.insertHtml(node.textContent);
-                            newContentLength += node.textContent.length;
-                            Element.remove(node);
-                        }
-                    });
+                    /* all other cases */
+                    else {
 
-                    /* move children of next node */
-                    if (Element.select(nextNode, "ul").length > 0)
-                        target.appendChild(AppUtilities.Dom.joinUlNodes(Element.childElements(nextNode)));
+                        /* move text content of next node */
+                        var newContentLength = 0;
+                        $A(nextNode.childNodes).each(function(node) {
+                            if (node.nodeName == "#text") {
+                                doc.editor.insertHtml(node.textContent);
+                                newContentLength += node.textContent.length;
+                                Element.remove(node);
+                            }
+                        });
 
-                    /* remove next node */
-                    Element.remove(nextNode);
+                        /* move children of next node */
+                        if (Element.select(nextNode, "ul").length > 0)
+                            target.appendChild(AppUtilities.Dom.joinUlNodes(Element.childElements(nextNode)));
 
-                    /* create new selection of cursors original position */
-                    var selection = doc.editor.getSelection();
-                    var selRanges = selection.getRanges();
-                    selRanges[0]['startOffset'] -= newContentLength;
-                    selRanges[0]['endOffset'] -= newContentLength;
-                    selection.selectRanges(selRanges);
+                        /* remove next node */
+                        Element.remove(nextNode);
+
+                        /* create new selection of cursors original position */
+                        var selection = doc.editor.getSelection();
+                        var selRanges = selection.getRanges();
+                        selRanges[0]['startOffset'] -= newContentLength;
+                        selRanges[0]['endOffset'] -= newContentLength;
+                        selection.selectRanges(selRanges);
+                    }
                 }
             }
 
