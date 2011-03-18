@@ -111,3 +111,7 @@ img.sync:active {
     -webkit-transform:rotate(45deg);
     -moz-transform:rotate(45deg);
 }
+
+.footer {
+    display:none;
+}
