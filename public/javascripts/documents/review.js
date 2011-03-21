@@ -46,7 +46,7 @@ var cReviewer = Class.create({
     grade_4: 9,
     grade_3: 6,
     grade_2: 4,
-    grade_1: 1,
+    grade_1: 0,
 
     cards: [],
     currentCardIndex: 0,

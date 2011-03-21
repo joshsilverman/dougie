@@ -11,6 +11,9 @@ class Mem < ActiveRecord::Base
     time_delta_to_now = Time.now - self.updated_at
 
     # calculate strength_pre or strength before this repetition
+    if (confidence == "0")
+      confidence = 0.1
+    end
     strength_pre = (-1) * time_delta_to_now / Math.log(confidence.to_f/10)
 
     # temp strength_post, strength_next
@@ -30,7 +33,7 @@ class Mem < ActiveRecord::Base
     Rep.create(:mem_id => self.id,
                :user_id => self.user_id,
                :confidence => confidence,
-               :strength => importance)
+               :strength => strength_pre)
 
   end
   
