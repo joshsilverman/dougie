@@ -299,7 +299,13 @@ var cCard = Class.create({
         $('card_show').observe('click', this.showAll.bind(this));
 
         /* hide grade buttons */
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        $$('.button_container, .grade_yourself').each(function (buttonContainer) {
+            buttonContainer.addClassName('grade_hide');
+            var button = buttonContainer.down("button");
+            if (button) {
+                button.removeClassName('chosen');
+            }
+        });
 //        $$('.arrows_up_down')[0].hide();
     },
 

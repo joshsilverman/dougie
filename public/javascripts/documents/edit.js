@@ -464,6 +464,11 @@ var cOutlineHandlers = Class.create({
             spansMultiple = range.startContainer != range.endContainer;
         }
 
+        /* change target to nearest P/LI anscester */
+        while (target.nodeName && target.nodeName != "LI" && target.nodeName != "P" ) {
+            target = target.parentNode;
+        }
+
         return [range, target, spansMultiple];
     },
 
