@@ -84,60 +84,64 @@ var cReviewer = Class.create({
 
         /* grade current */
         if (grade) this.cards[this.currentCardIndex].grade(grade);
-        if (this.cards.length >= (this.currentCardIndex + 1)) this.currentCardIndex++;
+        if (this.cards.length >= (this.currentCardIndex)) this.currentCardIndex++;
 
         /* advance */
         if (this.cards[this.currentCardIndex]) {
             if (this.cards[this.currentCardIndex].confidence == -1)
                 this.cards[this.currentCardIndex].cue();
             else this.cards[this.currentCardIndex].showAll();
-        }
+            this.progressBar.update(this.currentCardIndex, this.cards.length);
 
+            /* update progress bar */
+            if (this.currentCardIndex <= this.cards.length) {
+                this.progressBar.update((this.currentCardIndex)/this.cards.length);
+                $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+
+            }
+        }
         else {
-        
-        	//Hide grade buttons.
-        	$$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+
+            this.progressBar.update(this.currentCardIndex, this.cards.length);
+            this.currentCardIndex--;
+
+            //Hide grade buttons.
+            $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
 
             //Set grade values here (got it: count, kinda: count, etc..)
-            var gradeHash = $H({9: 0, 6.5: 0, 4: 0, 1.5: 0});
+            var gradeHash = new Hash();
+            gradeHash.set(this.grade_4, 0);
+            gradeHash.set(this.grade_3, 0);
+            gradeHash.set(this.grade_2, 0);
+            gradeHash.set(this.grade_1, 0);
             var score = 0;
-            
+
             //Collect confidence of each card.
             this.cards.each( function(card) {
-            	//Skips ungraded cards.
-            	if (card.confidence > 0) {
-                	gradeHash.set(card.confidence, (gradeHash.get(card.confidence) + 1));
-                	score = score + card.confidence;
-            	}
+                //Skips ungraded cards.
+                if (card.confidence > 0) {
+                    gradeHash.set(card.confidence, (gradeHash.get(card.confidence) + 1));
+                    score = score + card.confidence;
+                }
             });
-			
-			//Prevent chart page when no cards were reviewed
-			if (score <= 0) {
-				alert("No more cards to review!");
-			} else {
-			
-            	//Largest value in hash times # of cards
-            	var total = 9 * this.cards.length;
-            	var chartURL = "http://chart.apis.google.com/chart?chs=500x225&cht=p3&chco=16BE16|7FE97F|FD6666|E03838&chd=t:"
-                	+ gradeHash.get(9) + "," + gradeHash.get(6.5) + "," + gradeHash.get(4) + "," + gradeHash.get(1.5) + 
-                	"&chdl=Got%20it+-+" + gradeHash.get(9) + "|Kinda+-+" + gradeHash.get(6.5) +
-                	"|Barely+-+" + gradeHash.get(4) + "|No%20clue+-+" + gradeHash.get(1.5) + "&chma=|2"
 
-            	$('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1> <a href=http://www.zen.do/explore>Back to my notes</a>");
-            	$('card_back').update("<img src=" + chartURL + "></img>");			
-			
-			}			
+            //Prevent chart page when no cards were reviewed
+            if (score <= 0) {
+                alert("No more cards to review!");
+            } else {
 
+                //Largest value in hash times # of cards
+                var total = 9 * this.cards.length;
+                var chartURL = "http://chart.apis.google.com/chart?chf=bg,s,F5F5F500&chs=500x225&cht=p3&chco=16BE16|7FE97F|FD6666|E03838&chd=t:"
+                    + gradeHash.get(this.grade_4) + "," + gradeHash.get(this.grade_3) + "," + gradeHash.get(this.grade_2) + "," + gradeHash.get(this.grade_1) +
+                    "&chdl=Got%20it+-+" + gradeHash.get(this.grade_4) + "|Kinda+-+" + gradeHash.get(this.grade_3) +
+                    "|Barely+-+" + gradeHash.get(this.grade_2) + "|No%20clue+-+" + gradeHash.get(this.grade_1) + "&chma=|2"
+
+                $('card_front').update("Your score: <h1>" + Math.round((score/total)*100) + "%</h1> <a href=http://www.zen.do/explore>Back to my notes</a>");
+                $('card_back').update("<img src=" + chartURL + "></img>");
+
+            }
         }
-
-        /* update progress bar */
-        if (this.currentCardIndex <= this.cards.length) {
-        	console.log("In blah");
-        	this.progressBar.update((this.currentCardIndex)/this.cards.length);
-        	$('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
-        	
-        }
-       
     },
 
     back: function() {
@@ -152,10 +156,10 @@ var cReviewer = Class.create({
                 this.cards[this.currentCardIndex].cue();
             else this.cards[this.currentCardIndex].showAll();
         }
+        else if (this.currentCardIndex > 0) this.currentCardIndex++;
 
         /* update progress bar */
-        this.progressBar.update((this.currentCardIndex)/this.cards.length);
-        $('progress_fraction').update(this.currentCardIndex+"/"+this.cards.length);
+        this.progressBar.update(this.currentCardIndex, this.cards.length);
     },
 
     displayGrade: function(grade) {
@@ -341,7 +345,13 @@ var cCard = Class.create({
         $('card_show').observe('click', this.showAll.bind(this));
 
         /* hide grade buttons */
-        $$('.button_container, .grade_yourself').each(function (buttonContainer) {buttonContainer.addClassName('grade_hide')});
+        $$('.button_container, .grade_yourself').each(function (buttonContainer) {
+            buttonContainer.addClassName('grade_hide');
+            var button = buttonContainer.down("button");
+            if (button) {
+                button.removeClassName('chosen');
+            }
+        });
 //        $$('.arrows_up_down')[0].hide();
     },
 
@@ -456,17 +466,28 @@ var cProgressBar = Class.create({
         /* bramus instance and set progress instance */
         this.bramus = new JS_BRAMUS.jsProgressBarHandler();
         this.bramusBrogressBar = new JS_BRAMUS.jsProgressBar( $('progress_bar'), 0, {
-            showText	: false,
-            width	: 154,
-            height	: 11,
-            boxImage	: '/images/progressbar/custom1_box.gif',
-            barImage	: '/images/progressbar/custom1_bar.gif'});
+            showText    : false,
+            width       : 154,
+            height      : 11,
+            boxImage    : '/images/progressbar/custom1_box.gif',
+            barImage    : '/images/progressbar/custom1_bar.gif'});
     },
 
-    update: function(progress) {
+    update: function(currentCardIndex, cardCount) {
 
-        var percentage = Math.round(progress * 100);
-        this.bramusBrogressBar.setPercentage(percentage);
+        /* special case: end of cards -> increment index */
+        console.log(currentCardIndex);
+        console.log(cardCount);
+
+        if (currentCardIndex >= 0 && currentCardIndex <= cardCount) {
+            console.log("update!");
+            var percentage = Math.round(currentCardIndex / cardCount * 100);
+            this.bramusBrogressBar.setPercentage(percentage);
+
+            console.log(currentCardIndex);
+            console.log(cardCount);
+            $('progress_fraction').update(currentCardIndex + "/" + cardCount);
+        }
     }
 });
 

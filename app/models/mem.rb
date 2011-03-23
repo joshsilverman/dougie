@@ -22,6 +22,13 @@ class Mem < ActiveRecord::Base
     time_delta_to_next = (-1) * strength_post * Math.log(strength_next_target)
     review_after = Time.now + time_delta_to_next
 
+    # override prediction model if confidence is 1
+    if (confidence == "1")
+      confidence == 0.0001
+      review_after = Time.now;
+      strength_pre = 0;
+    end
+
     # update attributes
     self.update_attributes(:review_after => review_after,
                            :strength => strength_pre)
@@ -30,7 +37,7 @@ class Mem < ActiveRecord::Base
     Rep.create(:mem_id => self.id,
                :user_id => self.user_id,
                :confidence => confidence,
-               :strength => importance)
+               :strength => strength_pre)
 
   end
   

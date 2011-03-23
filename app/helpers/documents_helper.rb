@@ -26,6 +26,14 @@ module DocumentsHelper
       html.gsub!(/(<[^>]*id=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")
       html.gsub!(/(<[^>]*class=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")
 
+      # make sure there are no empty nodes -- must be a text node to save li
+      # to my knowledge these must each be duplicated to ensure that all are
+      # caught in instances where there are chained blank nodes
+      html.gsub!(/(<li[^>]*>)(<\/li[^>]*>)/i, "\\1 \\2")
+      html.gsub!(/(<li[^>]*>)(<\/li[^>]*>)/i, "\\1 \\2")
+      html.gsub!(/(<li[^>]*>)(<li[^>]*>)/i, "\\1 \\2")
+      html.gsub!(/(<li[^>]*>)(<li[^>]*>)/i, "\\1 \\2")
+
       return html
     end
 

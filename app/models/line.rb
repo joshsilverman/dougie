@@ -12,21 +12,31 @@ class Line < ActiveRecord::Base
   end
   
   def self.preorder_save(lines,document_id,saved_parents,user_id)
-    
+
     lines.children.each do |child|
 
+      # get parent info
       parent = child.parent
+      if (child.parent and defined?(child.parent.parent))
+        parent_id = child.parent.parent.attr("id")
+      else
+        parent_id = nil
+      end
 
       # check for text node and blank and unsaved lines (blank line_id attributes)
-      if child.class == Nokogiri::XML::Text && !parent.attr('parent').blank? && parent.attr("line_id").blank?
+      if child.class == Nokogiri::XML::Text && parent_id && parent.attr("line_id").blank?
 
         # find line in db where domid equals parent's "parent" attribute
-        parent_attr = parent.attr("parent") || nil
-        if saved_parents[parent_attr]
-            existing_parent = saved_parents[parent_attr]
+        if saved_parents[parent_id]
+          existing_parent = saved_parents[parent_id]
         else
-          existing_parent = Line.where({ :domid => parent_attr, :document_id => document_id }).first
-          saved_parents[parent_attr] = existing_parent
+          existing_parent = Line.where({ :domid => parent_id, :document_id => document_id }).first
+          saved_parents[parent_id] = existing_parent
+        end
+
+        # error -- no saved parent
+        if existing_parent.nil?
+          next
         end
 
         # add line to db, save as variable for mem creation
@@ -47,7 +57,7 @@ class Line < ActiveRecord::Base
                           :review_after => Time.now})
 
       elsif child.children.length > 0
-          Line.preorder_save(child,document_id,saved_parents,user_id)
+        Line.preorder_save(child,document_id,saved_parents,user_id)
       end
     end
     

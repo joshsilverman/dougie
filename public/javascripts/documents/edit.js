@@ -12,14 +12,20 @@ var cDoc = Class.create({
     initialize: function() {
 
         /* set new document attr */
-        var newDoc = $('new_document');
-        if (newDoc) {
-
+        this.newDoc = $('new_doc').innerHTML == "true";
+        if (this.newDoc) {
             /* set attr and remove node (in case there are edits followed by reload) */
-            this.newDoc = true;
-            newDoc.remove();
+            $('new_doc').innerHTML = "false";
         }
-        else newDoc = false;
+        else this.newDoc = false;
+
+        /* check for reload cookie */
+        var reload = AppUtilities.Cookies.read('reloadEditor') == 'true';
+        if (reload) {
+            AppUtilities.Cookies.create('reloadEditor', 'false', 3);
+            self.document.location.reload(true);
+            return;
+        }
 
         /* load editor */
         this.loadEditor();
@@ -72,23 +78,14 @@ var cDoc = Class.create({
             /* initialize right rail once editor loaded */
             this.rightRail = new cRightRail();
 
-            /* focus and select sample node if exists */
+            /* set bg instructions if new doc */
             if (this.newDoc) {
-                var handler = function() {
-
-                    /* sample node, clear */
-                    var sampleNode = Element.select(doc.outline.iDoc.document, 'li')[0];
-                    sampleNode.innerHTML = '<br />';
-//                    doc.editor.focus();
-
-                    /* update card when interpreter available */
-                    var card = doc.rightRail.cards.get(sampleNode.id);
-                    card.update.bind(card).defer(sampleNode);
-
-                    /* stop observing */
-                    Element.stopObserving.defer(doc.outline.iDoc.document, 'click', handler);
-                };
-                Element.observe(doc.outline.iDoc.document, 'click', handler);
+                console.log(this.outline.iDoc);
+                var iDocBodyTags = this.outline.iDoc.document.getElementsByTagName("body");
+                if (iDocBodyTags.length > 0) {
+                    var iDocBody = iDocBodyTags[0];
+                    Element.addClassName(iDocBody, "instructions");
+                }
             }
         }.bind(this)).delay(.1);
 
@@ -147,6 +144,9 @@ var cOutline = Class.create({
 
     lineIds: null,
 
+    /* initially, instructions are shown */
+    instructionsBg:true,
+
     initialize: function() {
 
         /* document members */
@@ -164,8 +164,23 @@ var cOutline = Class.create({
         //save button
         Event.observe($("save_button"),"click",function(e){this.save(e);}.bind(this));
 
+        //review button
+        Event.observe($("review_button"),"click",function(e){
+            AppUtilities.Cookies.create('reloadEditor', 'true', 3);
+            window.location = "/review/" + this.documentId;
+        }.bind(this));
+
         /* outline title observer */
         $("document_name").observe('keypress', this.autosave.bind(this));
+
+        /* hide instructions background onclick */
+        var iDocHtmlTags = this.iDoc.document.getElementsByTagName("html");
+        if (iDocHtmlTags.length > 0) {
+            var iDocHtml = iDocHtmlTags[0];
+            Event.observe(iDocHtml, "click", function(event) {
+                this.hideBg();
+            }.bind(this));
+        }
     },
 
     autosave: function(force) {
@@ -209,8 +224,6 @@ var cOutline = Class.create({
             saveButton.innerHTML = 'Saved';
             return;
         }
-
-        console.log('save');
 
         /* sync */
         // @todo this may become unnecessary later on
@@ -266,7 +279,7 @@ var cOutline = Class.create({
                 window.onbeforeunload = null;
             }.bind(this),
 
-            onFailure: function() {
+            onFailure: function(transport) {
 
                 /* add unsuccessfully saved changes back to unsaved changes and set attributes */
                 this.unsavedChanges = this.unsavedChanges.concat(this.savingChanges).uniq();
@@ -283,7 +296,14 @@ var cOutline = Class.create({
                 saveButton.innerHTML = 'Save';
                 this.autosave();
 
-                console.log('error: unable to save');
+                /* signed out */
+                if (transport.status == 401) {
+                    alert("Please sign in again.");
+                }
+                else {
+                    alert("There was an error saving your document. Please try saving again.");
+                }
+
             }.bind(this),
 
             onComplete: function() {
@@ -386,6 +406,18 @@ var cOutline = Class.create({
             /* new nodes */
             if (!node.getAttribute('line_id')) this.newNodes = true;
         }.bind(this));
+    },
+
+    hideBg: function() {
+
+        if (this.instructionsBg == true) {
+            var iDocBodyTags = this.iDoc.document.getElementsByTagName("body");
+            if (iDocBodyTags.length > 0) {
+                var iDocBody = iDocBodyTags[0];
+                Element.removeClassName(iDocBody, "instructions");
+                this.instructionsBg = false;
+            }
+        }
     }
 });
 
@@ -432,6 +464,11 @@ var cOutlineHandlers = Class.create({
             spansMultiple = range.startContainer != range.endContainer;
         }
 
+        /* change target to nearest P/LI anscester */
+        while (target.nodeName && target.nodeName != "LI" && target.nodeName != "P" ) {
+            target = target.parentNode;
+        }
+
         return [range, target, spansMultiple];
     },
 
@@ -462,35 +499,36 @@ var cOutlineHandlers = Class.create({
                 this.onHyphen(event, target, range);
 
             /* special backspace handling for highlighted text and beginning of nodes */
-            else if (Event.KEY_BACKSPACE == event.keyCode)
+            else if (Event.KEY_BACKSPACE == event.keyCode) {
                 // @browser fire on keydown for all but opera
                 if (!Prototype.Browser.Opera) this.onBackspace(event, target, range, spansMultiple);
+            }
 
-            /* intercept arrow events */
-            else if (   Event.KEY_UP == event.keyCode
-                     || Event.KEY_DOWN == event.keyCode
-                     || Event.KEY_LEFT == event.keyCode
-                     || Event.KEY_RIGHT == event.keyCode) ;
-
-            /* treat like letter */
-            else if (Event.KEY_RETURN == event.keyCode)
-                this.onLetter(event, target, range);
-
-            /* intecept certain letters - take no action here */
-            else if (67 == event.keyCode && event.ctrlKey) ; //copy
-            else if (86 == event.keyCode && event.ctrlKey) ; //paste
-            else if (88 == event.keyCode && event.ctrlKey) ; //cut
-            else if (89 == event.keyCode && event.ctrlKey) ; //redo
-            else if (90 == event.keyCode && event.ctrlKey) ; //undo
-
-            /* letter like */
-            else if (   event.keyCode == 32 /* space */
-                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
-                     || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
-                     || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
-                     || event.keyCode >= 107 && event.keyCode <= 111) /* math */
-
-                this.onDelete(event, target, range, spansMultiple);
+//            /* intercept arrow events */
+//            else if (   Event.KEY_UP == event.keyCode
+//                     || Event.KEY_DOWN == event.keyCode
+//                     || Event.KEY_LEFT == event.keyCode
+//                     || Event.KEY_RIGHT == event.keyCode) ;
+//
+//            /* treat like letter */
+//            else if (Event.KEY_RETURN == event.keyCode)
+//                this.onEnter(event, target, range);
+//
+//            /* intecept certain letters - take no action here */
+//            else if (67 == event.keyCode && event.ctrlKey) ; //copy
+//            else if (86 == event.keyCode && event.ctrlKey) ; //paste
+//            else if (88 == event.keyCode && event.ctrlKey) ; //cut
+//            else if (89 == event.keyCode && event.ctrlKey) ; //redo
+//            else if (90 == event.keyCode && event.ctrlKey) ; //undo
+//
+//            /* letter like */
+//            else if (   event.keyCode == 32 /* space */
+//                     || event.keyCode >= 186 && event.keyCode <= 222 /* punc */
+//                     || event.keyCode >= 65 && event.keyCode <= 90 /* letters */
+//                     || event.keyCode >= 48 && event.keyCode <= 57 /* numbers */
+//                     || event.keyCode >= 107 && event.keyCode <= 111) /* math */
+//
+//                this.onDelete(event, target, range, spansMultiple);
         }
 
         //keyup events
@@ -530,13 +568,11 @@ var cOutlineHandlers = Class.create({
             /* undo/redo trigger save */
             //redo
             else if (89 == event.keyCode && event.ctrlKey) {
-                console.log('redo autosave');
                 doc.outline.autosave(true);
             }
 
             //undo
             else if (90 == event.keyCode && event.ctrlKey) {
-                console.log('undo autosave');
                 doc.outline.autosave(true);
             }
 
@@ -556,12 +592,16 @@ var cOutlineHandlers = Class.create({
         //keypress events
         else if (event.type == "keypress") {
 
+            /* up arrow */
+            if (Event.KEY_UP == event.keyCode)
+                this.onUp(event, target, range);
+
             /* @browser weird ckeditor in OPERA - must intersept keyCode 45!!! */
             if (45 == event.keyCode && range.startOffset == 0) 
                 if (Prototype.Browser.Opera) Event.stop(event);
 
             /* @browser opera silence backspace for keypress (unless beginning of line) */
-             if (Event.KEY_BACKSPACE == event.keyCode)
+            if (Event.KEY_BACKSPACE == event.keyCode)
                 if (Prototype.Browser.Opera) this.onBackspace(event, target, range, spansMultiple);
         }
     },
@@ -587,7 +627,9 @@ var cOutlineHandlers = Class.create({
 
     onTab: function(event, target, range) {
 
-        console.log('tab');
+        /* stop event */
+        event.preventDefault();
+        Event.stop(event);
 
         /* ignore if not at beginning of node */
         if (range.startOffset != 0) {
@@ -615,6 +657,7 @@ var cOutlineHandlers = Class.create({
             parentUL.parentNode.removeChild(parentUL);
 
             /* focus and indent */
+            // @ugly way to focus after changing dom
             doc.editor.focus();
             var element = doc.editor.document.getById(target.id);
             doc.editor.getSelection().selectElement(element);
@@ -635,8 +678,10 @@ var cOutlineHandlers = Class.create({
     onLetter: function(event, target, range) {
 
         /* autosave */
-        console.log('onLetter autosave');
         doc.outline.autosave(true);
+
+        /* hide bg instructions if visible */
+        doc.outline.hideBg();
 
         /* card creation, card update, catch invalid targets */
 
@@ -647,6 +692,21 @@ var cOutlineHandlers = Class.create({
         if (target.tagName != 'P' && target.tagName != 'LI') {
             console.log('error: invalid target tag type');
             return;
+        }
+
+        /* if chrome, remove any extra br elements */
+        if (Prototype.Browser.WebKit == true) {
+            (function() {
+                var brCount = 0;
+                Element.childElements(target).each(function(child) {
+                    if (child.tagName == "BR") {
+                        brCount++;
+                        if (brCount > 1) {
+                            Element.remove(child);
+                        }
+                    }
+                });
+            }).defer();
         }
 
         /* set outline changed attribute, unsaved changes list */
@@ -670,8 +730,10 @@ var cOutlineHandlers = Class.create({
         /* run delete to handle cases where text is being overwritten */
         this.onDelete(event, null, range, spansMultiple);
 
-        /* just update card if not at beginning of node */
-        if (range.startOffset != 0) {
+        /* just update card if not at beginning of node or selection */
+        var selection = doc.editor.getSelection();
+        var selRanges = selection.getRanges();
+        if (selRanges[0].startOffset != 0 || selRanges[0].collapsed == false) {
             /* update node */
             var id = Element.readAttribute(target, 'id') || null;
             if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, target);
@@ -680,6 +742,7 @@ var cOutlineHandlers = Class.create({
 
         /* indented paragraph handling */
         else if (target.tagName == 'P') {
+
             //indented
             if (Element.getStyle(target, 'margin-left') != '0px') {
                 doc.editor.execCommand('outdent');
@@ -690,31 +753,145 @@ var cOutlineHandlers = Class.create({
             else {
 
                 //first element in body - stop event
-                console.log(Element.previousSiblings(target).length);
                 if (Element.previousSiblings(target).length == 0) Event.stop(event);
 
                 //delete node/card
-                else doc.rightRail.sync.bind(doc.rightRail).delay(.25);
+                else {
+
+                    /* must change selection in firefox back to text node */
+                    if (Prototype.Browser.Gecko == true) {
+
+                        /* reset start and end containers */
+                        if (target.firstChild) {
+                            var selection = doc.editor.getSelection();
+                            var ckTextNode = CKEDITOR.dom.element.get(target.firstChild);
+                            var selRanges = selection.getRanges();
+                            selRanges[0]['startContainer'] = ckTextNode;
+                            selRanges[0]['endContainer'] = ckTextNode;
+                            selection.selectRanges(selRanges);
+                        }
+                    }
+
+                    doc.rightRail.sync.bind(doc.rightRail).delay(.25);
+                }
             }
         }
 
         /* li handling */
         else if (target.tagName == 'LI') {
-            console.log(target);
-            console.log('backspace li');
-            doc.editor.execCommand('outdent');
-            Event.stop(event);
+
+            /* if there are no children and parent has no siblings (can't acquire
+             * children), allow outdent */
+            if (   Element.select(target, "ul").length == 0
+                && Element.nextSiblings(target).length == 0) {
+
+                doc.editor.execCommand('outdent');
+                Event.stop(event);
+            }
+
+            /* otherwise, override native backspace because it doesn't work in cke3.5! */
+            else if (   Prototype.Browser.WebKit == true
+                     || Prototype.Browser.Gecko == true) {
+
+                Event.stop(event);
+
+                /* move selection */
+                //find previous outlineNode
+                var prevNode;
+                var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
+                outlineNodes.each(function(node, i) {
+                    if (node.id == target.id && i > 0) {
+                        prevNode = outlineNodes[i - 1]
+                    }
+                });
+
+                if (prevNode) {
+                    var selection = doc.editor.getSelection();
+                    var ckPrevNode = CKEDITOR.dom.element.get(prevNode.firstChild);
+
+                    var selRanges = selection.getRanges();
+                    AppUtilities.Dom.joinTextNodes(prevNode);
+                    selRanges[0]['startOffset'] = prevNode.firstChild.length || 0;
+                    selRanges[0]['endOffset'] = prevNode.firstChild.length || 0;
+                    selRanges[0]['startContainer'] = ckPrevNode;
+                    selRanges[0]['endContainer'] = ckPrevNode;
+                    selection.selectRanges(selRanges);
+//                    this.onDelete(event, prevNode, range, spansMultiple);
+
+                    /* move text content */
+                    $A(target.childNodes).each(function(node) {
+                        if (node.nodeName == "#text") {
+                            try {doc.editor.insertHtml(node.textContent);}
+                            catch(err) {}
+                            target.removeChild(node);
+                        }
+                    });
+
+                    /* first desc uls */
+                    var firstDescUls = function(element) {
+                        var childUls = [];
+                        Element.childElements(element).each(function(child) {
+                            if (!child.tagName || child.tagName != "UL") return;
+                            else childUls.push(child);
+                        });
+                        return childUls;
+                    };
+
+                    /* get/combine ul/s */
+                    var childUl;
+                    Element.childElements(target).each(function(child) {
+                        if (!child.tagName || child.tagName != "UL") return;
+                        if (!childUl) childUl = child;
+                        else {
+                            Element.childElements(child).each(function(li) {
+                                childUl.appendChild(li);
+                            });
+                            Element.remove(child);
+                        }
+                    });
+
+                    /* move childUl if exist */
+                    if (childUl) {
+                        var prevNodeUls = firstDescUls(prevNode);
+                        if (prevNodeUls.length > 0) {
+                            prevNode.insertBefore(childUl, prevNodeUls[0]);
+                        }
+                        else prevNode.appendChild(childUl);
+                    }
+
+                    /* if ff, make sure that first node is an empty text node */
+                    if (Prototype.Browser.Gecko == true) {
+                        if (prevNode.firstChild.tagName == "BR") {
+                            prevNode.insertBefore(
+                                document.createTextNode(""),
+                                prevNode.firstChild);
+                        }
+                    }
+
+                    /* remove old target node and reset selection */
+                    Element.remove(target);
+                    var ckPrevNode = CKEDITOR.dom.element.get(prevNode.firstChild);
+                    selRanges[0]['startContainer'] = ckPrevNode;
+                    selRanges[0]['endContainer'] = ckPrevNode;
+                    selection.selectRanges(selRanges);
+
+                    /* update node */
+                    var id = Element.readAttribute(prevNode, 'id') || null;
+                    if (doc.rightRail.cards.get(id)) doc.rightRail.updateFocusCardWrapper(id, prevNode);
+                }
+
+                /* first node, beginning of list, fire outdent */
+                else doc.editor.execCommand('outdent');
+            }
         }
 
         /* autosave */
-        console.log('backspace autosave');
         doc.outline.autosave();
     },
 
     onDelete: function(event, target, range, spansMultiple) {
-
+        
         /* autosave */
-        console.log('onDelete autosave');
         doc.outline.autosave(true);
 
         /* string representation of deleted text */
@@ -727,19 +904,92 @@ var cOutlineHandlers = Class.create({
         /* delete with nothing highlighted */
         //check target because this may be invoked when pasting on top of something, etc..
         if (html == '' && target) {
+            /* ie doesn't always receive obj */
+            if (!target || !target.firstChild || ! range) {}
 
             /* end of node? */
-            if (   target.firstChild.nodeName == '#text' && range.endOffset == target.firstChild.length
+            else if (   target.firstChild.nodeName == '#text' && range.endOffset == target.firstChild.length
                 || target.firstChild.nodeName != '#text' && range.endOffset == 0) {
 
-                // @todo implement delete at end of line - must push deleted node into delete queue
+                /* stop event */
                 Event.stop(event);
+
+                /* empty target if only br present */
+                if (   target.innerHTML == '<br>'
+                    || target.innerHTML == '<br />'
+                    || target.innerHTML == '<br/>')
+                    
+                    target.innerHTML = '';
+
+                var nextNode;
+                var outlineNodes = Element.select(doc.outline.iDoc.document, "li.outline_node, p.outline_node");
+                outlineNodes.each(function(node, i) {
+                    if (node.id == target.id && outlineNodes.length > i + 1) {
+                        nextNode = outlineNodes[i + 1]
+                    }
+                });
+
+                /* if there is a next node to join... */
+                if (nextNode) {
+
+                    /* for webkit, ckeditor requires a first text node to user
+                     * the insertHtml function. therefore, one is created
+                     * and focus is reestablished */
+                    if (   Prototype.Browser.WebKit == true
+                        && target.nodeName == "P"
+                        && target.innerHTML == "") {
+
+                        /* track selection and ranges before re-establishing focus */
+                        var selection = doc.editor.getSelection();
+                        var selRanges = selection.getRanges();
+
+                        /* remove target */
+                        Element.remove(target);
+
+                        /* recreate selection */
+                        var targetCK = CKEDITOR.dom.element.get(nextNode.firstChild);
+                        var selection = doc.editor.getSelection();
+                        var selRanges = selection.getRanges();
+                        selRanges[0]['startOffset'] = 0;
+                        selRanges[0]['endOffset'] = 0;
+                        selRanges[0]['startContainer'] = targetCK;
+                        selRanges[0]['endContainer'] = targetCK;
+                        selection.selectRanges(selRanges);
+                    }
+                    
+                    /* all other cases */
+                    else {
+
+                        /* move text content of next node */
+                        var newContentLength = 0;
+                        $A(nextNode.childNodes).each(function(node) {
+                            if (node.nodeName == "#text") {
+                                doc.editor.insertHtml(node.textContent);
+                                newContentLength += node.textContent.length;
+                                Element.remove(node);
+                            }
+                        });
+
+                        /* move children of next node */
+                        if (Element.select(nextNode, "ul").length > 0)
+                            target.appendChild(AppUtilities.Dom.joinUlNodes(Element.childElements(nextNode)));
+
+                        /* remove next node */
+                        Element.remove(nextNode);
+
+                        /* create new selection of cursors original position */
+                        var selection = doc.editor.getSelection();
+                        var selRanges = selection.getRanges();
+                        selRanges[0]['startOffset'] -= newContentLength;
+                        selRanges[0]['endOffset'] -= newContentLength;
+                        selection.selectRanges(selRanges);
+                    }
+                }
             }
 
             /* not end of node */
             else {
                 doc.outline.unsavedChanges.push(target.id);
-                console.log('setting changed. target: ' + target);
                 target.setAttribute('changed', 1);
 
                 /* update node */
@@ -771,8 +1021,11 @@ var cOutlineHandlers = Class.create({
         if (spansMultiple) doc.rightRail.sync.bind(doc.rightRail).defer();
 
         /* autosave */
-        console.log('delete (or before char) autosave');
         doc.outline.autosave();
+    },
+
+    onEnter: function(event, target, range) {
+        this.onLetter(event, target, range);
     },
 
     // @note listener set in view on editor creation
@@ -833,6 +1086,19 @@ var cOutlineHandlers = Class.create({
 
         /* exec bulletlist ckeditor command */
         doc.editor.execCommand('bulletedlist');
+    },
+
+    onUp: function(event, target, range) {
+
+        /* stop event in firefox if there are no preceding lines */
+        if (Prototype.Browser.Gecko == true) {
+            if (   target.tagName == "LI"
+                && target.parentNode.parentNode.tagName == "BODY"
+                && !target.previousSibling
+                && !target.parentNode.previousSibling)
+
+                Event.stop(event);
+        }
     }
 });
 
@@ -874,8 +1140,10 @@ var cRightRail = Class.create({
         /* make call */
         this.updateFocusCardTimer =
             (function () {
-                doc.rightRail.cards.get(id).update(target, false, true);
-                doc.rightRail.focus(id);
+                if (doc.rightRail.cards.get(id)) {
+                    doc.rightRail.cards.get(id).update(target, false, true);
+                    doc.rightRail.focus(id);
+                }
             }).delay(.25)
     },
 
@@ -1066,7 +1334,6 @@ var cCard = Class.create({
             this.autoActivate = false;
             this.activate();
             this.elmntCard.down('input').checked = 'yes';
-            console.log('activate in render');
             doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', true);
         }
 
@@ -1104,7 +1371,6 @@ var cCard = Class.create({
                 this.autoActivated = false;
                 this.deactivate();
                 this.elmntCard.down('input').checked = '';
-                console.log('activate in render');
                 doc.outline.iDoc.document.getElementById('node_' + this.cardNumber).setAttribute('active', false);
             }
         }

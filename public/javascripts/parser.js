@@ -6,12 +6,10 @@ var cParser = Class.create({
     parse: function(Card, contextualize, ellipsize) {
 
         //definition
-        console.log(Card.text);
-        var defParts = Card.text.split(' - ');
+        var defParts = Card.text.split(/(?:\s+-+\s+|-+\s+|\s+-+)/);
 
         if (defParts.length > 1) {
 
-            console.log("here");
             //set autoActivate member if this is the first time text has been parsable
             if (!Card.back && !Card.active) Card.autoActivate = true;
 
@@ -90,7 +88,6 @@ var cParser = Class.create({
         this.docHtml.id = '';
 
         /* locate adjust line node */
-        console.log(Card.domId);
         this.line = Element.select(this.docHtml, '#' + Card.domId);
         if (this.line.length == 0) return;
         this.line = Element.extend(this.line[0]);
