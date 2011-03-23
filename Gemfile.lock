@@ -149,6 +149,7 @@ DEPENDENCIES
   nifty-generators
   nokogiri
   omniauth
+  rack (= 1.2.1)
   rails (= 3.0.3)
   smurf
   warden (= 1.0.3)
