@@ -1,0 +1,58 @@
+<style>
+  .quickStudy{
+    width:100px;
+    float:left;
+    margin:5px 40px 5px 5px;
+    padding:5px;
+    height:175px;
+}
+.QScard{
+  height: 50px;
+  width:125px;
+  border:solid 1px black;
+  background-color: white;
+}
+</style>
+
+<script language="javascript">
+function toggle() {
+	var ele = document.getElementById("definition");
+	var text = document.getElementById("displayText");
+	if(ele.style.display == "block") {
+    		ele.style.display = "none";
+		text.innerHTML = "show";
+  	}
+	else {
+		ele.style.display = "block";
+		text.innerHTML = "hide";
+	}
+}
+</script>
+
+<div class="quickStudy">
+  <h4>Quick Study</h4>
+  <div class="QScard">
+    <span id="card_front" style="display: block; margin:20px auto 0 auto; text-align: center;">Term</span>
+  </div>
+  <a id="displayText" href="javascript:toggle();">Show</a>
+  <div class="QScard" id="definition" style="display: none;">
+    <span id="card_back" style="display: block; margin:20px auto 0 auto; text-align: center;">Definition</span>
+  </div>
+</div>
+
+<!--
+<div document_id="'+document['id']+'" class="icon_container rounded_border">
+    <a href="/documents/'+document['id']+'/edit">
+      <div class="title">'+document['name']+'</div>
+      <div class="folder">
+      <img class="folder" alt="" src="/images/organizer/doc-icon.png" />
+      </div>
+    </a>
+    <div class="folder_options">\
+      <a href="/documents/'+document['id']+'/edit"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>
+      <a href="/review/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/play-icon.png" /></a>
+      <img class="rounded_border remove_document" alt="" src="/images/organizer/remove-icon.png" />
+    </div>
+  </div>
+
+-->

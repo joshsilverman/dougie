@@ -33,6 +33,9 @@ var cDoc = Class.create({
         /* build directory view */
         this.directoryView = new cDirectoryView(this.tags);
 
+        /* build quick study */
+        this.quickStudyParser();
+
         /* reset documentsViews */
         this.documentsViews = new Hash;
 
@@ -58,6 +61,20 @@ var cDoc = Class.create({
         /* fire resize */
         AppUtilities.resizeContents();
         AppUtilities.resizeContents.delay(.01);
+    },
+
+    quickStudyParser: function(){
+        var card = $('qstudy_json').innerHTML;
+        var front;
+        var back;
+        var defParts = card.split(' - ');
+
+        if (defParts.length > 1) {
+            front = defParts[0];
+            back = defParts[1];
+        }
+        $('card_front').innerHTML = front;
+        $('card_back').innerHTML = back;
     }
 });
 
