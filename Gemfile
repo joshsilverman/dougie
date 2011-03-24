@@ -11,7 +11,7 @@ gem 'rails', '3.0.3'
 # gem 'unicorn'
 # gem 'heroku_s3_backup'
 # gem 'ruby-mysql', :group => :jason
-gem 'rack', '1.2.2'
+gem 'rack', '1.2.1'
 gem 'mysql'
 gem 'nokogiri'
 gem 'acts_as_tree'
