@@ -186,6 +186,9 @@ var cReviewHandlers = Class.create({
 
     delegateKeystrokeHandler: function(event) {
 
+        /* no special event handling if in a text area */
+        if (event.target.nodeName == "TEXTAREA") return;
+
         switch (event.keyCode) {
 //            case (13):
 //                this.onEnter(event);
