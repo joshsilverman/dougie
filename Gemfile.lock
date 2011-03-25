@@ -105,7 +105,7 @@ GEM
     orm_adapter (0.0.4)
     polyglot (0.3.1)
     pyu-ruby-sasl (0.0.3.2)
-    rack (1.2.2)
+    rack (1.2.1)
     rack-mount (0.6.13)
       rack (>= 1.0.0)
     rack-openid (1.2.0)
@@ -154,7 +154,7 @@ DEPENDENCIES
   nifty-generators
   nokogiri
   omniauth
-  rack (= 1.2.2)
+  rack (= 1.2.1)
   rails (= 3.0.3)
   smurf
   warden (= 1.0.3)
