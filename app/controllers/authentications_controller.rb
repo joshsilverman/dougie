@@ -23,6 +23,7 @@ class AuthenticationsController < ApplicationController
       else
         session[:omniauth] = omniauth.except('extra')
         session[:omniauth]['user_info']['email'] = omniauth['extra']['user_hash']['email'] if omniauth['extra']
+
         redirect_to "/users/sign_up"
       end
     end
