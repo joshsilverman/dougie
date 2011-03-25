@@ -14,7 +14,7 @@ var cParser = Class.create({
             if (!Card.back && !Card.active) Card.autoActivate = true;
 
             Card.front = defParts[0];
-            Card.back = defParts.slice(1).join(' - ');
+            Card.back = defParts.slice(1).join(' - ').unescapeHTML();
         }
 
         //fill in the blank

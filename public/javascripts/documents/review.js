@@ -419,6 +419,7 @@ var cCard = Class.create({
 
         /* text */
         var text = $('input_front').value + ' - ' + $('input_back').value;
+        text = text.escapeHTML();
 
         /* save */
         var requestUrl = '/lines/'+this.lineId;
