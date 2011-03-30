@@ -58,8 +58,8 @@ Dougie::Application.configure do
       :port => 587,
       :domain => "zen.do",
       :authentication => :login,
-      :user_name => "no-reply@zen.do",
-      :password => "93guz93man"
+      :user_name => "welcome@zen.do",
+      :password => "U6455372"
   }
   
 end
