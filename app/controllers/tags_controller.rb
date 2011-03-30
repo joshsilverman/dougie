@@ -15,6 +15,22 @@ class TagsController < ApplicationController
 
     @tags_json = Tag.tags_json(current_user)
 
+    @recentMem = Line.includes(:mems).where("lines.user_id = ? AND mems.review_after < ?", current_user.id, Time.now()).first.text
+
+    line_list = Line.includes(:mems).where("lines.user_id = ?",  current_user.id).order("mems.updated_at DESC").limit(100)
+    recentDocs = []
+    line_list.each do |l|
+      if recentDocs.size < 3
+        unless recentDocs.include?(l.document_id)
+          recentDocs << l.document_id
+        end
+      end
+    end
+    @rDocs = []
+    recentDocs.each do |r|
+      @rDocs << [r, Document.find(r).name]
+    end
+    #@rDoc = Document.where(:id => [recentDocs[2],recentDocs[1],recentDocs[0]]).to_json(:only => [:id, :name])
   end
 
   def json
