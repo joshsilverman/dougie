@@ -15,7 +15,9 @@ class TagsController < ApplicationController
 
     @tags_json = Tag.tags_json(current_user)
 
-    @recentMem = Line.includes(:mems).where("lines.user_id = ? AND mems.review_after < ?", current_user.id, Time.now()).first.text
+    recentMem = Line.includes(:mems).where("lines.user_id = ? AND mems.review_after < ?", current_user.id, Time.now()).first
+    @recentMem = "You have no active flashcards - Click the folder and start making some!"
+    @recentMem = recentMem.text unless recentMem.nil?
 
     line_list = Line.includes(:mems).where("lines.user_id = ?",  current_user.id).order("mems.updated_at DESC").limit(100)
     recentDocs = []

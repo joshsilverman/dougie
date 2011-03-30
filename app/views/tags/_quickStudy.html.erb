@@ -7,52 +7,37 @@
     height:175px;
 }
 .QScard{
-  height: 50px;
-  width:125px;
-  border:solid 1px black;
+  height: 110px;
+  width: 130px;
+  border: solid 1px black;
   background-color: white;
 }
 </style>
 
 <script language="javascript">
 function toggle() {
-	var ele = document.getElementById("definition");
-	var text = document.getElementById("displayText");
-	if(ele.style.display == "block") {
-    		ele.style.display = "none";
-		text.innerHTML = "show";
+	var front = document.getElementById("card_front");
+	var back = document.getElementById("card_back");
+        var side = document.getElementById("card_side");
+	if(front.style.display == "block") {
+    		front.style.display = "none";
+		back.style.display = "block";
+                side.innerHTML = "<em>Back</em>";
   	}
 	else {
-		ele.style.display = "block";
-		text.innerHTML = "hide";
+		front.style.display = "block";
+		back.style.display = "none";
+                side.innerHTML = "<em>Front</em>";
 	}
 }
 </script>
 
 <div class="quickStudy">
   <h4>Quick Study</h4>
+  <span id="card_side" style="margin:0 auto; text-align: center;"><em>Front</em></span>
   <div class="QScard">
-    <span id="card_front" style="display: block; margin:20px auto 0 auto; text-align: center;">Term</span>
+    <span id="card_front" style="display: block; padding:5px; text-align: center;">Term</span>
+    <span id="card_back" style="display: none; padding:5px; text-align: center;">Definition</span>
   </div>
-  <a id="displayText" href="javascript:toggle();">Show</a>
-  <div class="QScard" id="definition" style="display: none;">
-    <span id="card_back" style="display: block; margin:20px auto 0 auto; text-align: center;">Definition</span>
-  </div>
+  <a id="displayText" href="javascript:toggle();">Flip Card</a>
 </div>
-
-<!--
-<div document_id="'+document['id']+'" class="icon_container rounded_border">
-    <a href="/documents/'+document['id']+'/edit">
-      <div class="title">'+document['name']+'</div>
-      <div class="folder">
-      <img class="folder" alt="" src="/images/organizer/doc-icon.png" />
-      </div>
-    </a>
-    <div class="folder_options">\
-      <a href="/documents/'+document['id']+'/edit"><img class="rounded_border" alt="" src="/images/organizer/edit-icon.png" /></a>
-      <a href="/review/'+document['id']+'"><img class="rounded_border" alt="" src="/images/organizer/play-icon.png" /></a>
-      <img class="rounded_border remove_document" alt="" src="/images/organizer/remove-icon.png" />
-    </div>
-  </div>
-
--->
