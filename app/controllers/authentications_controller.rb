@@ -21,11 +21,10 @@ class AuthenticationsController < ApplicationController
         sign_in(:user, user)
         redirect_to "/users/edit"
       else
+
+        #log failed account creation if due to email already taken
         if not user.errors['email'].blank? and user.errors['email'].include?("has already been taken")
-
-          #log failed account creation
-          auth_logger.info("\n#{Time.now.to_s(:db)}\nemail: #{user.email}\n")
-
+          auth_logger.info("\n\"Email has already been taken\"\n#{Time.now.to_s(:db)}\nemail: #{user.email}\n")
         end
 
         session[:omniauth] = omniauth.except('extra')
