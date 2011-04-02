@@ -18,6 +18,8 @@ class RegistrationsController < Devise::RegistrationsController
       end
     else
 
+      logger.info "here!\n\n\n"
+      account_logger.info("test")
       account_logger.info("\n#{Time.now.to_s(:db)}\nemail: #{resource.email}\n")
       account_logger.info("\n#{resource.errors['email']}\n")
       if not resource.errors['email'].blank? and resource.errors['email'].include?("has already been taken")
@@ -48,7 +50,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def account_logger
-    @@account_logger ||= Logger.new("#{RAILS_ROOT}/log/account_create.log")
+    @@account_logger ||= Logger.new("#{RAILS_ROOT}/log/registrationerr.log")
   end
 
 end
