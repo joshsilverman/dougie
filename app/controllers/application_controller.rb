@@ -14,7 +14,11 @@ class ApplicationController < ActionController::Base
     logger.info "reques host_with_port #{request.host_with_port}\n"
     logger.info "reques request_uri #{request.request_uri}\n"
     logger.info "reques host #{request.host}\n"
-    redirect_to request.protocol + request.host_with_port + request.request_uri if /^www/.match(request.host)
+
+    if /^www/.match(request.host_with_port)
+      host = request.host_with_port.gsub(/^www/, "")
+      redirect_to request.protocol + host + request.request_uri
+    end
   end
 
 end
