@@ -17,8 +17,15 @@ class ApplicationController < ActionController::Base
 
     if /^www\./.match(request.host_with_port)
       host = request.host_with_port.gsub(/^www\./, "")
-      redirect_to request.protocol + host + request.request_uri
+      redirect_loc = request.protocol + host + request.request_uri
+      redirect_logger.info("\n#{Time.now.to_s(:db)}\nredirect to: #{redirect_loc}\n")
+
+      redirect_to redirect_loc
     end
+  end
+
+  def redirect_logger
+    @@redirect_logger ||= Logger.new("#{RAILS_ROOT}/log/redirect.log")
   end
 
 end

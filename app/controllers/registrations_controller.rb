@@ -18,11 +18,11 @@ class RegistrationsController < Devise::RegistrationsController
       end
     else
 
-      if not resource.errors.email.nil?
+      if not resource.errors['email'].blank? and resource.errors['email'].include?("has already been taken")
 
         #log failed account creation
-        account_logger.info("\n#{Time.now.to_s(:db)}\nemail: #{resource.email}\n#{resource.errors}\n")
-        
+        account_logger.info("\n#{Time.now.to_s(:db)}\nemail: #{resource.email}\n")
+
       end
 
       clean_up_passwords(resource)
