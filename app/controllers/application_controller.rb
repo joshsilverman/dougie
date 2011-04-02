@@ -9,7 +9,11 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
 
   def check_uri
-    logger.info "redirect to: #{request.protocol + request.host_with_port + request.request_uri}"
+    logger.info "redirect to: #{request.protocol + request.host_with_port + request.request_uri}\n"
+    logger.info "reques protocol: #{request.protocol}\n"
+    logger.info "reques host_with_port #{request.host_with_port}\n"
+    logger.info "reques request_uri #{request.request_uri}\n"
+    logger.info "reques host #{request.host}\n"
     redirect_to request.protocol + request.host_with_port + request.request_uri if /^www/.match(request.host)
   end
 
