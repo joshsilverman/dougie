@@ -17,6 +17,13 @@ class RegistrationsController < Devise::RegistrationsController
         sign_in(resource_name, resource)
       end
     else
+
+      begin
+        account_logger.info("\n#{Time.now.to_s(:db)}\nemail: #{resource.email}\n#{resource.errors}\n")
+      rescue
+        # failure to log
+      end
+
       clean_up_passwords(resource)
       render_with_scope :new
     end
@@ -35,6 +42,10 @@ class RegistrationsController < Devise::RegistrationsController
   def edit
     @authentications = current_user.authentications.all
     super
+  end
+
+  def account_logger
+    @@account_logger ||= Logger.new("#{RAILS_ROOT}/log/account_create.log")
   end
 
 end
