@@ -21,6 +21,13 @@ class AuthenticationsController < ApplicationController
         sign_in(:user, user)
         redirect_to "/users/edit"
       else
+        if not user.errors['email'].blank? and user.errors['email'].include?("has already been taken")
+
+          #log failed account creation
+          auth_logger.info("\n#{Time.now.to_s(:db)}\nemail: #{user.email}\n")
+
+        end
+
         session[:omniauth] = omniauth.except('extra')
         session[:omniauth]['user_info']['email'] = omniauth['extra']['user_hash']['email'] if omniauth['extra']
 
@@ -38,5 +45,9 @@ class AuthenticationsController < ApplicationController
       notice = "There was an error while deleting that authentication."
     end
     redirect_to "/users/edit", :notice => notice
+  end
+
+  def auth_logger
+    @@auth_logger ||= Logger.new("#{RAILS_ROOT}/log/auth_err.log")
   end
 end
