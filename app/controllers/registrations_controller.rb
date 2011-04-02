@@ -18,10 +18,11 @@ class RegistrationsController < Devise::RegistrationsController
       end
     else
 
-      begin
+      if not resource.erros.email.nil?
+
+        #log failed account creation
         account_logger.info("\n#{Time.now.to_s(:db)}\nemail: #{resource.email}\n#{resource.errors}\n")
-      rescue
-        # failure to log
+        
       end
 
       clean_up_passwords(resource)

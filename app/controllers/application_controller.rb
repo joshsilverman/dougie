@@ -15,10 +15,10 @@ class ApplicationController < ActionController::Base
 #    logger.info "reques request_uri #{request.request_uri}\n"
 #    logger.info "reques host #{request.host}\n"
 
-#    if /^www\./.match(request.host_with_port)
-#      host = request.host_with_port.gsub(/^www\./, "")
-#      redirect_to request.protocol + host + request.request_uri
-#    end
+    if /^www\./.match(request.host_with_port)
+      host = request.host_with_port.gsub(/^www\./, "")
+      redirect_to request.protocol + host + request.request_uri
+    end
   end
 
 end
