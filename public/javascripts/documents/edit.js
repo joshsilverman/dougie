@@ -1052,7 +1052,12 @@ var cOutlineHandlers = Class.create({
         html = html.gsub(/parent="[^"]*"/, 'parent=""');
         //remove meta tags - necessary?
         html = html.gsub(/<meta[^>]*>/, '');
+        //remove span tags
+        html = html.gsub(/<\/?span[^>]*>/i, '');
         event.data.html = html;
+
+        /* set new nodes to true in case pasted conent include nodes */
+        doc.outline.newNodes = true;
     },
 
     onClickNode: function(event, target, range) {},
