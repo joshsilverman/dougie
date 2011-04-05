@@ -13,3 +13,8 @@ p, ul {
 ul {
     padding-left: 15px;
 }
+
+body.instructions {
+    background-image:url(/images/editor/bg.gif);
+    background-repeat:no-repeat;
+}

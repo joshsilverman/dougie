@@ -164,7 +164,7 @@ div.img_review {
 
 .box input[type=text], .box input[type=password] {
     border:#9e943a solid 1px;
-    width:69%;
+    width:68%;
     clear:right;
 }
 
@@ -172,7 +172,7 @@ div.img_review {
     line-height:25px;
 }
 
-.box:last-child {
+.box_container .last-box {
     border:none;
 }
 

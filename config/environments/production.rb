@@ -46,7 +46,7 @@ Dougie::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-  config.action_mailer.default_url_options = { :host => 'www.zendonotes.com/' }
+  config.action_mailer.default_url_options = { :host => 'www.zen.do/' }
   
   config.action_mailer.perform_deliveries = true 
   #config.action_mailer.delivery_method = :sendmail #:smtp
@@ -56,10 +56,10 @@ Dougie::Application.configure do
       :enable_starttls_auto => true,
       :address => "smtp.gmail.com",
       :port => 587,
-      :domain => "zendonotes.com",
+      :domain => "zen.do",
       :authentication => :login,
-      :user_name => "no-reply@zendonotes.com",
-      :password => "93guz93man"
+      :user_name => "welcome@zen.do",
+      :password => "U6455372"
   }
   
 end

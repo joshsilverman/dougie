@@ -19,9 +19,19 @@ class User < ActiveRecord::Base
   attr_accessible :first_name, :last_name, :email, :password, :password_confirmation
 
   def apply_omniauth(omniauth)
-    self.email = omniauth['extra']['user_hash']['email'] if omniauth['extra'] && email.blank?
+
+    if (!omniauth['user_info']['email'].nil?)
+      self.email = omniauth['user_info']['email']
+    elsif omniauth['extra'] && email.blank?
+        self.email = omniauth['extra']['user_hash']['email']
+    end
+    
     self.first_name = omniauth['user_info']['first_name'] if first_name.blank?
     self.last_name = omniauth['user_info']['last_name'] if last_name.blank?
+
+    # seed password with random string
+    self.password = ActiveSupport::SecureRandom.hex(16)[0,20]
+
     authentications.build(:provider => omniauth['provider'], :uid => omniauth['uid'])
   end
 

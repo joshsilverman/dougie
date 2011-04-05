@@ -8,6 +8,23 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
 
   def check_uri
-    redirect_to request.protocol + request.host_with_port + request.request_uri if /^www/.match(request.host)
+#    logger.info "redirect to: #{request.protocol + request.host_with_port + request.request_uri}\n"
+#    logger.info "reques protocol: #{request.protocol}\n"
+#    logger.info "reques host_with_port #{request.host_with_port}\n"
+#    logger.info "reques request_uri #{request.request_uri}\n"
+#    logger.info "reques host #{request.host}\n"
+
+    if /^www\./.match(request.host_with_port)
+      host = request.host_with_port.gsub(/^www\./, "")
+      redirect_loc = request.protocol + host + request.request_uri
+      redirect_logger.info("\n#{Time.now.to_s(:db)}\nredirect to: #{redirect_loc}\n")
+
+      redirect_to redirect_loc
+    end
   end
+
+  def redirect_logger
+    @@redirect_logger ||= Logger.new("#{RAILS_ROOT}/log/redirect.log")
+  end
+
 end
