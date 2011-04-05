@@ -88,6 +88,7 @@ var cParser = Class.create({
         this.docHtml.id = '';
 
         /* locate adjust line node */
+        console.log(Card);
         this.line = Element.select(this.docHtml, '#' + Card.domId);
         if (this.line.length == 0) return;
         this.line = Element.extend(this.line[0]);

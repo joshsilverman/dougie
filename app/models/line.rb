@@ -11,91 +11,36 @@ class Line < ActiveRecord::Base
     status.to_s == "true"
   end
   
-  def self.preorder_save(lines,document_id,saved_parents,user_id)
-
-    lines.children.each do |child|
-
-      # get parent info
-      parent = child.parent
-      if (child.parent and defined?(child.parent.parent))
-        parent_id = child.parent.parent.attr("id")
-      else
-        parent_id = nil
-      end
-
-      # check for text node and blank and unsaved lines (blank line_id attributes)
-      if child.class == Nokogiri::XML::Text && parent_id && parent.attr("line_id").blank?
-
-        # find line in db where domid equals parent's "parent" attribute
-        if saved_parents[parent_id]
-          existing_parent = saved_parents[parent_id]
+  def self.save_all(doc,document_id,user_id)
+    doc.css("li").each do |line|
+      parent = line.parent
+      if line.attr("active") == 'true'
+        dom_id = line.attr("id")
+        existing_line = Line.where(:user_id => user_id,
+                                   :domid => dom_id,
+                                   :document_id => document_id ).first
+        if (not existing_line.nil?)
+          if line.attr('changed') == "1"
+            Mem.find(:first, :conditions => {:line_id => e_line.id, :user_id => user_id})\
+                  .update_attribute(:status, status)
+          end
         else
-          existing_parent = Line.where({ :domid => parent_id, :document_id => document_id }).first
-          saved_parents[parent_id] = existing_parent
-        end
-
-        # error -- no saved parent
-        if existing_parent.nil?
-          next
-        end
-
-        # add line to db, save as variable for mem creation
-        dom_id = parent.attr("id")
-        created_line = existing_parent.children.create( :text => child.content.strip,
-                                                        :user_id => user_id,
-                                                        :domid => dom_id,
-                                                        :document_id => document_id )
-
-        @@document_html.gsub!(/((?:<p|<li)[^>]*[^_]id="#{dom_id}"[^>]*line_id=")("[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
-        @@document_html.gsub!(/((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) {"#{$1}#{created_line.id}#{$2}"}
-
-        # pass in hash of properties to be merged when creating a Mem
-        mem = Mem.create({:strength => 0.5,
-                          :user_id => user_id,
-                          :line_id => created_line.id,
-                          :status => parent.attr("active") == 'true',
-                          :review_after => Time.now})
-
-      elsif child.children.length > 0
-        Line.preorder_save(child,document_id,saved_parents,user_id)
-      end
-    end
-    
-  end
-  
-  def self.update_line(lines,existing_lines,user_id)
-
-    existing_lines_hash = {}
-    existing_lines.each do |e_line|
-      existing_lines_hash[e_line.id] = e_line
-    end
-
-    # find all lines with line_id attribute
-    lines.css("li").each do |line|
-
-      unless object_id.blank?
-
-        if existing_lines_hash[line.attr('line_id').to_i].blank?
-          next
-        else
-          e_line = existing_lines_hash[line.attr('line_id').to_i]
-        end
-
-        # existing line epoch updated_at less than incoming line epoch change time
-        if line.attr('changed') == "1"
-
-          # replace existing line text with incoming line text
-          text = line.to_s.scan(/>([^<]*)/)[0][0].strip
-          e_line.update_attribute(:text,text)
-
-          # update mem status
-          # @todo - combine into one query
-          status = (line.attr('active') == 'true') ? 1 : 0
-          Mem.find(:first, :conditions => {:line_id => e_line.id, :user_id => user_id})\
-                .update_attribute(:status, status)
+          created_line = Line.create( :user_id => user_id,
+                                      :domid => dom_id,
+                                      :document_id => document_id )
+          @@document_html.gsub!(
+            /((?:<p|<li)[^>]*[^_]id="#{dom_id}"[^>]*line_id=")("[^>]*>)/) \
+            {"#{$1}#{created_line.id}#{$2}"}
+          @@document_html.gsub!(
+            /((?:<p|<li)[^>]*line_id=")("[^>]*[^_]id="#{dom_id}"[^>]*>)/) \
+            {"#{$1}#{created_line.id}#{$2}"}
+          mem = Mem.create({:strength => 0.5,
+                            :user_id => user_id,
+                            :line_id => created_line.id,
+                            :status => true,
+                            :review_after => Time.now})
         end
       end
     end
   end
-  
 end

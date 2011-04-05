@@ -20,7 +20,6 @@ class Document < ActiveRecord::Base
     delete_nodes = params[:delete_nodes]
     new_nodes = params[:new_nodes] == 'true'
     document = Document.find(:first, :conditions => {:id => id, :user_id => user_id})
-#    document = Document.includes(:lines).where(:id => id, :user_id => current_user.id).first //@todo combind existing lines query with this one
 
     if id.blank? || html.blank? || document.blank?
       return nil
@@ -29,33 +28,31 @@ class Document < ActiveRecord::Base
     # pull all existing document line
     existing_lines = document.lines
 
-    # group transaction; track whether lines deleted
     deleted_lines = false
     Line.transaction do
+      # general adjustments
+      html_safe = "<li id=\"node_0\">#{html}</li>"
+      html_safe = html_safe.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<\/?(?:body|ul)[^>]*>/i,"").gsub(/<br>/,"").gsub(/<(\/?)LI([^>]*)>/,"<\\1li\\2>")
+      html_safe.gsub!(/<p/i,"<li")
+      html_safe.gsub!(/<\/p/,"</li")
+      # @browser ie adjustments
+      html_safe.gsub!(/(<[^>]* line_id)( [^>]*>)/, "\\1=\"\"\\2")
+      html_safe.gsub!(/(<[^>]*id=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")
+      html_safe.gsub!(/(<[^>]*class=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")
+      # make sure there are no empty nodes
+      html_safe.gsub!(/(<li[^>]*>)(<\/li[^>]*>)/i, "\\1 \\2")
+      html_safe.gsub!(/(<li[^>]*>)(<\/li[^>]*>)/i, "\\1 \\2")
+      html_safe.gsub!(/(<li[^>]*>)(<li[^>]*>)/i, "\\1 \\2")
+      html_safe.gsub!(/(<li[^>]*>)(<li[^>]*>)/i, "\\1 \\2")
+      # remove all extraneous span tags usually originating from copy/paste
+      html_safe.gsub!(/<\/?(?:span|a|meta|i|b|img|u|sup)[^>]*>/i, "")
 
-      # efficient find or create root using previous query
-      root = nil
-      existing_lines.each do |line|
-        if line.domid == "node_0"
-          root = line
-          break
-        end
-      end
-      if root.nil?
-        root = Line.create(:document_id => document.id,:domid => "node_0",:text => "root" )
-      end
-
-      # run update line; store whether anything was changed
-      dp = DocumentParser.new(html)
-      Line.update_line(dp.doc,existing_lines,user_id) unless document.html.blank?
-
+      doc = Nokogiri::XML(html_safe)
+      Line.update_all(doc,existing_lines,user_id) unless document.html.blank?
       Line.document_html = html
       if (new_nodes)
-        Line.preorder_save(dp.doc,document.id, {'node_0' => root}, user_id)
+        Line.save_all(doc,document.id, user_id)
       end
-
-      # update denormalized html and name
-      document.update_attributes(:html => Line.document_html, :name => params[:name])
 
       # delete lines/mems (don't use destory_all with dependencies) - half as many queries; tracks whether deleted
       deleted_lines = false
@@ -67,15 +64,16 @@ class Document < ActiveRecord::Base
       end
     end
 
+    # update denormalized html and name
+    document.update_attributes(:html => Line.document_html, :name => params[:name])
+    
     # refresh existing if necessary
     if new_nodes || deleted_lines
       document.lines = Line.find_all_by_document_id(id)
     else
       document.lines = existing_lines
     end
-
     return document
-    
   end
   
 end
