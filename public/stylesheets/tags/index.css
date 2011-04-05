@@ -54,10 +54,9 @@ h4 {margin:5px 0;}
 /* organizer header */
 
 #organizer_header {
-    margin-top:15px;
-    margin-bottom:15px;
+    margin:30px 0 4px 170px;
     border-bottom: lightgrey solid 1px;
-    padding-bottom:20px;
+    padding-bottom:4px;
     height:16px;
 }
 

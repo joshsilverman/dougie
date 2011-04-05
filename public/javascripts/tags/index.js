@@ -130,7 +130,7 @@ var cDirectoryView = Class.create({
 
     render: function() {
         /* render icons and title */
-        $('directory_name').update('/');
+        $('directory_name').update('My Notes /');
         $('icons').update(this.html)
 
         /* remove old sort listeners/classes; add new classes */
@@ -375,7 +375,7 @@ var cDocumentsView = Class.create({
         var dirName;
         if (this.tag.misc) dirName = this.tag.name
         else dirName = this.tag.name + " <span id='edit_directory_name'>[Edit Name]</span>"
-        $('directory_name').update('/' + dirName + '/');
+        $('directory_name').update('My Notes /' + dirName + '/');
         $('icons').update(this.html);
 
         /* remove old sort listeners/classes; add new classes */
