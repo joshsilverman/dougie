@@ -34,6 +34,9 @@ module DocumentsHelper
       html.gsub!(/(<li[^>]*>)(<li[^>]*>)/i, "\\1 \\2")
       html.gsub!(/(<li[^>]*>)(<li[^>]*>)/i, "\\1 \\2")
 
+      # remove all extraneous span tags usually originating from copy/paste
+      html.gsub!(/<\/?(?:span|a|meta|i|b|img|u|sup)[^>]*>/i, "")
+
       return html
     end
 
