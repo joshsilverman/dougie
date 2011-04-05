@@ -122,4 +122,28 @@ class DocumentsControllerTest < ActionController::TestCase
 
   end
 
+#  test "spans in doc" do
+#
+#    # login via https
+#    sign_in users(:one)
+#
+#    # new document
+#    document = Document.create(:user_id => 1, :name => 'untitled')
+#
+#    request = {
+#      :delete_nodes=>"",
+#      :name=>"untitled",
+#      :html=>'<body id=\"node_0\"><p id=\"node_2\" line_id=\"\" changed=\"0\" class=\"outline_node\" active=\"true\" parent=\"node_0\"><span class=\"Apple-style-span\" style=\"border-collapse: collapse; font-family: Times; \">Syntax - Principles and rules for constructing sentences.</span></p><ul style=\"margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-left: 15px; \"><li style=\"margin-left: 15px; \" id=\"node_3\" line_id=\"\" changed=\"0\" class=\"outline_node\" parent=\"node_2\"><span class=\"Apple-style-span\" style=\"border-collapse: collapse; font-family: Times; \">Sentence Constructions:</span><ul style=\"margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-left: 15px; \"><li style=\"margin-left: 15px; \" id=\"node_4\" line_id=\"\" changed=\"0\" class=\"outline_node\" active=\"true\" parent=\"node_3\"><span class=\"Apple-style-span\" style=\"border-collapse: collapse; font-family: Times; \">Head - The central noun in a noun phrase.</span></li><li style=\"margin-left: 15px; \" id=\"node_5\" line_id=\"\" changed=\"0\" class=\"outline_node\" active=\"true\" parent=\"node_3\"><span class=\"Apple-style-span\" style=\"border-collapse: collapse; font-family: Times; \">Nominal - A group of nouns that includes the head noun as well as its modifiers but not the determiner.</span></li><li style=\"margin-left: 15px; \" id=\"node_6\" line_id=\"\" changed=\"0\" class=\"outline_node\" active=\"true\" parent=\"node_3\"><span class=\"Apple-style-span\" style=\"border-collapse: collapse; font-family: Times; \">Predeterminer - Words that appear in a NP before the determiner (\"<strong>All</strong>&nbsp;the flights.\").</span></li><li style=\"margin-left: 15px; \" id=\"node_7\" line_id=\"\" changed=\"0\" class=\"outline_node\" active=\"true\" parent=\"node_3\"><span class=\"Apple-style-span\" style=\"border-collapse: collapse; font-family: Times; \">Postmodifiers - Words that appear in a NP following the head (\"All flights&nbsp;<strong>from Cleveland</strong>.\").</span></li></ul></li></ul><p></p></body>',
+#      :id=>document.id,
+#      :new_nodes=>"true"
+#    }
+#
+#    Document.update(request, 1)
+#    lines = Line.find_all_by_document_id(document.id)
+#    puts document.html
+#    puts "line count: %d" % lines.length
+#    assert(lines.length == 7)
+#
+#  end
+
 end
