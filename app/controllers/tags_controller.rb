@@ -30,7 +30,13 @@ class TagsController < ApplicationController
     end
     @rDocs = []
     recentDocs.each do |r|
-      @rDocs << [r, Document.find(r).name]
+      begin
+        myDoc = Document.find(r)
+      rescue
+        "Doc Not Found"
+      else
+        @rDocs << [r, myDoc.name]
+      end
     end
     #@rDoc = Document.where(:id => [recentDocs[2],recentDocs[1],recentDocs[0]]).to_json(:only => [:id, :name])
   end
