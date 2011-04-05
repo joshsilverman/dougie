@@ -213,6 +213,9 @@ var cOutline = Class.create({
         /* look for new lines and deleted lines */
         doc.outline.updateIds();
 
+        /* santize content */
+        doc.outline.sanitize();
+
         /* don't save if nothing changed or save not being forced */
         var saveButton = $('save_button');
         if (   this.unsavedChanges.length == 0
@@ -418,6 +421,18 @@ var cOutline = Class.create({
                 this.instructionsBg = false;
             }
         }
+    },
+
+    sanitize: function() {
+        var iDocBody = Element.select(doc.outline.iDoc.document, "BODY")[0];
+        var html = iDocBody.innerHTML;
+        
+        /* remove illegal tags */
+        html = html.replace(/<\/?(?:span|a|meta)[^>]*>/gi, '');
+
+        console.log(html);
+
+        iDocBody.innerHTML = html;
     }
 });
 
@@ -1050,10 +1065,8 @@ var cOutlineHandlers = Class.create({
         html = html.gsub(/id="[^"]*"/, 'id=""');
         //clear parent node id
         html = html.gsub(/parent="[^"]*"/, 'parent=""');
-        //remove meta tags - necessary?
-        html = html.gsub(/<meta[^>]*>/, '');
-        //remove span tags
-        html = html.gsub(/<\/?span[^>]*>/i, '');
+        /* remove illegal tags */
+        html = html.replace(/<\/?(?:span|a|meta)[^>]*>/gi, '');
         event.data.html = html;
 
         /* set new nodes to true in case pasted conent include nodes */
