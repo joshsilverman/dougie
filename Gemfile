@@ -14,7 +14,6 @@ gem 'rails', '3.0.3'
 gem 'rack', '1.2.1'
 gem 'mysql'
 gem 'nokogiri'
-gem 'acts_as_tree'
 gem 'libxml-ruby', '1.1.3'
 gem 'devise', :git => "http://github.com/plataformatec/devise.git"
 gem 'warden', '1.0.3'

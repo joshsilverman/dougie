@@ -37,7 +37,6 @@ GEM
       activemodel (= 3.0.3)
       activesupport (= 3.0.3)
     activesupport (3.0.3)
-    acts_as_tree (0.1.1)
     addressable (2.2.4)
     arel (2.0.9)
     bcrypt-ruby (2.1.4)
@@ -145,7 +144,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  acts_as_tree
   cancan (= 1.4.1)
   devise!
   libxml-ruby (= 1.1.3)

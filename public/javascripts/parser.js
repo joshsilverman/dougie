@@ -5,7 +5,10 @@ var cParser = Class.create({
 
     parse: function(Card, contextualize, ellipsize) {
 
-        //definition
+        //pull card text from doc if text is blank
+        if (Card.text == null) this._identifyDoc(Card);
+        if (Card.text == null) Card.text = "";
+
         var defParts = Card.text.split(/(?:\s+-+\s+|-+\s+|\s+-+)/);
 
         if (defParts.length > 1) {
@@ -14,6 +17,7 @@ var cParser = Class.create({
             if (!Card.back && !Card.active) Card.autoActivate = true;
 
             Card.front = defParts[0];
+            console.log(defParts);
             Card.back = defParts.slice(1).join(' - ').unescapeHTML();
         }
 
@@ -53,12 +57,14 @@ var cParser = Class.create({
                 Element.setStyle(this.line, {'display':'block'});
                 Element.setStyle(this.line, {'display':'block', 'textAlign': 'center'});
             }
+            
+            Card.front = this.docHtml;
         }
-        else Element.setStyle(this.line, {'display':'block', 'textAlign': 'center'});
+        else {
+            Element.setStyle(this.line, {'display':'block', 'textAlign': 'center'});
+            Card.front = this.line;
+        }
         Element.addClassName(this.line, 'card_front_cue')
-
-        /* update front */
-        Card.front = this.docHtml;
     },
 
     _ellipsize: function(Card) {
@@ -88,10 +94,10 @@ var cParser = Class.create({
         this.docHtml.id = '';
 
         /* locate adjust line node */
-        console.log(Card);
         this.line = Element.select(this.docHtml, '#' + Card.domId);
         if (this.line.length == 0) return;
+        Card.text = this.line[0].innerHTML;
         this.line = Element.extend(this.line[0]);
-        Element.update(this.line, Card.front)
+        Element.update(this.line, Card.front);
     }
 });

@@ -91,13 +91,8 @@ class DocumentsController < ApplicationController
     # get lines
     @lines_json = Line.includes(:mems)\
                  .where(" lines.document_id = ?
-                          AND lines.text <> 'root'
-                          AND mems.status = true
-                          AND mems.user_id = ?
-                          AND mems.review_after < ?",
-                        params[:id],
-                        current_user.id,
-                        Time.now())\
+                          AND mems.status = true",
+                        params[:id])\
                  .to_json :include => :mems
  
   end

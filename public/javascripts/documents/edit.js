@@ -429,9 +429,6 @@ var cOutline = Class.create({
         
         /* remove illegal tags */
         html = html.replace(/<\/?(?:span|a|meta)[^>]*>/gi, '');
-
-        console.log(html);
-
         iDocBody.innerHTML = html;
     }
 });
@@ -480,9 +477,8 @@ var cOutlineHandlers = Class.create({
         }
 
         /* change target to nearest P/LI anscester */
-        while (target.nodeName && target.nodeName != "LI" && target.nodeName != "P" ) {
+        while (target && target.nodeName && target.nodeName != "LI" && target.nodeName != "P" )
             target = target.parentNode;
-        }
 
         return [range, target, spansMultiple];
     },
@@ -1292,6 +1288,7 @@ var cCard = Class.create({
                                     'line_id':'',
                                     'changed': '0',
                                     'active': false});
+        if (attributes == null) defaultAttributes.set("changed", "1");
         attributes = defaultAttributes.merge(attributes).toObject();
         Element.writeAttribute(node, attributes);
         Element.addClassName(node, 'outline_node');
