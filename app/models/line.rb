@@ -35,8 +35,8 @@ class Line < ActiveRecord::Base
                       :status => true,
                       :review_after => Time.now})
         end
-      else
-        existing_line.delete if existing_line
+      elsif existing_line
+        existing_line.delete 
         Mem.where(:line_id=>existing_line.id).delete_all
       end
     end

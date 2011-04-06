@@ -43,7 +43,7 @@ var cDoc = Class.create({
         window.onhashchange = this.onChange.bind(this);
 
         /* resize listener */
-        window.onresize = this.onResize();
+        window.onresize = AppUtilities.resizeContents;
     },
 
     onChange: function() {
@@ -64,15 +64,14 @@ var cDoc = Class.create({
 
     buildQuickstudy: function(){
         var cards_data = $('lines_json').innerHTML.evalJSON();
-        if (cards_data == null || cards_data == "" || cards_data.length == 0) return;
-        var card = new cCard(cards_data[Math.floor(Math.random()*cards_data.length)]["line"]);
-        card.cue();
-    },
-
-    onResize: function() {
-        AppUtilities.resizeContents();
-//        var footerMinHeight = parseInt($$(".contents")[0].getStyle("minHeight"));
-//        $("dashboard").setStyle({"minHeight": (footerMinHeight -15) + "px"});
+        if (cards_data.length > 0) {
+            if (cards_data == null || cards_data == "" || cards_data.length == 0) return;
+            var card = new cCard(cards_data[Math.floor(Math.random()*cards_data.length)]["line"]);
+            card.cue();
+        }
+        else {
+            $('card_front').update("No cards to review...");
+        }
     }
 });
 
@@ -322,8 +321,6 @@ var cCard = Class.create({
     flipped:false,
 
     initialize: function(data) {
-
-        console.log(data);
 
         this.lineId = data['id'];
         this.domId = data['domid'];

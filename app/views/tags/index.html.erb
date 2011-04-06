@@ -7,17 +7,21 @@
 
   <div class="recent_docs">
     <h4>Recent Docs</h4>
-    <% @recent_docs.each do |doc| %>
-      <div document_id="<%= doc.id%>" style="margin:5px 0;">
-        <a href="/documents/<%= doc.id%>/edit">
-          <div class="folder" style="float:left;">
-          <img class="folder" alt="" height="25" src="/images/organizer/doc-icon.png" />
-          </div>
-          <div class="title recent_doc_title"><%= doc.name%></div>
-          <div style="clear: both;"></div>
-        </a>
-      </div>
-      <div id="document_<%= doc.id%>" style="display:none;"><%= doc.html.html_safe%></div>
+    <% if @recent_docs.length > 0 %>
+      <% @recent_docs.each do |doc| %>
+        <div document_id="<%= doc.id%>" style="margin:5px 0;">
+          <a href="/documents/<%= doc.id%>/edit">
+            <div class="folder" style="float:left;">
+            <img class="folder" alt="" height="25" src="/images/organizer/doc-icon.png" />
+            </div>
+            <div class="title recent_doc_title"><%= doc.name%></div>
+            <div style="clear: both;"></div>
+          </a>
+        </div>
+        <div id="document_<%= doc.id%>" style="display:none;"><%= doc.html.html_safe%></div>
+      <%end%>
+    <%else%>
+        <i>No documents</i>
     <%end%>
   </div>
 
