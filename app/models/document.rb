@@ -19,13 +19,9 @@ class Document < ActiveRecord::Base
     html = params[:html]
     delete_nodes = params[:delete_nodes]
     document = Document.find(:first, :conditions => {:id => id, :user_id => user_id})
-
-    if id.blank? || html.blank? || document.blank?
-      return nil
-    end
+    return nil if id.blank? || html.blank? || document.blank?
 
     Line.transaction do
-      # general adjustments
       html_safe = "<li>#{html}</li>"
       html_safe = html_safe.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<\/?(?:body|ul)[^>]*>/i,"").gsub(/<br>/,"").gsub(/<(\/?)LI([^>]*)>/,"<\\1li\\2>")
       html_safe.gsub!(/<p/i,"<li")

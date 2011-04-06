@@ -33,7 +33,7 @@ var cDoc = Class.create({
         this.directoryView = new cDirectoryView(this.tags);
 
         /* build quick study */
-        this.quickStudyParser();
+        this.buildQuickstudy();
 
         /* reset documentsViews */
         this.documentsViews = new Hash;
@@ -43,7 +43,7 @@ var cDoc = Class.create({
         window.onhashchange = this.onChange.bind(this);
 
         /* resize listener */
-        window.onresize = AppUtilities.resizeContents;
+        window.onresize = this.onResize();
     },
 
     onChange: function() {
@@ -62,18 +62,17 @@ var cDoc = Class.create({
         AppUtilities.resizeContents.delay(.01);
     },
 
-    quickStudyParser: function(){
-        var card = $('qstudy_json').innerHTML;
-        var front;
-        var back;
-        var defParts = card.split(' - ');
+    buildQuickstudy: function(){
+        var cards_data = $('lines_json').innerHTML.evalJSON();
+        if (cards_data == null || cards_data == "" || cards_data.length == 0) return;
+        var card = new cCard(cards_data[Math.floor(Math.random()*cards_data.length)]["line"]);
+        card.cue();
+    },
 
-        if (defParts.length > 1) {
-            front = defParts[0];
-            back = defParts[1];
-        }
-        $('card_front').innerHTML = front;
-        $('card_back').innerHTML = back;
+    onResize: function() {
+        AppUtilities.resizeContents();
+//        var footerMinHeight = parseInt($$(".contents")[0].getStyle("minHeight"));
+//        $("dashboard").setStyle({"minHeight": (footerMinHeight -15) + "px"});
     }
 });
 
@@ -305,6 +304,54 @@ var cDirectoryView = Class.create({
 
         /* build html */
         this._buildHtml();
+    }
+});
+
+var cCard = Class.create({
+
+    /* out of ten for easy url  */
+    memId: null,
+    lineId: null,
+    domId: null,
+    documentId: null,
+    text: '',
+    front: '',
+    simpleFront: '',
+    back: '',
+
+    flipped:false,
+
+    initialize: function(data) {
+
+        console.log(data);
+
+        this.lineId = data['id'];
+        this.domId = data['domid'];
+        this.memId = data['mems'][0]['id'];
+        this.documentId = data['document_id'];
+        this.text = data['text'];
+    },
+
+    cue: function() {
+        var parser = new cParser();
+        parser.parse(this, true);
+        $('card_front').update(this.front);
+        $('flip_button').observe('click', this.toggle.bind(this));
+    },
+
+    toggle: function() {
+        if (this.flipped) {
+            $('card_front').update(this.front);
+            $('card_side').update("Front");
+            $("card_front").setStyle({"textAlign": "left"});
+            this.flipped = false;
+        }
+        else {
+            $('card_side').update("Back");
+            $('card_front').update(this.back);
+            $("card_front").setStyle({"textAlign": "center"});
+            this.flipped = true;
+        }
     }
 });
 

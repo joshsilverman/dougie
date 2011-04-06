@@ -85,7 +85,7 @@ var cParser = Class.create({
         this.docHtml = $('document_' + Card.documentId);
 
         //or look for ckeditor
-        if (!this.docHtml && doc.outline) {
+        if (!this.docHtml && window['doc'] && doc.outline) {
             this.docHtml = doc.outline.iDoc.document.body
         }
         if (!this.docHtml) return;

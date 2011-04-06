@@ -5,40 +5,45 @@ class TagsController < ApplicationController
   def index
 
     # create Misc tag if not exists
-    
     misc = current_user.tags.find_by_misc(true)
     if misc.nil?
       Tag.create( :misc => true,
                   :name => 'Misc.',
                   :user_id => current_user.id)
     end
-
+    #tags json
     @tags_json = Tag.tags_json(current_user)
 
-    recentMem = Line.includes(:mems).where("lines.user_id = ? AND mems.review_after < ?", current_user.id, Time.now()).first
-    @recentMem = "You have no active flashcards - Click the folder and start making some!"
-    @recentMem = recentMem.text unless recentMem.nil?
+#    recent_doc = Mem.includes(:line).where("user_id = ? AND review_after < ?",
+#                                            current_user.id,
+#                                            Time.now()).first
+#    unless recent_mem.nil?
+#      recent_doc = Document.where(:id => recent_mem.line.document_id)
+#    else
+#      recent_doc = nil
+#    end
+#    # recent_mem_doc = Document.includes(:mems).where("mems.user_id = ? AND mems.review_after < ?", current_user.id, Time.now()).first
 
     line_list = Line.includes(:mems).where("lines.user_id = ?",  current_user.id).order("mems.updated_at DESC").limit(100)
-    recentDocs = []
+    recent_docs_ids = []
     line_list.each do |l|
-      if recentDocs.size < 3
-        unless recentDocs.include?(l.document_id)
-          recentDocs << l.document_id
+      if recent_docs_ids.size < 3
+        unless recent_docs_ids.include?(l.document_id)
+          recent_docs_ids << l.document_id
         end
       end
     end
-    @rDocs = []
-    recentDocs.each do |r|
+    line_list = line_list.select{|l| recent_docs_ids.include?(l.document_id)}
+
+    @lines_json = line_list.to_json :include => :mems
+    @recent_docs = []
+    recent_docs_ids.each do |r|
       begin
-        myDoc = Document.find(r)
+        @recent_docs << Document.find(r)
       rescue
-        "Doc Not Found"
-      else
-        @rDocs << [r, myDoc.name]
+        # doc not found
       end
     end
-    #@rDoc = Document.where(:id => [recentDocs[2],recentDocs[1],recentDocs[0]]).to_json(:only => [:id, :name])
   end
 
   def json

@@ -1,9 +1,37 @@
-<div id="tags_json" style="display: none;"><%= @tags_json %></div>
-<div id="qstudy_json" style="display: none;"><%= @recentMem %></div>
+<% @page_specific_scripts_js = ["parser"] %>
 
-<div class="rounded_border" style="width:160px; margin: 0 10px 0 0; float: left; background-color: #EBEBEB;">
-<%= render "recentDocs" %>
-<%= render "quickStudy" %>
+<div id="tags_json" style="display: none;"><%= @tags_json %></div>
+<div id="lines_json" style="display: none;"><%= @lines_json %></div>
+
+<div id="dashboard" class="rounded_border dashboard">
+
+  <div class="recent_docs">
+    <h4>Recent Docs</h4>
+    <% @recent_docs.each do |doc| %>
+      <div document_id="<%= doc.id%>" style="margin:5px 0;">
+        <a href="/documents/<%= doc.id%>/edit">
+          <div class="folder" style="float:left;">
+          <img class="folder" alt="" height="25" src="/images/organizer/doc-icon.png" />
+          </div>
+          <div class="title recent_doc_title"><%= doc.name%></div>
+          <div style="clear: both;"></div>
+        </a>
+      </div>
+      <div id="document_<%= doc.id%>" style="display:none;"><%= doc.html.html_safe%></div>
+    <%end%>
+  </div>
+
+  <div class="quickstudy">
+    <h4>Quick Study</h4>
+    <span id="card_side" style="margin:0 auto;"><em>Front</em></span>
+    <table class="quickstudy_card">
+      <tr><td valign="center">
+        <span id="card_front" style="display: block; padding:5px;">Loading...</span>
+      </td></tr>
+    </table>
+    <a id="flip_button">Flip Card</a>
+  </div>
+  <div class="clear"></div>
 </div>
 
 <div id="organizer_header">
