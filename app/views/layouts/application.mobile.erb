@@ -5,13 +5,75 @@
 
   <%= stylesheet_link_tag 'mobile' if mobile_device? %>
   <meta name="description" content="Zen.do automatically creates study guides from your notes and tracks how much you know. Spend less time studying and know your material better with Zendo!" />
+  <meta name="viewport" content="width=device-with, user-scalable=yes"/>
   <%= csrf_meta_tag %>
+  <% auto_js_css =  controller.controller_name + '/' + controller.action_name  %>
+
+  <!--auto-include css if exists-->
+  <% auto_css_full =  RAILS_ROOT + '/public/stylesheets/' + controller.controller_name + '/' + controller.action_name + '.css'  %>
+  <% if  File.file?(auto_css_full) %>
+    <%= stylesheet_link_tag auto_js_css %>
+  <% end %>
+
+  <% if @page_specific_scripts_css %> <%= stylesheet_link_tag @page_specific_scripts_css %> <% end %>
+
+  <link rel="icon" type="image/png" href="/images/logos/favicon.ico" />
+  <meta name="google-site-verification" content="1kmG8JhfDQo1KP7tHKZsMRUa8Msr83nxkOj3aQ_jCl0" />
 </head>
 <body>
   <div class="wrapper">
-    <div class="contents">
-      <%= yield %>
+
+    <div class="header_container">
+      <div class="header">
+        <%= render 'shared/authentication' %>
+      </div>
+    </div>
+
+    <!--flash messages-->
+    <% unless flash[:notice].blank? && flash[:error].blank? && flash[:alert].blank? %>
+      <div class="flash_container">
+        <% unless flash[:alert].blank? %><span class="error rounded_border"><%= flash[:alert] %></span><% end %>
+        <% unless flash[:notice].blank? %><span class="notice rounded_border"><%= flash[:notice] %></span><% end %>
+        <% unless flash[:error].blank? %><span class="error rounded_border"><%= flash[:error] %></span><% end %>
+      </div>
+    <% end %>
+
+    <div class="contents"><%= yield %></div>
+
+    <div class="clr"></div>
+    <div class="footer">
+          <%= link_to "About", "/about" %>
+          <!--<span>Blog</span>-->
+          <%= link_to "Terms of Service", "/tos" %>
+          <%= link_to "Privacy Policy", "/privacy" %>
+        <h6 class="copyright">Copyright 2011 Zendo Education Technology. All rights reserved.</h6>
     </div>
   </div>
+  <div id="script_userecho"></div>
+  <div id="script_facebook"></div>
+  <%= javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/prototype/1/prototype.js', :cache => false %>
+  <%#= javascript_include_tag '/javascripts/vendors/prototype.js', :cache => false %>
+  <%= javascript_include_tag ['/javascripts/vendors/scriptaculous/src/scriptaculous.js?load=effects,dragdrop,controls', 'rails', 'application', '/javascripts/vendors/scriptaculous/src/effects', '/javascripts/vendors/scriptaculous/src/dragdrop', '/javascripts/vendors/scriptaculous/src/controls'], :cache => '/cache/all' %>
+  <!--auto-include js if exists-->
+  <% auto_js_full =  RAILS_ROOT + '/public/javascripts/' + controller.controller_name + '/' + controller.action_name + '.js'  %>
+  <% if  File.file?(auto_js_full) %>
+    <%= javascript_include_tag auto_js_css, :cache => false %>
+  <% else %>
+    <%= javascript_include_tag 'default', :cache => false %>
+  <% end %>
+  <% if @page_specific_scripts_js %> <%= javascript_include_tag @page_specific_scripts_js, :cache => '/cache/' + auto_js_css %> <% end %>
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-2755840-15']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </body>
 </html>
