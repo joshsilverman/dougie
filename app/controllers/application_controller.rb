@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
 
   before_filter :check_uri
+  before_filter :prepare_for_mobile
   before_filter :authenticate_user!
   
   helper :all
@@ -28,4 +29,13 @@ class ApplicationController < ActionController::Base
     @@redirect_logger ||= Logger.new("#{RAILS_ROOT}/log/redirect.log")
   end
 
+  private
+  def mobile_device?
+    request.user_agent =~ /Mobile|webOS/
+  end
+  helper_method :mobile_device?
+
+  def prepare_for_mobile
+    request.format = :mobile if mobile_device?
+  end
 end

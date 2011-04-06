@@ -1,0 +1,13 @@
+<% if user_signed_in? %>
+    <a href="/" style="float:left;"><img src="/images/logos/zendo_slogan_small.png" /></a>
+    <span style="float:right; margin: 8px 6px 0 0;">
+            Welcome, <%= current_user.first_name %>&nbsp;|&nbsp;
+            <%= link_to "Edit Account", edit_user_registration_path %>&nbsp;|&nbsp;
+            <%= link_to "Sign Out", destroy_user_session_path %>
+    </span>
+
+<% elsif ['static'].count(controller.controller_name) > 0 %>
+    <a href="/"><img src="/images/logos/zendo_slogan_small.png" /></a>
+<% else %>
+    <a href="/"><img src="/images/logos/zendo_beta.png" /></a>
+<% end %>

@@ -1,0 +1,62 @@
+<div id="sign_up_inline">
+  <div class="restrictions">
+
+    <p><strong>Sign up through one of these services:</strong></p>
+
+    <!--<a href="/auth/twitter" class="auth_provider">
+      <%#= image_tag "logos/twitter_32.png", :size => "32x32", :alt => "Twitter" %>
+    </a>
+    <a href="/auth/open_id" class="auth_provider">
+      <%#= image_tag "logos/openid_32.png", :size => "32x32", :alt => "OpenID" %>
+    </a>-->
+    <a href="/auth/facebook" class="auth_provider">
+      <%= image_tag "logos/facebook_32.png", :size => "32x32", :alt => "Facebook" %>
+    </a>
+    <a href="/auth/open_id?openid_url=gmail.com" class="auth_provider">
+      <%= image_tag "logos/google_32.png", :size => "32x32", :alt => "Google" %>
+    </a>
+
+    <div class="clr"></div>
+
+    <strong>We're beta! So far we support:</strong>
+    <ul>
+      <li>Firefox 3</li>
+      <li>Chrome</li>
+      <li>Safari 5</li>
+      <li>Opera 11</li>
+      <li>IE 8</li>
+    </ul>
+  </div>
+
+  <div class="form_container">
+    <h2>Sign up!</h2>
+
+    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+      <%= devise_error_messages! rescue "" %>
+
+      <p><%= f.label :first_name %><br />
+      <%= f.text_field :first_name %></p>
+
+      <p><%= f.label :last_name %><br />
+      <%= f.text_field :last_name %></p>
+
+      <p><%= f.label :email %><br />
+      <%= f.text_field :email %></p>
+
+      <p><%= f.label :password %><br />
+      <%= f.password_field :password %></p>
+
+      <p><%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation %></p
+
+      <p><%= f.submit "Sign up" %></p>
+    <% end %>
+
+    <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+    <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
+    <a href="/users/password/new">Reset password?</a>
+
+  </div>
+
+  <div class="clr"></div>
+</div>
