@@ -1,3 +1,5 @@
+h4 {margin:5px 0;}
+
 .contents {
     margin: 0 auto;
 }
@@ -52,8 +54,7 @@
 /* organizer header */
 
 #organizer_header {
-    margin-top:30px;
-    margin-bottom:4px;
+    margin:30px 0 4px 170px;
     border-bottom: lightgrey solid 1px;
     padding-bottom:4px;
     height:16px;

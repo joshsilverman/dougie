@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-
   before_filter :check_uri
   before_filter :authenticate_user!
   

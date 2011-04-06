@@ -32,6 +32,9 @@ var cDoc = Class.create({
         /* build directory view */
         this.directoryView = new cDirectoryView(this.tags);
 
+        /* build quick study */
+        this.quickStudyParser();
+
         /* reset documentsViews */
         this.documentsViews = new Hash;
 
@@ -57,6 +60,20 @@ var cDoc = Class.create({
         /* fire resize */
         AppUtilities.resizeContents();
         AppUtilities.resizeContents.delay(.01);
+    },
+
+    quickStudyParser: function(){
+        var card = $('qstudy_json').innerHTML;
+        var front;
+        var back;
+        var defParts = card.split(' - ');
+
+        if (defParts.length > 1) {
+            front = defParts[0];
+            back = defParts[1];
+        }
+        $('card_front').innerHTML = front;
+        $('card_back').innerHTML = back;
     }
 });
 
@@ -113,7 +130,7 @@ var cDirectoryView = Class.create({
 
     render: function() {
         /* render icons and title */
-        $('directory_name').update('/');
+        $('directory_name').update('My Notes /');
         $('icons').update(this.html)
 
         /* remove old sort listeners/classes; add new classes */
@@ -358,7 +375,7 @@ var cDocumentsView = Class.create({
         var dirName;
         if (this.tag.misc) dirName = this.tag.name
         else dirName = this.tag.name + " <span id='edit_directory_name'>[Edit Name]</span>"
-        $('directory_name').update('/' + dirName + '/');
+        $('directory_name').update('My Notes /' + dirName + '/');
         $('icons').update(this.html);
 
         /* remove old sort listeners/classes; add new classes */
