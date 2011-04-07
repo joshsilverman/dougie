@@ -169,4 +169,28 @@ class DocumentsControllerTest < ActionController::TestCase
     correct_ids = Set.new(["node_2", "node_12","node_13","node_5","node_8","node_6"])
     assert(dom_ids_set == correct_ids)
   end
+
+  test "activate existing" do
+    sign_in users(:one)
+    document = Document.create(:user_id => 1, :name => 'untitled')
+
+    request1 = {
+      "delete_nodes"=>"",
+      "name"=>"lecture 7",
+      "html"=>"<body line_id=\"29534\" id=\"node_0\"><ul changed=\"1\"><li id=\"node_2\" line_id=\"29535\" changed=\"0\" class=\"outline_node\" active=\"false\" parent=\"node_0\">learning objectives:<ul changed=\"1\"><li line_id=\"29536\" changed=\"0\" class=\"outline_node\" parent=\"node_2\" id=\"node_4\">write octave function defined by its Taylor series using both a for loop and with vector operations</li><li line_id=\"29537\" changed=\"0\" class=\"outline_node\" parent=\"node_2\" id=\"node_5\">understand time and space trade-offs</li></ul></li><li line_id=\"29538\" changed=\"0\" class=\"outline_node\" parent=\"node_0\" id=\"node_7\" active=\"true\">Tayler formual - f(x) =&nbsp;http://en.wikipedia.org/wiki/Taylor_series<ul changed=\"1\"><li line_id=\"29539\" changed=\"0\" class=\"outline_node\" parent=\"node_7\" id=\"node_9\" active=\"true\">nth der. of exp(n) - exp(n)</li></ul></li><li line_id=\"29540\" changed=\"0\" class=\"outline_node\" parent=\"node_0\" id=\"node_12\" active=\"true\">hold on - plot on top of existing plot</li><li line_id=\"29541\" changed=\"1\" class=\"outline_node\" parent=\"node_0\" id=\"node_13\" active=\"true\">lambda function - exp3 = @(x) myexp(x,3)</li><li line_id=\"29542\" changed=\"0\" class=\"outline_node\" parent=\"node_0\" id=\"node_14\" active=\"true\">bits of precision - error/log(d)</li><li line_id=\"29544\" changed=\"0\" class=\"outline_node\" parent=\"node_0\" id=\"node_16\" active=\"true\">representing double precision in a computer - 1 bit for sign, 11 bits for exponent, 52 bits for the mantissa</li></ul></body>",
+      "id"=> document.id,
+      "new_nodes"=>"false"}
+
+#    request2 = {
+#      "delete_nodes"=>"",
+#      "name"=>"lecture 7",
+#      "html"=>"<body line_id=\"29534\" id=\"node_0\"><ul changed=\"1\"><li id=\"node_2\" line_id=\"29535\" changed=\"1\" class=\"outline_node\" active=\"true\" parent=\"node_0\">learning- objectives:<ul changed=\"1\"><li line_id=\"29536\" changed=\"0\" class=\"outline_node\" parent=\"node_2\" id=\"node_4\">write octave function defined by its Taylor series using both a for loop and with vector operations</li><li line_id=\"29537\" changed=\"0\" class=\"outline_node\" parent=\"node_2\" id=\"node_5\">understand time and space trade-offs</li></ul></li><li line_id=\"29538\" changed=\"0\" class=\"outline_node\" parent=\"node_0\" id=\"node_7\" active=\"true\">Tayler formual - f(x) =&nbsp;http://en.wikipedia.org/wiki/Taylor_series<ul changed=\"1\"><li line_id=\"29539\" changed=\"0\" class=\"outline_node\" parent=\"node_7\" id=\"node_9\" active=\"true\">nth der. of exp(n) - exp(n)</li></ul></li><li line_id=\"29540\" changed=\"0\" class=\"outline_node\" parent=\"node_0\" id=\"node_12\" active=\"true\">hold on - plot on top of existing plot</li><li line_id=\"29541\" changed=\"1\" class=\"outline_node\" parent=\"node_0\" id=\"node_13\" active=\"true\">lambda function - exp3 = @(x) myexp(x,3)</li><li line_id=\"29542\" changed=\"0\" class=\"outline_node\" parent=\"node_0\" id=\"node_14\" active=\"true\">bits of precision - error/log(d)</li><li line_id=\"29544\" changed=\"0\" class=\"outline_node\" parent=\"node_0\" id=\"node_16\" active=\"true\">representing double precision in a computer - 1 bit for sign, 11 bits for exponent, 52 bits for the mantissa</li></ul></body>",
+#      "id"=> document.id,
+#      "new_nodes"=>"false"}
+
+    Document.update(request1, 1)
+    lines = Line.find_all_by_document_id(document.id)
+    puts lines.length
+    assert(lines.length == 0)
+  end
 end

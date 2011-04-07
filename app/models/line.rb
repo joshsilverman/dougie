@@ -11,18 +11,33 @@ class Line < ActiveRecord::Base
   
   def self.save_all(doc,document_id,user_id)
     doc.css("li").each do |line|
+      puts "\n\nyo\n\n"
       next if line.attr('changed') != "1"
       dom_id = line.attr("id")
+      puts "\n\ngo\n\n"
       existing_line = Line.where(:user_id => user_id,
-                                 :domid => dom_id,
-                                 :document_id => document_id ).first
+                            :domid => dom_id,
+                            :document_id => document_id ).first
       if line.attr("active") == 'true'
         if (not existing_line.nil?)
-          # pass
+          existing_mem = Mem.where(:user_id => user_id,
+                                :line_id => existing_line.id).first
+
+          # legacy support for mems that can have status set to 0
+          if (existing_mem)
+            existing_mem.update_attribute(:status, 1) unless (existing_mem.status == 1)
+          else
+            Mem.create({:strength => 0.5,
+                        :user_id => user_id,
+                        :line_id => existing_line.id,
+                        :status => true,
+                        :review_after => Time.now})
+          end
+
         else
           created_line = Line.create( :user_id => user_id,
-                                      :domid => dom_id,
-                                      :document_id => document_id )
+                                :domid => dom_id,
+                                :document_id => document_id )
           @@document_html.gsub!(
             /((?:<p|<li)[^>]*[^_]id="#{dom_id}"[^>]*line_id=")("[^>]*>)/) \
             {"#{$1}#{created_line.id}#{$2}"}
