@@ -11,20 +11,11 @@ class TagsController < ApplicationController
                   :name => 'Misc.',
                   :user_id => current_user.id)
     end
-    #tags json
     @tags_json = Tag.tags_json(current_user)
 
-#    recent_doc = Mem.includes(:line).where("user_id = ? AND review_after < ?",
-#                                            current_user.id,
-#                                            Time.now()).first
-#    unless recent_mem.nil?
-#      recent_doc = Document.where(:id => recent_mem.line.document_id)
-#    else
-#      recent_doc = nil
-#    end
-#    # recent_mem_doc = Document.includes(:mems).where("mems.user_id = ? AND mems.review_after < ?", current_user.id, Time.now()).first
-
-    line_list = Line.includes(:mems).where("lines.user_id = ?",  current_user.id).order("mems.updated_at DESC").limit(100)
+    line_list = Line.includes(:mems)\
+      .where("lines.user_id = ? AND mems.status = 1",  current_user.id)\
+      .order("mems.updated_at DESC").limit(100)
     recent_docs_ids = []
     line_list.each do |l|
       if recent_docs_ids.size < 3
