@@ -123,16 +123,27 @@ h4 {margin:5px 0;}
 .quickstudy{
     margin:5px 40px 5px 5px;
     padding:5px;
-    height:200px;
+    height:210px;
+}
+
+div.quickstudy_card_wrapper {
+    overflow:auto;
+    width: 225px;
+    height: 150px;
+    border: solid 1px darkgray;
 }
 
 .quickstudy_card{
     width: 225px;
     height: 150px;
-    border: solid 1px darkgray;
     background-color: white;
 }
 
 #flip_button {
     padding:8px;
+}
+
+.quickstudy_card ul, .quickstudy_card ul {
+    padding-left:10px;
+    margin:0;
 }
