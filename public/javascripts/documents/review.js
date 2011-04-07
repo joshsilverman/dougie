@@ -332,6 +332,7 @@ var cCard = Class.create({
         this.memId = data['mems'][0]['id'];
         this.documentId = data['document_id'];
         this.text = data['text'];
+        console.log(this.text);
     },
 
     cue: function() {

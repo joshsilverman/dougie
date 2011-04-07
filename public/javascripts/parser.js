@@ -17,7 +17,6 @@ var cParser = Class.create({
             if (!Card.back && !Card.active) Card.autoActivate = true;
 
             Card.front = defParts[0];
-            console.log(defParts);
             Card.back = defParts.slice(1).join(' - ').unescapeHTML();
         }
 
@@ -96,7 +95,7 @@ var cParser = Class.create({
         /* locate adjust line node */
         this.line = Element.select(this.docHtml, '#' + Card.domId);
         if (this.line.length == 0) return;
-        Card.text = this.line[0].innerHTML;
+        Card.text = this.line[0].innerHTML.split(/<(?:li|ul|p)/)[0];
         this.line = Element.extend(this.line[0]);
         Element.update(this.line, Card.front);
     }
