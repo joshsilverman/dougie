@@ -213,9 +213,6 @@ var cOutline = Class.create({
         /* look for new lines and deleted lines */
         doc.outline.updateIds();
 
-        /* santize content */
-        doc.outline.sanitize();
-
         /* don't save if nothing changed or save not being forced */
         var saveButton = $('save_button');
         if (   this.unsavedChanges.length == 0
@@ -423,13 +420,11 @@ var cOutline = Class.create({
         }
     },
 
-    sanitize: function() {
-        var iDocBody = Element.select(doc.outline.iDoc.document, "BODY")[0];
-        var html = iDocBody.innerHTML;
-        
+    sanitize: function(html) {
+
         /* remove illegal tags */
         html = html.replace(/<\/?(?:span|a|meta)[^>]*>/gi, '');
-        iDocBody.innerHTML = html;
+        return html;
     }
 });
 
@@ -1052,7 +1047,10 @@ var cOutlineHandlers = Class.create({
 
         /* prepare html */
         var html = event.data.html;
-        
+
+        /* santize content */
+        html = doc.outline.sanitize(html);
+
         //remove line ids
         html = html.gsub(/line_id="[^"]*"/, 'line_id=""');
         //set as changed
