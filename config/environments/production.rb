@@ -56,10 +56,10 @@ Dougie::Application.configure do
       :enable_starttls_auto => true,
       :address => "smtp.gmail.com",
       :port => 587,
-      :domain => "zen.do",
+      :domain => "yahoo",
       :authentication => :login,
-      :user_name => "noreply@zen.do",
-      :password => "532F5334"
+      :user_name => "zendomailer@yahoo.com",
+      :password => "30489rtjaklsj"
   }
   
 end
