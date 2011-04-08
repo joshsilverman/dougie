@@ -26,8 +26,7 @@ test:
 
 production:
   adapter: mysql
-  username: 
-  port: 
-  host: 
-  database: 
+  host: localhost
+  database: outlines
+  username: root
   password: 
