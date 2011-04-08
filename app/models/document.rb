@@ -50,7 +50,8 @@ class Document < ActiveRecord::Base
       end
     end
 
-    document.update_attributes(:html => Line.document_html, :name => params[:name])
+    document.update_attributes(:html => Line.document_html)
+    document.update_attributes(:name => params[:name])
     return document
   end
   
