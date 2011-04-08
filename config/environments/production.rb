@@ -54,7 +54,7 @@ Dougie::Application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       :enable_starttls_auto => true,
-      :address => "smtp.gmail.com",
+      :address => "plus.smtp.mail.yahoo.com",
       :port => 587,
       :domain => "yahoo",
       :authentication => :login,
