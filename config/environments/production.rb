@@ -46,7 +46,7 @@ Dougie::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-  config.action_mailer.default_url_options = { :host => 'www.zen.do/' }
+  config.action_mailer.default_url_options = { :host => 'www.zen.do' }
   
   config.action_mailer.perform_deliveries = true 
   #config.action_mailer.delivery_method = :sendmail #:smtp
@@ -58,8 +58,8 @@ Dougie::Application.configure do
       :port => 587,
       :domain => "zen.do",
       :authentication => :login,
-      :user_name => "welcome@zen.do",
-      :password => "U6455372"
+      :user_name => "noreply@zen.do",
+      :password => "532F5334"
   }
   
 end
