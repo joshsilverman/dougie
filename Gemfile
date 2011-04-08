@@ -21,6 +21,8 @@ gem 'cancan', '1.4.1'
 gem 'omniauth'
 gem 'nifty-generators'
 gem 'smurf'
+gem 'postmark'
+gem 'postmark-rails', '0.4.0'
 # gem 'ruby-prof'
 # gem 'simple_captcha', :git => 'git://github.com/galetahub/simple-captcha.git'
 

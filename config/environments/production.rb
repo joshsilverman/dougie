@@ -49,17 +49,20 @@ Dougie::Application.configure do
   config.action_mailer.default_url_options = { :host => 'www.zen.do' }
   
   config.action_mailer.perform_deliveries = true 
-  #config.action_mailer.delivery_method = :sendmail #:smtp
   
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-      :enable_starttls_auto => true,
-      :address => "smtp.gmail.com",
-      :port => 587,
-      :domain => "gmail",
-      :authentication => :login,
-      :user_name => "zendonotes@gmail.com",
-      :password => "93guz93man"
-  }
+  config.action_mailer.delivery_method = :postmark
+  config.action_mailer.postmark_settings = {:api_key => ("c48730d6-77a9-446e-93b5-dc8413a657b4")}
+
+#  config.action_mailer.delivery_method = :smtp
+#  config.action_mailer.smtp_settings = {
+#      :enable_starttls_auto => true,
+#      :address => "smtp.postmarkapp.com",
+#      :port => 25,
+#      :from => "welcome@zen.do",
+#      :domain => "zen.do",
+#      :authentication => :login,
+#      :user_name => "c48730d6-77a9-446e-93b5-dc8413a657b4",
+#      :password => "c48730d6-77a9-446e-93b5-dc8413a657b4"
+#  }
   
 end

@@ -103,6 +103,8 @@ GEM
       oa-openid (= 0.2.0)
     orm_adapter (0.0.4)
     polyglot (0.3.1)
+    postmark (0.9.6)
+    postmark-rails (0.4.0)
     pyu-ruby-sasl (0.0.3.2)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -152,6 +154,8 @@ DEPENDENCIES
   nifty-generators
   nokogiri
   omniauth
+  postmark
+  postmark-rails (= 0.4.0)
   rack (= 1.2.1)
   rails (= 3.0.3)
   smurf
