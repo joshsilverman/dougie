@@ -54,12 +54,12 @@ Dougie::Application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       :enable_starttls_auto => true,
-      :address => "plus.smtp.mail.yahoo.com",
+      :address => "smtp.gmail.com",
       :port => 587,
-      :domain => "yahoo",
+      :domain => "gmail",
       :authentication => :login,
-      :user_name => "zendomailer@yahoo.com",
-      :password => "30489rtjaklsj"
+      :user_name => "zendonotes@gmail.com",
+      :password => "93guz93man"
   }
   
 end
