@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
 #  validates_length_of :first_name, :minimum => 1
 #  validates_length_of :last_name, :minimum => 1
 
-  has_many :authentications
+  has_many :authentications, :dependent => :destroy
   has_many :documents 
   has_many :tags
   has_many :mems

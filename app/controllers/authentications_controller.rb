@@ -16,10 +16,11 @@ class AuthenticationsController < ApplicationController
     else
       user = User.new
       user.apply_omniauth(omniauth)
+      user.skip_confirmation!
       if user.save
-        flash[:notice] = "Signed in successfully."
         sign_in(:user, user)
-        redirect_to "/users/edit"
+        flash[:notice] = "Account successfully created. Welcome!"
+        redirect_to "/explore"
       else
 
         #log failed account creation if due to email already taken
