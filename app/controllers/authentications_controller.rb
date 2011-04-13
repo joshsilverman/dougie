@@ -4,9 +4,26 @@ class AuthenticationsController < ApplicationController
 
   def create
     omniauth = request.env["omniauth.auth"]
+    omniauth = session[:omniauth] if omniauth.nil?
+
+    # try to load email into omniauth hash
+    if omniauth.nil?
+      flash[:error] = "There was an error while setting up that authentication."
+      redirect_to "/users/sign_up"
+      return
+    elsif omniauth['user_info']['email'].nil?
+      begin
+        omniauth['user_info']['email'] = params[:user][:email] if params[:user]
+      rescue
+      end
+      begin
+        omniauth['user_info']['email'] = omniauth['extra']['user_hash']['email'] if omniauth['extra']
+      end
+    end
+
     authentication = Authentication.find_by_provider_and_uid(omniauth['provider'], omniauth['uid'])
     if authentication
-      flash[:notice] = "Signed in successfully."
+      # flash[:notice] = "Signed in successfully."
       sign_in(:user, authentication.user)
       redirect_to "/"
     elsif current_user
@@ -14,24 +31,25 @@ class AuthenticationsController < ApplicationController
       flash[:notice] = "Authentication successful."
       redirect_to "/"
     else
-      user = User.new
-      user.apply_omniauth(omniauth)
-      user.skip_confirmation!
-      if user.save
-        sign_in(:user, user)
+      @resource = User.new
+      @resource.apply_omniauth(omniauth)
+      @resource.skip_confirmation! unless params and params[:user] and params[:user][:email]
+      if @resource.save
+        sign_in(:user, @resource)
         flash[:notice] = "Account successfully created. Welcome!"
         redirect_to "/explore"
       else
 
         #log failed account creation if due to email already taken
-        if not user.errors['email'].blank? and user.errors['email'].include?("has already been taken")
-          auth_logger.info("\n\"Email has already been taken\"\n#{Time.now.to_s(:db)}\nemail: #{user.email}\n")
+        if @resource.errors['email'].include?("has already been taken")
+          auth_logger.info("\n\"Email has already been taken\"\n#{Time.now.to_s(:db)}\nemail: #{@resource.email}\n")
+          @resource.password = ""
+          puts @resource.to_yaml
+          render "/registrations/new"
+        elsif @resource.errors['email'].include?("can't be blank")
+          session[:omniauth] = omniauth.except('extra')
+          redirect_to "/users/get_email"
         end
-
-        session[:omniauth] = omniauth.except('extra')
-        session[:omniauth]['user_info']['email'] = omniauth['extra']['user_hash']['email'] if omniauth['extra']
-
-        redirect_to "/users/sign_up"
       end
     end
   end

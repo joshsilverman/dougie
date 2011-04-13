@@ -30,6 +30,9 @@
 
   <div class="form_container">
     <h2>Sign up!</h2>
+    
+    <%= error_messages_for @resource %>
+    <%#<div class="error_messages"><h2>Invalid Fields</h2><p>Correct the following errors and try again.</p><ul><li>Email has already been taken</li></ul></div>%>
 
     <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
       <%= devise_error_messages! rescue "" %>

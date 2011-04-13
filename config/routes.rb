@@ -87,6 +87,7 @@ Dougie::Application.routes.draw do
 
   # authentications
   match '/auth/:provider/callback' => 'authentications#create'
+  match '/users/get_email' => 'users#get_email'
   resources :authentications
 
   # catch-all route for static pages
