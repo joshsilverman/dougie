@@ -1,13 +1,12 @@
 <% @page_specific_scripts_css = '/stylesheets/static/devise' %>
 
 <div class="modal rounded_border">
-  <p>Almost there...</p>
+  <h2>Almost there...</h2>
 
   <p>What is your email address?</p>
 
   <%= form_tag(:controller => "authentications", :method => "post") do %>
-    <%= label_tag(:email, "Email:") %>
-    <%= text_field :user, :email %>
-    <%= submit_tag "Next" %>
+    <p><%= text_field :user, :email %></p>
+    <p><%= submit_tag "Next" %></p>
   <% end %>
 </div>

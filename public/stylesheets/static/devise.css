@@ -39,8 +39,14 @@ input[type=text], input[type=password] {
     margin:50px auto;
     padding:10px;
     background:#dfdfdf;
+    text-align: center;
 }
 
 .modal input[type=text], .modal input[type=submit] {
     width:250px;
+}
+
+.devise_links {
+    text-align: left;
+    padding:0 25px;
 }
