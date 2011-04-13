@@ -1,3 +1,46 @@
 .header {
     height: 50px;
 }
+
+.error_messages {
+    color: darkred;
+}
+
+.error_messages h2 {
+    font-size: 1em;
+}
+
+.error_messages li {
+    list-style: none;
+}
+
+.error_messages ul {
+    padding-left:10px;
+    font-style: italic;
+}
+
+.error_messages {
+    border: grey solid 1px;
+    background: #dfdfdf;
+    padding: 16px;
+}
+
+.field_with_errors input {
+    border-color:darkred !important;
+}
+
+input[type=text], input[type=password] {
+    border:solid grey 1px;
+    width:100%;
+}
+
+.modal {
+    width:300px;
+    margin:50px auto;
+    padding:10px;
+    background:#dfdfdf;
+}
+
+.modal input[type=text], .modal input[type=submit] {
+    width:250px;
+}
