@@ -46,7 +46,7 @@ input[type=text], input[type=password] {
     width:250px;
 }
 
-.devise_links {
+.modal .devise_links {
     text-align: left;
     padding:0 25px;
 }
