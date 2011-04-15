@@ -2,27 +2,25 @@
     height: 50px;
 }
 
-.error_messages {
+.error_messages, #error_explanation {
     color: darkred;
-}
-
-.error_messages h2 {
-    font-size: 1em;
-}
-
-.error_messages li {
-    list-style: none;
-}
-
-.error_messages ul {
-    padding-left:10px;
-    font-style: italic;
-}
-
-.error_messages {
     border: grey solid 1px;
     background: #dfdfdf;
     padding: 16px;
+    text-align: left;
+}
+
+.error_messages h2, #error_explanation h2 {
+    font-size: 1em;
+}
+
+.error_messages li, #error_explanation li {
+    list-style: none;
+}
+
+.error_messages ul, #error_explanation ul {
+    padding-left:10px;
+    font-style: italic;
 }
 
 .field_with_errors input {
@@ -34,6 +32,11 @@ input[type=text], input[type=password] {
     width:100%;
 }
 
+#error_explanation {
+    width:220px;
+    margin:10px auto;
+}
+
 .modal {
     width:300px;
     margin:50px auto;
@@ -42,7 +45,7 @@ input[type=text], input[type=password] {
     text-align: center;
 }
 
-.modal input[type=text], .modal input[type=submit] {
+.modal input[type=password], .modal input[type=text], .modal input[type=submit] {
     width:250px;
 }
 
