@@ -19,6 +19,10 @@
     float:left;
 }
 
+#editor {
+    width:660px;
+}
+
 #right_rail {
     padding: 5px;
     margin-left: 10px;
@@ -93,10 +97,6 @@
     position:absolute;
     right:0px;
     margin-top:-1px;
-}
-
-#cke_contents_editor {
-    
 }
 
 img.sync {

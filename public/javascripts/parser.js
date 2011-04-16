@@ -56,7 +56,7 @@ var cParser = Class.create({
                 Element.setStyle(this.line, {'display':'block'});
                 Element.setStyle(this.line, {'display':'block', 'textAlign': 'center'});
             }
-            
+
             Card.front = this.docHtml;
         }
         else {
@@ -85,7 +85,7 @@ var cParser = Class.create({
 
         //or look for ckeditor
         if (!this.docHtml && window['doc'] && doc.outline) {
-            this.docHtml = doc.outline.iDoc.document.body
+            this.docHtml = doc.outline.iDoc.body
         }
         if (!this.docHtml) return;
 

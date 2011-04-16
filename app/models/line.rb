@@ -12,7 +12,7 @@ class Line < ActiveRecord::Base
   def self.save_all(doc,document_id,user_id)
     doc.css("li").each do |line|
       puts "\n\nyo\n\n"
-      next if line.attr('changed') != "1"
+      next if line.attr('style') =~ /(.*)changed(.*)/
       dom_id = line.attr("id")
       puts "\n\ngo\n\n"
       existing_line = Line.where(:user_id => user_id,
@@ -21,7 +21,7 @@ class Line < ActiveRecord::Base
       if line.attr("active") == 'true'
         if (not existing_line.nil?)
           existing_mem = Mem.where(:user_id => user_id,
-                                :line_id => existing_line.id).first
+                                   :line_id => existing_line.id).first
 
           # legacy support for mems that can have status set to 0
           if (existing_mem)
