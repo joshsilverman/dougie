@@ -9,6 +9,36 @@
     background-color:#EEE;
 }
 
+.loading {
+    height: 600px;
+    border: none;
+    background-image:url('/images/shared/ajax-loader.gif');
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-position:center;
+}
+
+.loading span, .loading button, .loading img {
+    display:none;
+}
+
+.doc_options button {
+    border: 1px solid lightgrey;
+    background-color:#EEE;
+    color:#0067A8;
+}
+
+.doc_options button:hover {
+    text-decoration: underline;
+    cursor:pointer;
+}
+
+#save_button {
+}
+
+#review_button {
+}
+
 .doc_options input:hover, .doc_options input:focus {
     background-color:#fff;
 }

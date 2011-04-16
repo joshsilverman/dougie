@@ -1,6 +1,6 @@
 <% @page_specific_scripts_js = ["parser"] %>
 
-<div class="doc_options">
+<div id="doc_options" class="doc_options loading">
   <span>/<%= link_to @tag.name, '/#%i' % @tag.id %>/<input id="document_name" value="<%=@document.name%>"></input></span>
   <button id="review_button" style="float:right">Review</button>
   <button id="save_button" style="float:right;">Saved</button>
@@ -35,9 +35,9 @@ tinyMCE.init({
   plugins : "emotions,spellchecker,advhr,insertdatetime,preview",
 
   // Theme options - button# indicated the row# only
-  theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,|,justifyleft,justifycenter,justifyright,fontselect,fontsizeselect,formatselect",
+  theme_advanced_buttons1 : "bold,italic,underline,|,justifyleft,justifycenter,justifyright,fontselect,fontsizeselect,formatselect",
   theme_advanced_buttons2 : "cut,copy,paste,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,image,|,preview,|,forecolor,backcolor",
-  theme_advanced_buttons3 : "insertdate,inserttime,|,spellchecker,advhr,,removeformat,|,sub,sup,|,charmap,emotions",
+  theme_advanced_buttons3 : "insertdate,inserttime,|,spellchecker,removeformat,|,sub,sup,|,charmap,emotions",
   theme_advanced_toolbar_location : "top",
   theme_advanced_toolbar_align : "left",
   theme_advanced_resizing : true,

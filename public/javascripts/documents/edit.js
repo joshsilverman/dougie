@@ -56,7 +56,7 @@ var cDoc = Class.create({
                 window.location = "/review/" + doc.outline.documentId;
             }.bind(this));
 
-            console.log($('editor_parent'));
+            $("doc_options").removeClassName("loading");
             $('editor_parent').show();
             this.onResize();
         }).bind(this).delay(1);
@@ -113,6 +113,8 @@ var cOutline = Class.create({
         this.lineIds = $H($('line_ids').innerHTML.evalJSON());
         
         this.autosaver = new PeriodicalExecuter(this.autosave.bind(this), 4);
+
+        $("document_name").observe('keypress', this.onChange.bind(this, null));
     },
 
     updateIds: function() {
@@ -277,13 +279,20 @@ var cOutline = Class.create({
     },
 
     onChange: function(target) {
+        if (target) {
+            if (target.tagName != "P" && target.tagName != "LI")  {
+                target = Element.up(target, "p, li");
+            }
 
-        if (target.tagName != "P" && target.tagName != "LI")  {
-            target = Element.up(target, "p, li");
+            Element.addClassName(target, 'changed');
+            Element.writeAttribute(target, 'changed', "1");
         }
+        
+        doc.editor.isNotDirty = false;
 
-        Element.addClassName(target, 'changed');
-        Element.writeAttribute(target, 'changed', "1");
+        var saveButton = $('save_button');
+        saveButton.disabled = false;
+        saveButton.innerHTML = 'Save';
     }
 });
 
