@@ -30,6 +30,12 @@ var cDoc = Class.create({
 
         /* select all in doc name on click */
         $('document_name').observe('click', function(e) {e.target.select();});
+
+        /* disable feedback */
+        console.log(document.viewport.getWidth());
+        if (document.viewport.getWidth() < 1000) {
+            AppUtilities.vendorScripts.unset("script_userecho")
+        }
     },
 
     onEditorLoaded: function() {
@@ -77,18 +83,14 @@ var cDoc = Class.create({
         if (editorVerticalSpaceHeight < 200) editorVerticalSpaceHeight = 200;
 
         /* set heights */
-        editorWhitespace.setStyle({height: editorVerticalSpaceHeight - 3 + 'px'});
+        editorWhitespace.setStyle({height: editorVerticalSpaceHeight + 10 + 'px'});
         rightRail.setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
-        $("editor")
+        $("editor_ifr").setStyle({height: editorVerticalSpaceHeight - 72 + 'px'});
 
         /* set widths */
-        var rightRailWidth = 300;
-        var editorWidth = document.viewport.getWidth() - rightRailWidth;
-        console.log(editorWidth);
+        var editorWidth = 660;
         $("editor_tbl").setStyle({width: editorWidth + 'px'});
-        console.log($('editor_parent'));
         $("editor_parent").setStyle({width: editorWidth + 'px'});
-//        console.log(document.viewport.getWidth());
     }
 });
 

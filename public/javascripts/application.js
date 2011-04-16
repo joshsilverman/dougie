@@ -9,13 +9,16 @@ var cAppUtilities = Class.create({
 
     Cookies: null,
     Dom: null,
+    vendorScripts: $H({
+        script_userecho: "/javascripts/vendors/userecho/userecho.js",
+        script_facebook: "http://connect.facebook.net/en_US/all.js#xfbml=1"}),
 
     initialize: function() {
         
         this.Cookies = new this.cCookies;
         this.Dom = new this.cDom;
 
-        document.observe('app:loaded', function() {this.loadVendorScripts.defer()}.bind(this));
+        document.observe('app:loaded', function() {this.loadVendorScripts.bind(this).defer()}.bind(this));
     },
 
     resizeContents: function() {
@@ -72,8 +75,7 @@ var cAppUtilities = Class.create({
 
     loadVendorScripts: function() {
         
-        $H({script_userecho: "/javascripts/vendors/userecho/userecho.js",
-            script_facebook: "http://connect.facebook.net/en_US/all.js#xfbml=1"}).each(function(keyValue) {
+        this.vendorScripts.each(function(keyValue) {
 
             var script = new Element('script', {'type': 'text/javascript', 'src': keyValue[1]});
             var container = document.getElementById(keyValue[0]);

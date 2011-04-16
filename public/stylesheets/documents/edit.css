@@ -1,8 +1,7 @@
 .doc_options {
-    margin-bottom: 5px;
     padding: 3px;
-    border: none;
-    background-color:#EEE;
+    border: 1px solid lightgrey;
+    border-bottom: none;
 }
 
 .doc_options input {
@@ -14,29 +13,22 @@
     background-color:#fff;
 }
 
-.contents {
-    width:100%;
-    margin:0;
-}
-
-#editor {
-    width:100px;
-    float:left;
-}
-
-#editor_parent {
+#editor_container, #editor {
+    width:660px;
     float:left;
 }
 
 #right_rail {
     padding: 5px;
-    margin-left: 10px;
-    width:277px;
+    padding-left: 10px;
+    width:284px;
     float:left;
-    height:503px;
+    height:475px;
     overflow-y: scroll;
     display:table-cell;
     vertical-align:bottom;
+    border:1px solid lightgrey;
+    border-left:none;
 }
 
 .align_bottom, .align_bottom tbody, .align_bottom tr, .align_bottom td {

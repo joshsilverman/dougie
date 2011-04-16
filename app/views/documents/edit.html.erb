@@ -1,6 +1,6 @@
 <% @page_specific_scripts_js = ["parser"] %>
 
-<div class="rounded_border doc_options">
+<div class="doc_options">
   <span>/<%= link_to @tag.name, '/#%i' % @tag.id %>/<input id="document_name" value="<%=@document.name%>"></input></span>
   <button id="review_button" style="float:right">Review</button>
   <button id="save_button" style="float:right;">Saved</button>
@@ -9,16 +9,17 @@
 
 <div id="editor_container">
   <textarea id="editor" name="editor" style="display:none"><%=@document.html%></textarea>
-  <div id="right_rail" class="rounded_border" style="display:none">
-    <table class="align_bottom" valign="bottom"><tr><td id="cards" valign="bottom">
-      <!--<div class="card card_active rounded_border"><input type="checkbox" class="card_activation" />truncated test</div>
-      <div class="card_focus card rounded_border">
-        <input type="checkbox" class="card_activation" />
-        <div class="card_front">front</div>
-        <div class="card_back">back and probablyaf sfkljasldk jfasldjfl;aksdjflsjdfsj flsjf lsk</div>
-      </div>-->
-    </td></tr></table>
-  </div>
+</div>
+
+<div id="right_rail" class="" style="display:none">
+  <table class="align_bottom" valign="bottom"><tr><td id="cards" valign="bottom">
+    <!--<div class="card card_active rounded_border"><input type="checkbox" class="card_activation" />truncated test</div>
+    <div class="card_focus card rounded_border">
+      <input type="checkbox" class="card_activation" />
+      <div class="card_front">front</div>
+      <div class="card_back">back and probablyaf sfkljasldk jfasldjfl;aksdjflsjdfsj flsjf lsk</div>
+    </div>-->
+  </td></tr></table>
 </div>
 
 <!-- document vars -->
