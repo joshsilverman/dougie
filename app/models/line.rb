@@ -11,14 +11,12 @@ class Line < ActiveRecord::Base
   
   def self.save_all(doc,document_id,user_id)
     doc.css("li").each do |line|
-      puts "\n\nyo\n\n"
-      next if line.attr('style') =~ /(.*)changed(.*)/
+      next if not line.attr('class') =~ /(.*)changed(.*)/
       dom_id = line.attr("id")
-      puts "\n\ngo\n\n"
       existing_line = Line.where(:user_id => user_id,
                             :domid => dom_id,
                             :document_id => document_id ).first
-      if line.attr("active") == 'true'
+      if line.attr("class") =~ /(.*)active(.*)/
         if (not existing_line.nil?)
           existing_mem = Mem.where(:user_id => user_id,
                                    :line_id => existing_line.id).first

@@ -19,7 +19,7 @@ class Document < ActiveRecord::Base
     html = params[:html]
     delete_nodes = params[:delete_nodes]
     document = Document.find(:first, :conditions => {:id => id, :user_id => user_id})
-    return nil if id.blank? || html.blank? || document.blank?
+    return nil if id.blank? || html.nil? || document.blank?
 
     Line.transaction do
       html_safe = "<li>#{html}</li>"
@@ -45,8 +45,8 @@ class Document < ActiveRecord::Base
 
       # delete lines/mems (don't use destory_all with dependencies) - half as many queries; tracks whether deleted
       unless delete_nodes == '[]' || delete_nodes.nil? || delete_nodes == ''
-        Line.delete_all(["id IN (?) AND document_id = ?", delete_nodes.split(','), document.id])
-        Mem.delete_all(["line_id IN (?)", delete_nodes.split(',')]) # belongs in model but I think before_delete would delete mems infividually
+        Line.delete_all(["id IN (?) AND document_id = ? AND user_id = ?", delete_nodes.split(','), document.id, user_id])
+        Mem.delete_all(["line_id IN (?) AND user_id = ?", delete_nodes.split(','), user_id]) # belongs in model but I think before_delete would delete mems infividually
       end
     end
 

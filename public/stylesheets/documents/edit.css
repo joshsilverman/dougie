@@ -14,13 +14,18 @@
     background-color:#fff;
 }
 
-#editor_container {
-    width:660px;
-    float:left;
+.contents {
+    width:100%;
+    margin:0;
 }
 
 #editor {
-    width:660px;
+    width:100px;
+    float:left;
+}
+
+#editor_parent {
+    float:left;
 }
 
 #right_rail {

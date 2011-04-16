@@ -30,8 +30,6 @@ var cDoc = Class.create({
 
         /* select all in doc name on click */
         $('document_name').observe('click', function(e) {e.target.select();});
-
-        this.onResize();
     },
 
     onEditorLoaded: function() {
@@ -44,11 +42,21 @@ var cDoc = Class.create({
             this.outline = new cOutline(this.iDoc);
             this.rightRail = new cRightRail();
             this.editor = tinyMCE.getInstanceById("editor");
+
+            /* click observers */
+            Event.observe($("save_button"),"click",function(e){doc.outline.autosave(e);});
+            Event.observe($("review_button"),"click",function(e){
+                AppUtilities.Cookies.create('reloadEditor', 'true', 3);
+                window.location = "/review/" + doc.outline.documentId;
+            }.bind(this));
+
+            console.log($('editor_parent'));
+            $('editor_parent').show();
+            this.onResize();
         }).bind(this).delay(1);
 
         /* resize listener */
         window.onresize = this.onResize;
-        this.onResize();
     },
 
     onResize: function() {
@@ -63,7 +71,7 @@ var cDoc = Class.create({
         var bottomMargin = 20;
         var editorVerticalSpaceHeight = document.viewport.getDimensions()['height']
             - editorContainer.cumulativeOffset().top - bottomMargin;
-        var editorWhitespace = $('editor');
+        var editorWhitespace = $('editor_tbl');
 
         /* set minimums */
         if (editorVerticalSpaceHeight < 200) editorVerticalSpaceHeight = 200;
@@ -71,6 +79,16 @@ var cDoc = Class.create({
         /* set heights */
         editorWhitespace.setStyle({height: editorVerticalSpaceHeight - 3 + 'px'});
         rightRail.setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
+        $("editor")
+
+        /* set widths */
+        var rightRailWidth = 300;
+        var editorWidth = document.viewport.getWidth() - rightRailWidth;
+        console.log(editorWidth);
+        $("editor_tbl").setStyle({width: editorWidth + 'px'});
+        console.log($('editor_parent'));
+        $("editor_parent").setStyle({width: editorWidth + 'px'});
+//        console.log(document.viewport.getWidth());
     }
 });
 
@@ -257,6 +275,11 @@ var cOutline = Class.create({
     },
 
     onChange: function(target) {
+
+        if (target.tagName != "P" && target.tagName != "LI")  {
+            target = Element.up(target, "p, li");
+        }
+
         Element.addClassName(target, 'changed');
         Element.writeAttribute(target, 'changed', "1");
     }
@@ -478,16 +501,18 @@ var cCard = Class.create({
     activate: function() {
         this.active = true;
         $('card_' + this.cardNumber).addClassName('card_active');
-//        var node = doc.outline.iDoc.getElementById("node_" + this.cardNumber);
-//        node.addClassName("active");
+        var node = doc.outline.iDoc.getElementById("node_" + this.cardNumber);
+        console.log(node);
+        Element.addClassName(node, "active");
         this.render();
     },
 
     deactivate: function() {
         this.active = false;
         $('card_' + this.cardNumber).removeClassName('card_active');
-//        var node = doc.outline.iDoc.getElementById("node_" + this.cardNumber);
-//        node.removeClassName("active");
+        var node = doc.outline.iDoc.getElementById("node_" + this.cardNumber);
+        console.log(node);
+        Element.removeClassName(node, "active");
         var truncate = !this.inFocus || this.inFocus.id != 'card_' + this.cardNumber
         this.render(truncate);
     },
