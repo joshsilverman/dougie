@@ -2,6 +2,7 @@
     padding: 3px;
     border: 1px solid lightgrey;
     border-bottom: none;
+    position:relative;
 }
 
 .doc_options input {
@@ -141,4 +142,38 @@ img.sync:active {
 
 .footer {
     display:none;
+}
+
+/* prototip formatting */
+
+.circle {
+    display: block;
+    width: 18px;
+    height: 18px;
+    background: orange;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    padding:10px;
+    float:left;
+}
+
+.circumscribed {
+    height:18px;
+    width:18px;
+    font-size: 18px;
+    text-align: center;
+    color:black;
+    float:left;
+}
+
+.instruction {
+    font-size: 16px;
+    float:left;
+    padding:12px 10px;
+}
+
+.tooltip a {
+    clear:both;
+    float:right;
+    padding:5px 10px;
 }

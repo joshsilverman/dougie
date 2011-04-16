@@ -46,7 +46,9 @@ class DocumentsController < ApplicationController
 
     # new document?
     @new_doc = (@document.html.blank?) ? true : false
-    
+
+    #doc count
+    @doc_count = current_user.documents.size
   end
   
   def update

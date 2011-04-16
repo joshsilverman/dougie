@@ -5,15 +5,17 @@ var cDoc = Class.create({
     outline: null,
     rightRail: null,
     editor: null,
-    utilities: null,
+    tipTour:null,
     iDoc: null,
 
     newDoc: null,
+    docCount: null,
 
     initialize: function() {
 
         /* set new document attr */
         this.newDoc = $('new_doc').innerHTML == "true";
+        this.docCount = $('doc_count').innerHTML;
         if (this.newDoc) {
             /* set attr and remove node (in case there are edits followed by reload) */
             $('new_doc').innerHTML = "false";
@@ -59,6 +61,8 @@ var cDoc = Class.create({
             $("doc_options").removeClassName("loading");
             $('editor_parent').show();
             this.onResize();
+
+            this.tipTour = new cTipTour();
         }).bind(this).delay(1);
 
         /* resize listener */
@@ -625,6 +629,83 @@ var cCard = Class.create({
 
         //insert later
         else $(cardIdPrev).insert({after: cardHtml});
+    }
+});
+
+var cTipTour = Class.create({
+    
+    initialize: function() {
+        if (doc.newDoc && doc.docCount < 4) this.showTitle();
+    },
+
+    showTitle: function() {
+        var doc_name = $("document_name");
+        if (doc_name.prototip) $('document_name').prototip.show();
+        else {
+            new Tip(doc_name, $("tip_title"), {
+                title: 'Getting started (1 of 4)',
+                style: 'protogrey',
+                stem: 'topLeft',
+                closeButton:true,
+                hook: {target: 'bottomRight', tip: 'topLeft'},
+                offset: {x: -13, y: 2},
+                hideOn: false,
+                showOn:false
+            });
+        }
+        Tips.hideAll();
+        doc_name.prototip.show();
+    },
+
+    showEditor: function() {
+        var editorIfr = $("editor_ifr");
+        new Tip(editorIfr, $("tip_editor"), {
+            title: 'Getting started (2 of 4)',
+            style: 'protogrey',
+            closeButton:true,
+            hook: {target: 'topLeft', tip: 'topLeft'},
+            offset: {x: 20, y: 20},
+            hideOn: false,
+            showOn:false
+        });
+        Tips.hideAll();
+        editorIfr.prototip.show();
+    },
+
+    showCards: function() {
+        var rightRail = $("right_rail");
+        new Tip(rightRail, $("tip_cards"), {
+            title: 'Getting started (3 of 4)',
+            style: 'protogrey',
+            closeButton:true,
+            hook: {target: 'bottomLeft', tip: 'bottomLeft'},
+            offset: {x: 11, y: -11},
+            hideOn: false,
+            showOn:false
+        });
+        Tips.hideAll()
+        rightRail.prototip.show();
+    },
+
+    showReview: function() {
+        var reviewButton = $("review_button");
+        new Tip(reviewButton, $("tip_review"), {
+            title: 'Getting started (4 of 4)',
+            style: 'protogrey',
+            closeButton:true,
+            hook: {target: 'bottomLeft', tip: 'topRight'},
+            offset: {x: 7, y: 5},
+            hideOn: false,
+            showOn:false,
+            stem: 'topRight'
+        });
+        Tips.hideAll();
+        reviewButton.prototip.show();
+    },
+
+    restartTour: function () {
+        Tips.hideAll()
+        this.showTitle();
     }
 });
 

@@ -43,6 +43,11 @@ var cParser = Class.create({
         this._identifyDoc(Card);
 
         /* display properties for cue */
+        if (!this.line) {
+            console.log(Card);
+            console.log(this.line);
+            return
+        }
         if (this.line.tagName == 'LI') {
 
             /* traverse anscestors */

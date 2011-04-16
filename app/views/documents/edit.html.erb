@@ -1,4 +1,5 @@
-<% @page_specific_scripts_js = ["parser"] %>
+<% @page_specific_scripts_js = ["parser", "vendors/prototip/prototip"] %>
+<% @page_specific_scripts_css = ["prototip/prototip"] %>
 
 <div id="doc_options" class="doc_options loading">
   <span>/<%= link_to @tag.name, '/#%i' % @tag.id %>/<input id="document_name" value="<%=@document.name%>"></input></span>
@@ -26,6 +27,7 @@
 <div id="document_id" style="display:none;"><%=@document.id%></div>
 <div id="line_ids" style="display:none;"><%=@line_ids%></div>
 <div id="new_doc" style="display:none;"><%=@new_doc%></div>
+<div id="doc_count" style="display:none;"><%=@doc_count%></div>
 
 <%= javascript_include_tag ["vendors/tiny_mce/tiny_mce"], :cache => false %>
 <script type="text/javascript">
@@ -51,3 +53,22 @@ tinyMCE.init({
   }
 });
 </script>
+
+<div id="tip_elements" style="display:none">
+  <div id="tip_title">
+      <div class="circle"><div class="circumscribed">1</div></div><div class="instruction">Title your document</div>
+      <a onClick="doc.tipTour.showEditor();" href="javascript:void(0)">Next</a>
+  </div>
+  <div id="tip_editor">
+      <div class="circle"><div class="circumscribed">2</div></div><div class="instruction">Take notes here</div>
+      <a onClick="doc.tipTour.showCards();" href="javascript:void(0)">Next</a>
+  </div>
+  <div id="tip_cards">
+      <div class="circle"><div class="circumscribed">3</div></div><div class="instruction">Cards will appear here when you use a dash like:<p>Zendo - meditation hall</p></div>
+      <a onClick="doc.tipTour.showReview();" href="javascript:void(0)">Next</a>
+  </div>
+  <div id="tip_review">
+      <div class="circle"><div class="circumscribed">4</div></div><div class="instruction">Review here</div>
+      <a onClick="doc.tipTour.restartTour();" href="javascript:void(0)">Restart</a>
+  </div>
+</div>
