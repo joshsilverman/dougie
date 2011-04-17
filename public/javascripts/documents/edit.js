@@ -310,9 +310,6 @@ var cRightRail = Class.create({
 
     initialize: function() {
 
-        /* render listener */
-        $('sync_button').observe('click', this.sync.bind(this));
-
         /* set card count */
         Element.select(doc.outline.iDoc, 'li, p').each(function (node) {
             var index = parseInt(node.id.replace('node_', ''));

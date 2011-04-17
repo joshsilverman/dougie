@@ -3,6 +3,7 @@
     border: 1px solid lightgrey;
     border-bottom: none;
     position:relative;
+    background:#FAFAFA;
 }
 
 .doc_options input {
@@ -60,6 +61,7 @@
     vertical-align:bottom;
     border:1px solid lightgrey;
     border-left:none;
+    background:#FAFAFA;
 }
 
 .align_bottom, .align_bottom tbody, .align_bottom tr, .align_bottom td {
