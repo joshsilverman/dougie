@@ -119,7 +119,7 @@ var cOutline = Class.create({
         this.documentId = $('document_id').innerHTML;
         this.lineIds = $H($('line_ids').innerHTML.evalJSON());
         
-//        this.autosaver = new PeriodicalExecuter(this.autosave.bind(this), 4);
+        this.autosaver = new PeriodicalExecuter(this.autosave.bind(this), 4);
 
         $("document_name").observe('keypress', this.onChange.bind(this, null));
     },
