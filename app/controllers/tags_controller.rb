@@ -127,7 +127,6 @@ class TagsController < ApplicationController
     #get lines
     @lines_json = Line.includes(:mems)\
                  .where("     lines.document_id IN (?)
-                          AND lines.text <> 'root'
                           AND mems.user_id = ?
                           AND mems.status = true
                           AND mems.review_after < ?",
