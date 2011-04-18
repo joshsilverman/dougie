@@ -26,6 +26,8 @@ class Document < ActiveRecord::Base
       html_safe = html_safe.gsub(/(\\[\w])+/i,"").gsub(/[\s]+/," ").gsub(/>\s</,"><").gsub(/<\/?(?:body|ul)[^>]*>/i,"").gsub(/<br>/,"").gsub(/<(\/?)LI([^>]*)>/,"<\\1li\\2>")
       html_safe.gsub!(/<p/i,"<li")
       html_safe.gsub!(/<\/p/,"</li")
+      html_safe.gsub!(/<div/i,"<li")
+      html_safe.gsub!(/<\/div/,"</li")
       # @browser ie adjustments
       html_safe.gsub!(/(<[^>]* line_id)( [^>]*>)/, "\\1=\"\"\\2")
       html_safe.gsub!(/(<[^>]*id=)([^\\"=]*)( [^=]*=[^>]*)?>/, "\\1\"\\2\"\\3>")

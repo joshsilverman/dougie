@@ -33,7 +33,7 @@
 tinyMCE.init({
   mode : "textareas",
   theme : "advanced",
-  plugins : "emotions,spellchecker,advhr,insertdatetime,preview",
+  plugins : "emotions,spellchecker,insertdatetime,preview,lists",
 
   // Theme options - button# indicated the row# only
   theme_advanced_buttons1 : "bold,italic,underline,|,justifyleft,justifycenter,justifyright,fontselect,fontsizeselect,formatselect",
@@ -42,6 +42,14 @@ tinyMCE.init({
   theme_advanced_toolbar_location : "top",
   theme_advanced_toolbar_align : "left",
   theme_advanced_resizing : true,
+
+  // Drop lists for link/image/media/template dialogs
+  template_external_list_url : "/javasripts/vendors/tinymce/template_list.js",
+  external_link_list_url : "/javasripts/vendors/tinymce/link_list.js",
+  external_image_list_url : "/javasripts/vendors/tinymce/image_list.js",
+  media_external_list_url : "/javasripts/vendors/tinymce/media_list.js",
+
+  content_css : "/stylesheets/documents/edit_contents.css",
 
   onpageload : function() {doc.onEditorLoaded()},
 

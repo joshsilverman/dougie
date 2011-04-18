@@ -7,6 +7,7 @@ var cDoc = Class.create({
     editor: null,
     tipTour:null,
     iDoc: null,
+    utilities: null,
 
     newDoc: null,
     docCount: null,
@@ -33,8 +34,10 @@ var cDoc = Class.create({
         /* select all in doc name on click */
         $('document_name').observe('click', function(e) {e.target.select();});
 
+        /* utilities */
+        this.utilities = new cUtilities();
+
         /* disable feedback */
-        console.log(document.viewport.getWidth());
         if (document.viewport.getWidth() < 1000) {
             AppUtilities.vendorScripts.unset("script_userecho")
         }
@@ -284,8 +287,12 @@ var cOutline = Class.create({
 
     onChange: function(target) {
         if (target) {
-            if (target.tagName != "P" && target.tagName != "LI")  {
-                target = Element.up(target, "p, li");
+            if (target.tagName != "P" && target.tagName != "LI" && target.tagName != "DIV")  {
+                target = Element.up(target, "p, li, div");
+                if (!target) {
+                    console.log("invalid onChange target");
+                    return;
+                }
             }
 
             Element.addClassName(target, 'changed');
@@ -297,6 +304,27 @@ var cOutline = Class.create({
         var saveButton = $('save_button');
         saveButton.disabled = false;
         saveButton.innerHTML = 'Save';
+
+        /* new/existing card handling */
+        var id = Element.readAttribute(target, 'id') || null;
+        if (!id) {
+            console.log("onchange no id");
+            Element.removeClassName(target, "active");
+            doc.rightRail.createCard(target);
+        }
+        else if (doc.iDoc.getElementById(id) != target) {
+            console.log("not the same element");
+            target.id = "";
+            Element.removeClassName(target, "active");
+            doc.rightRail.createCard(target);
+        }
+        else if(doc.rightRail.cards.get(id)) {
+            console.log("onchange id");
+            doc.rightRail.updateFocusCardWrapper(id, target);
+        }
+        else {
+            console.log('error: node has id but no card exists');
+        }
     }
 });
 
@@ -311,7 +339,7 @@ var cRightRail = Class.create({
     initialize: function() {
 
         /* set card count */
-        Element.select(doc.outline.iDoc, 'li, p').each(function (node) {
+        Element.select(doc.outline.iDoc, 'li, p, div').each(function (node) {
             var index = parseInt(node.id.replace('node_', ''));
             if (index >= this.cardCount) this.cardCount = index + 1;
         }.bind(this));
@@ -345,7 +373,8 @@ var cRightRail = Class.create({
         
         //check node is valid
         if (   node.tagName.toUpperCase() != 'LI'
-            && node.tagName.toUpperCase() != 'P') return;
+            && node.tagName.toUpperCase() != 'P'
+            && node.tagName.toUpperCase() != 'DIV') return;
 
         this.cards.set('node_' + this.cardCount, new cCard(node, this.cardCount));
         this.focus(this.cardCount++);
@@ -397,7 +426,7 @@ var cRightRail = Class.create({
     sync: function() {
 
         /* collect all potential nodes - li/p with text */
-        var nodes = Element.select(doc.outline.iDoc, 'li, p')
+        var nodes = Element.select(doc.outline.iDoc, 'li, p, div')
             .findAll(function (node) {return node.innerHTML});
 
         /* either create or refresh all nodes */
@@ -413,7 +442,7 @@ var cRightRail = Class.create({
                 var cardIndex = parseInt(node.id.replace('node_', ''));
                 var attributes = {'line_id': node.getAttribute('line_id'),
                                   'changed': node.getAttribute('changed'),
-                                  'active': node.getAttribute('active'),
+                                  'active': Element.hasClassName(node, "active"),
                                   'id': node.getAttribute('id')}
                 this.cards.set(node.id, new cCard(node, cardIndex, true, attributes));
             }
@@ -472,6 +501,7 @@ var cCard = Class.create({
             defaultAttributes.set("changed", "1");
             Element.addClassName(node, 'changed');
         }
+        if (attributes && attributes['active']) Element.addClassName(node, "active");
         attributes = defaultAttributes.merge(attributes).toObject();
         Element.writeAttribute(node, attributes);
         Element.addClassName(node, 'outline_node');
@@ -485,7 +515,7 @@ var cCard = Class.create({
         this.elmntCard = $("card_" + this.cardNumber);
 
         /* set active - in case regenerating card for existing node */
-        if (node.getAttribute('active') == 'true') this.activate();
+        if (Element.hasClassName(node, 'active')) this.activate();
 
         /* update */
         this.update(node, truncate);
@@ -499,7 +529,7 @@ var cCard = Class.create({
             return;
         }
 
-        this.active = node.getAttribute('active') == "true";
+        this.active = Element.hasClassName(node, 'active');
 
         /* parse and render */
         this.text = node.innerHTML.split(/<ul/)[0];
@@ -537,7 +567,8 @@ var cCard = Class.create({
             this.autoActivate = false;
             this.activate();
             this.elmntCard.down('input').checked = 'yes';
-            doc.outline.iDoc.getElementById('node_' + this.cardNumber).setAttribute('active', true);
+            var node = doc.outline.iDoc.getElementById('node_' + this.cardNumber);
+            Element.addClassName(node, "active");
         }
 
         /* checkbox dom */
@@ -574,7 +605,8 @@ var cCard = Class.create({
                 this.autoActivated = false;
                 this.deactivate();
                 this.elmntCard.down('input').checked = '';
-                doc.outline.iDoc.getElementById('node_' + this.cardNumber).setAttribute('active', false);
+                var node = doc.outline.iDoc.getElementById('node_' + this.cardNumber);
+                Element.removeClassName(node, "active");
             }
         }
 
@@ -703,6 +735,35 @@ var cTipTour = Class.create({
     restartTour: function () {
         Tips.hideAll()
         this.showTitle();
+    }
+});
+
+var cUtilities = Class.create({
+
+    toNodeId: function(mixed) {
+        var id = this._getId(mixed);
+        if (id || id == 0) return 'node_' + id;
+    },
+
+    toCardId: function(mixed) {
+        var id = this._getId(mixed);
+        if (id || id == 0) return 'card_' + id;
+    },
+
+    _getId: function(mixed) {
+
+        var id;
+
+        //node or card
+        if (Object.isElement(mixed)) id = mixed.id.replace('node_', '').replace('card_', '');
+
+        //id
+        else if (Object.isNumber(mixed)) id = mixed;
+
+        //domId or cardId
+        else if (Object.isString(mixed)) var id = mixed.replace('node_', '').replace('card_', '');
+
+        return id;
     }
 });
 
