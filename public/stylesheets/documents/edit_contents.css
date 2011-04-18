@@ -1,0 +1,20 @@
+/* 
+    Document   : editor_contents
+    Created on : 6 janv. 2011, 13:57:04
+    Author     : josh
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+p, ul, div, li {
+    margin:.75em 0;
+}
+
+ul {
+    padding-left: 15px;
+}
+
+body.instructions {
+    background-image:url(/images/editor/bg.gif);
+    background-repeat:no-repeat;
+}
