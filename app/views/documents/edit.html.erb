@@ -1,5 +1,5 @@
-<% @page_specific_scripts_js = ["parser", "vendors/prototip/prototip"] %>
-<% @page_specific_scripts_css = ["prototip/prototip"] %>
+<% @page_specific_scripts_js = ["parser", "vendors/prototip/prototip", "vendors/lightview/js/lightview.js"] %>
+<% @page_specific_scripts_css = ["prototip/prototip", "/javascripts/vendors/lightview/css/lightview"] %>
 
 <div id="doc_options" class="doc_options loading">
   <span>/<%= link_to @tag.name, '/#%i' % @tag.id %>/<input id="document_name" value="<%=@document.name%>"></input></span>

@@ -90,6 +90,9 @@ Dougie::Application.routes.draw do
   match '/users/get_email' => 'users#get_email'
   resources :authentications
 
+  # ajax sign in
+  match "users/simple_sign_in" => "users#simple_sign_in"
+
   # catch-all route for static pages
   Dougie::Application.routes.draw do |map|
     map.connect ':action', :controller => "static"

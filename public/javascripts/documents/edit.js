@@ -265,6 +265,22 @@ var cOutline = Class.create({
                     /* signed out */
                     if (transport.status == 401) {
                         alert("Please sign in again.");
+//                        Lightview.show({
+//                            href: '/users/simple_sign_in',
+//                            rel: 'ajax',
+//                            options: {
+//                                autosize: true,
+//                                topclose: true,
+//                                ajax: {
+//                                    method: 'get',
+//                                    evalScripts: true,
+//                                    onComplete: function(){
+//                                        console.log("loaded");
+//                                        console.log($('user_email'));
+//                                        $('user_email').focus();}
+//                                }
+//                            }
+//                        });
                     }
                     else {
                         alert("There was an error saving your document. Please try saving again.");

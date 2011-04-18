@@ -53,6 +53,9 @@ class DocumentsController < ApplicationController
   
   def update
 
+#    render :nothing => true, :status => 401
+#    return
+
     # update document
     @document = Document.update(params, current_user.id)
 
