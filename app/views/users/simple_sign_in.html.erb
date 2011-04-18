@@ -1,0 +1,31 @@
+<style>
+  a {
+    text-decoration: none;
+}
+</style>
+
+<h2>Sign in with</h2>
+<a href="/auth/facebook" class="auth_provider">
+  <%= image_tag "logos/facebook_64.png", :size => "64x64", :alt => "Facebook" %>
+</a>
+<a href="/auth/open_id?openid_url=gmail.com" class="auth_provider">
+  <%= image_tag "logos/google_64.png", :size => "64x64", :alt => "Google" %>
+</a>
+
+<div class="form_container">
+  <h2>or</h2>
+
+  <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+    <p><%= f.label :email %><br />
+    <%= f.text_field :email %></p>
+
+    <p><%= f.label :password %><br />
+    <%= f.password_field :password %></p>
+
+    <% if devise_mapping.rememberable? -%>
+      <p><%= f.check_box :remember_me %> <%= f.label :remember_me %></p>
+    <% end -%>
+
+    <p><%= f.submit "Sign in" %></p>
+  <% end %>
+</div>
