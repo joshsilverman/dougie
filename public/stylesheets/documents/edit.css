@@ -186,6 +186,10 @@ img.sync:active {
     width:958px;
 }
 
+#editor_ifr {
+    width:658px !important;
+}
+
 /* rounded borders to editor */
 .doc_options {
     border-top-left-radius: 5px 5px;
