@@ -6,6 +6,10 @@
         Purpose of the stylesheet follows.
 */
 
+* {
+    font-size: 12px;
+}
+
 p, ul, div, li {
     margin:.75em 0;
 }

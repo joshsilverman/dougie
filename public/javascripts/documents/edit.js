@@ -64,7 +64,7 @@ var cDoc = Class.create({
             $("doc_options").removeClassName("loading");
             $('editor_parent').show();
             this.onResize();
-
+            $("document_name").focus();
             this.tipTour = new cTipTour();
         }).bind(this).delay(1);
 
@@ -91,8 +91,8 @@ var cDoc = Class.create({
 
         /* set heights */
         editorWhitespace.setStyle({height: editorVerticalSpaceHeight + 10 + 'px'});
-        rightRail.setStyle({height: editorVerticalSpaceHeight - 2 + 'px'});
-        $("editor_ifr").setStyle({height: editorVerticalSpaceHeight - 72 + 'px'});
+        rightRail.setStyle({height: editorVerticalSpaceHeight - 30 + 'px'});
+        $("editor_ifr").setStyle({height: editorVerticalSpaceHeight - 20 + 'px'});
 
         /* set widths */
         var editorWidth = 660;
@@ -121,7 +121,14 @@ var cOutline = Class.create({
         
         this.autosaver = new PeriodicalExecuter(this.autosave.bind(this), 4);
 
-        $("document_name").observe('keypress', this.onChange.bind(this, null));
+        $("document_name").observe('keypress', function(e) {
+            console.log(e.keyCode);
+            if (e.keyCode == 13) {
+                console.log("focus");
+                doc.editor.focus();
+            }
+            this.onChange(null);
+        }.bind(this));
     },
 
     updateIds: function() {
@@ -313,6 +320,27 @@ var cOutline = Class.create({
 
             Element.addClassName(target, 'changed');
             Element.writeAttribute(target, 'changed', "1");
+
+            /* new/existing card handling */
+            var id = Element.readAttribute(target, 'id') || null;
+            if (!id) {
+                console.log("onchange no id");
+                Element.removeClassName(target, "active");
+                doc.rightRail.createCard(target);
+            }
+            else if (doc.iDoc.getElementById(id) != target) {
+                console.log("not the same element");
+                target.id = "";
+                Element.removeClassName(target, "active");
+                doc.rightRail.createCard(target);
+            }
+            else if(doc.rightRail.cards.get(id)) {
+                console.log("onchange id");
+                doc.rightRail.updateFocusCardWrapper(id, target);
+            }
+            else {
+                console.log('error: node has id but no card exists');
+            }
         }
         
         doc.editor.isNotDirty = false;
@@ -320,27 +348,34 @@ var cOutline = Class.create({
         var saveButton = $('save_button');
         saveButton.disabled = false;
         saveButton.innerHTML = 'Save';
+    },
 
-        /* new/existing card handling */
-        var id = Element.readAttribute(target, 'id') || null;
-        if (!id) {
-            console.log("onchange no id");
-            Element.removeClassName(target, "active");
-            doc.rightRail.createCard(target);
-        }
-        else if (doc.iDoc.getElementById(id) != target) {
-            console.log("not the same element");
-            target.id = "";
-            Element.removeClassName(target, "active");
-            doc.rightRail.createCard(target);
-        }
-        else if(doc.rightRail.cards.get(id)) {
-            console.log("onchange id");
-            doc.rightRail.updateFocusCardWrapper(id, target);
+    activateNode: function(checkbox) {
+
+        //vars
+        var card = checkbox.up('.card');
+        var domId = doc.utilities.toNodeId(card);
+        var node = this.iDoc.getElementById(domId);
+
+        //activate/dactivate card
+        if (checkbox.checked) {
+            node.setAttribute('active', true);
+            Element.addClassName(node, 'active');
+            doc.rightRail.cards.get(domId).activate();
         }
         else {
-            console.log('error: node has id but no card exists');
+            node.setAttribute('active', false);
+            Element.removeClassName(node, 'active');
+            doc.rightRail.cards.get(domId).deactivate();
         }
+
+        /* autosave */
+        node.setAttribute('changed', '1');
+        this.unsavedChanges.push(node.id);
+        this.autosave();
+
+        /* refocus on editor */
+        doc.editor.focus();
     }
 });
 

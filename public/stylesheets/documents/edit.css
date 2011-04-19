@@ -47,7 +47,7 @@
 }
 
 #editor_container, #editor {
-    width:660px;
+    width:659px;
     float:left;
 }
 
@@ -61,8 +61,8 @@
     display:table-cell;
     vertical-align:bottom;
     border:1px solid lightgrey;
-    border-left:none;
     background:#FAFAFA;
+    margin-top:28px;
 }
 
 .align_bottom, .align_bottom tbody, .align_bottom tr, .align_bottom td {
@@ -179,4 +179,16 @@ img.sync:active {
     clear:both;
     float:right;
     padding:5px 10px;
+}
+
+/* tinymce */
+#editor_toolbargroup {
+    width:958px;
+}
+
+/* rounded borders to editor */
+.doc_options {
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    -moz-border-radius:5px 5px 0 0;
 }
