@@ -60,6 +60,10 @@ tinyMCE.init({
     ed.onKeyDown.add(function(ed, e) {
         doc.outline.onChange(ed.selection.getNode());
     });
+    ed.onBeforeExecCommand.add(function(ed) {
+        console.log("yoooo!");
+        doc.outline.onChange(ed.selection.getNode());
+    });
   }
 });
 </script>
